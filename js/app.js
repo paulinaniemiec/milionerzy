@@ -751,14 +751,14 @@ function selectScenario(id) {
   QUESTIONS = scenario.questions.slice(0, 12);
   $('#set-title').innerHTML = `<strong>${scenario.title}</strong>Matematyka · gra o milion`;
   $('#scenario-select').value = id;
-  $('#scenario-description').textContent = `${scenario.description} ${scenario.questions.length} pytań w bazie; w rozgrywce 12.`;
+  $('#scenario-description').textContent = scenario.description;
   $$('.scenario-card').forEach(card => card.setAttribute('aria-pressed', String(card.dataset.scenario === id)));
 }
 
 function bind() {
   $('#scenario-select').innerHTML = SCENARIOS.map(s => `<option value="${s.id}">${s.title}</option>`).join('');
   $('#scenario-select').addEventListener('change', e => selectScenario(e.target.value));
-  $('#scenario-options').innerHTML = SCENARIOS.map(s => `<button type="button" class="scenario-card" data-scenario="${s.id}" aria-pressed="${s.id === activeScenario.id}"><span><strong>${s.title}</strong><small>${s.description}</small><em>${s.questions.length} pytań w bazie · ${s.questions.length > 12 ? 'losujesz 12' : 'grasz wszystkie 12'}</em></span></button>`).join('');
+  $('#scenario-options').innerHTML = SCENARIOS.map(s => `<button type="button" class="scenario-card" data-scenario="${s.id}" aria-pressed="${s.id === activeScenario.id}"><span><strong>${s.title}</strong><small>${s.description}</small></span></button>`).join('');
   $('#scenario-options').addEventListener('click', e => {
     const card = e.target.closest('[data-scenario]');
     if (card) selectScenario(card.dataset.scenario);
