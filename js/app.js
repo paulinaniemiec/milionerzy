@@ -35,7 +35,19 @@ const S = {
   correctCount: 0,
   timers: [],
   phoneTimer: null,
+  hubertAsked: false, // czy przy tym pytaniu prowadzący już dopytywał
+  hubertCount: 0,
 };
+
+// Easter egg: czasem prowadzący dopytuje po zatwierdzeniu – niezależnie od tego, czy odpowiedź jest dobra
+const HUBERT_LINES = [
+  'Definitywnie?',
+  'Definitywnie? Ostatecznie?',
+  'Zaznaczamy?',
+  'Mam zaznaczyć?',
+  'Na pewno? Bo publiczność coś szepcze…',
+  'Na pewno? Proszę pamiętać, o jaką kwotę gramy.',
+];
 
 // ---------------------------------------------------------------- ekrany
 
@@ -98,6 +110,7 @@ async function startGame() {
   S.correctCount = 0;
   S.outcome = null;
   S.prize = 0;
+  S.hubertCount = 0;
   document.body.classList.remove('million');
   $$('.lifeline').forEach((b) => b.classList.remove('used', 'active'));
   fx.clear();
@@ -149,6 +162,7 @@ function loadQuestion(i) {
   S.phase = 'intro';
   S.pending = null;
   S.removed = new Set();
+  S.hubertAsked = false;
   const q = QUESTIONS[i];
   hidePanel();
   $('#banner').hidden = true;
@@ -224,8 +238,22 @@ function cancelChoice() {
   answerActions();
 }
 
+function hubertAsks() {
+  S.hubertAsked = true;
+  S.hubertCount++;
+  sound.click();
+  const line = pick(HUBERT_LINES);
+  setActions(`
+    <div class="hubert"><img src="images/hubert-face.jpg" alt="" width="160" height="160"><div class="hubert-bubble"><span class="who">Hubert Urbański</span>${line}</div></div>
+    <button class="btn btn-gold" data-act="lock">Definitywnie!</button>
+    <button class="btn" data-act="cancel">Jednak nie…</button>`);
+  $('[data-act="lock"]').focus({ preventScroll: true });
+}
+
 function lockIn() {
   if (S.phase !== 'confirm') return;
+  // najwyżej 3 razy na grę, nigdy przy pierwszym pytaniu
+  if (!S.hubertAsked && S.i > 0 && S.hubertCount < 3 && Math.random() < 0.3) return hubertAsks();
   S.phase = 'locked';
   stopPhone();
   updateLifelines();

@@ -189,6 +189,11 @@ sup { font-size: .65em; line-height: 0; }
 .actions { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 10px 14px; min-height: 64px; padding-top: 14px; }
 .actions .prompt { width: 100%; text-align: center; font-family: var(--font-cond); font-size: 22px; font-weight: 600; letter-spacing: .03em; }
 .actions .hint { width: 100%; text-align: center; color: var(--muted); font-size: 14px; }
+.actions .hubert { width: 100%; display: flex; justify-content: center; align-items: center; gap: 12px; animation: ansIn .35s cubic-bezier(.2,.8,.2,1) both; }
+.hubert img { width: 64px; height: 64px; border-radius: 50%; border: 2px solid var(--gold); flex: none; }
+.hubert-bubble { position: relative; background: #fff; color: #10183a; border-radius: 14px; padding: 8px 14px; font-family: var(--font-cond); font-size: 22px; font-weight: 600; max-width: 480px; }
+.hubert-bubble::before { content: ''; position: absolute; left: -8px; top: 50%; margin-top: -8px; border: 8px solid transparent; border-left: 0; border-right-color: #fff; }
+.hubert-bubble .who { display: block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--gold); }
 
 /* ---------- koła ratunkowe ---------- */
 .lifelines { grid-area: life; display: flex; justify-content: center; gap: 10px; padding-top: 4px; }

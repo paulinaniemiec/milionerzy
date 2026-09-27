@@ -2,7 +2,7 @@
 const CACHE = 'milionerzy-v1';
 const CORE = [
   './', 'index.html', 'css/style.css', 'js/app.js', 'js/audio.js', 'js/fx.js', 'js/questions.js', 'js/scenarios.js',
-  'images/final-hubert.jpg', 'manifest.webmanifest', 'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png',
+  'images/final-hubert.jpg', 'images/hubert-face.jpg', 'manifest.webmanifest', 'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png',
 ];
 
 self.addEventListener('install', (e) => {
