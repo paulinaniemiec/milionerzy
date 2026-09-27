@@ -384,7 +384,7 @@ kbd { display: inline-block; min-width: 1.8em; padding: 1px 6px; border-radius: 
 .scenario-picker legend { color: var(--gold, #f6c85c); font-weight: 700; margin-bottom: 10px; }
 #scenario-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .scenario-card { display: flex; align-items: flex-start; gap: 10px; padding: 14px; border: 1px solid #465482; border-radius: 12px; background: #101b3b; cursor: pointer; }
-.scenario-card:has(input:checked) { border-color: #f6c85c; background: #263051; box-shadow: inset 0 0 0 1px #f6c85c; }
+.scenario-card[aria-pressed="true"] { border-color: #f6c85c; background: #263051; box-shadow: inset 0 0 0 1px #f6c85c; }
 .scenario-card:focus-within { outline: 2px solid white; outline-offset: 3px; }
 .scenario-card input { accent-color: #f6c85c; margin-top: 4px; flex-shrink: 0; }
 .scenario-card strong, .scenario-card small, .scenario-card em { display: block; }
@@ -420,3 +420,15 @@ kbd { display: inline-block; min-width: 1.8em; padding: 1px 6px; border-radius: 
 .award-pluses { color: var(--gold-hi); font-size: 36px; font-weight: 900; letter-spacing: .3em; margin-top: 6px; }
 #resume { height: auto; min-height: 58px; padding-top: 12px; padding-bottom: 12px; font-size: 14px; line-height: 1.4; }
 .stage-center:has(.banner:not([hidden])), .stage-center:has(.panel:not([hidden])) { min-height: 210px; }
+
+/* Natywny wybór uruchamia systemową listę iPhone/Android. */
+.scenario-mobile { display: none; }
+.scenario-card { text-align: left; font: inherit; touch-action: manipulation; width: 100%; }
+#scenario-select { display: block; width: 100%; min-height: 52px; border: 2px solid var(--gold); border-radius: 10px; padding: 12px; background: #101b3b; color: white; font: 16px var(--font); }
+#scenario-select:focus-visible { outline: 2px solid white; outline-offset: 3px; }
+#scenario-description { color: #c2cbe4; font-size: 14px; line-height: 1.5; margin: 10px 0 0; }
+@media (max-width: 700px), (pointer: coarse) {
+  .scenario-mobile { display: block; }
+  #scenario-options { display: none; }
+}
+#screen-title { overflow-x: hidden; }

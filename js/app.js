@@ -750,12 +750,19 @@ function selectScenario(id) {
   activeScenario = scenario;
   QUESTIONS = scenario.questions.slice(0, 12);
   $('#set-title').innerHTML = `<strong>${scenario.title}</strong>Matematyka · gra o milion`;
-  $$('input[name="scenario"]').forEach(input => { input.checked = input.value === id; });
+  $('#scenario-select').value = id;
+  $('#scenario-description').textContent = `${scenario.description} ${scenario.questions.length} pytań w bazie; w rozgrywce 12.`;
+  $$('.scenario-card').forEach(card => card.setAttribute('aria-pressed', String(card.dataset.scenario === id)));
 }
 
 function bind() {
-  $('#scenario-options').innerHTML = SCENARIOS.map(s => `<label class="scenario-card"><input type="radio" name="scenario" value="${s.id}" ${s.id === activeScenario.id ? 'checked' : ''}><span><strong>${s.title}</strong><small>${s.description}</small><em>${s.questions.length} pytań w bazie · ${s.questions.length > 12 ? 'losujesz 12' : 'grasz wszystkie 12'}</em></span></label>`).join('');
-  $('#scenario-options').addEventListener('change', e => selectScenario(e.target.value));
+  $('#scenario-select').innerHTML = SCENARIOS.map(s => `<option value="${s.id}">${s.title}</option>`).join('');
+  $('#scenario-select').addEventListener('change', e => selectScenario(e.target.value));
+  $('#scenario-options').innerHTML = SCENARIOS.map(s => `<button type="button" class="scenario-card" data-scenario="${s.id}" aria-pressed="${s.id === activeScenario.id}"><span><strong>${s.title}</strong><small>${s.description}</small><em>${s.questions.length} pytań w bazie · ${s.questions.length > 12 ? 'losujesz 12' : 'grasz wszystkie 12'}</em></span></button>`).join('');
+  $('#scenario-options').addEventListener('click', e => {
+    const card = e.target.closest('[data-scenario]');
+    if (card) selectScenario(card.dataset.scenario);
+  });
   selectScenario(activeScenario.id);
   document.body.classList.toggle('muted', sound.muted);
   if (!(document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen)) $('#btn-fullscreen').hidden = true;
@@ -768,7 +775,7 @@ function bind() {
   let introPlayed = false;
   const firstTouch = async (e) => {
     if (introPlayed || !$('#screen-title').classList.contains('active')) return;
-    if (e.target.closest('button[type="submit"]')) return;
+    if (e.target.closest('button[type="submit"], .scenario-picker')) return;
     introPlayed = true;
     await sound.unlock();
     if (sound.ctx?.state !== 'running') { introPlayed = false; return; }
@@ -823,7 +830,7 @@ function bind() {
   });
 
   document.addEventListener('keydown', (e) => {
-    if (e.target.matches('input') || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.target.matches('input, select, textarea') || e.metaKey || e.ctrlKey || e.altKey) return;
     const key = e.key.toLowerCase();
     if (!$('#modal').hidden) { if (key === 'escape') closeModal(); return; }
     if (key === 'm') return toggleMute();
