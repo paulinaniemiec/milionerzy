@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Milionerzy – 8 klasa</title>
+  <meta name="description" content="Teleturniej Milionerzy – powtórzenie wiadomości przed egzaminem ósmoklasisty z matematyki.">
+  <meta name="theme-color" content="#050a24">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="on-title">
+  <div class="bg" aria-hidden="true">
+    <div class="beams"></div>
+    <div class="floor"></div>
+  </div>
+  <canvas id="fx" aria-hidden="true"></canvas>
+
+  <header class="topbar">
+    <button class="brand" id="btn-home" title="Menu główne" aria-label="Menu główne">
+      <svg viewBox="0 0 100 100"><use href="#emblem"/></svg>
+      <span>Milionerzy</span>
+    </button>
+    <div class="top-status" id="top-status"></div>
+    <div class="top-actions">
+      <button class="icon-btn only-mobile" id="btn-ladder" title="Drabinka wygranych" aria-label="Drabinka wygranych">
+        <svg viewBox="0 0 24 24"><path d="M5 20h14M7 16h10M9 12h6M11 8h2M12 3v2"/></svg>
+      </button>
+      <button class="icon-btn" id="btn-sound" title="Dźwięk (M)" aria-label="Dźwięk">
+        <svg viewBox="0 0 24 24" class="on"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12"/></svg>
+        <svg viewBox="0 0 24 24" class="off"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>
+      </button>
+      <button class="icon-btn" id="btn-settings" title="Ustawienia" aria-label="Ustawienia">
+        <svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>
+      </button>
+      <button class="icon-btn" id="btn-fullscreen" title="Pełny ekran (F)" aria-label="Pełny ekran">
+        <svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- EKRAN TYTUŁOWY -->
+    <section class="screen active" id="screen-title">
+      <div class="title-wrap">
+        <div class="title-emblem">
+          <svg viewBox="0 0 100 100" class="emblem-anim"><use href="#emblem"/></svg>
+          <h1 class="logo-text">Milionerzy</h1>
+        </div>
+        <p class="set-title" id="set-title"></p>
+        <form class="start-form" id="start-form" autocomplete="off">
+          <label class="hex hex-input">
+            <span class="hex-in">
+              <span class="visually-hidden">Imię gracza</span>
+              <input id="player-name" maxlength="24" placeholder="Imię gracza (opcjonalnie)">
+            </span>
+          </label>
+          <button class="btn btn-gold btn-big" type="submit">Zagraj o milion!</button>
+          <button class="btn" type="button" id="resume" hidden></button>
+        </form>
+        <div class="title-links">
+          <button class="link-btn" id="btn-rules">Zasady gry</button>
+          <span>·</span>
+          <button class="link-btn" id="btn-review-title">Omówienie pytań</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- EKRAN GRY -->
+    <section class="screen" id="screen-game">
+      <div class="lifelines" id="lifelines">
+        <button class="lifeline" data-ll="fifty" title="50:50 – usuwa dwie błędne odpowiedzi">
+          <svg viewBox="0 0 120 70"><ellipse cx="60" cy="35" rx="56" ry="31"/><text x="60" y="44" text-anchor="middle">50:50</text></svg>
+          <span class="ll-label">50:50</span>
+        </button>
+        <button class="lifeline" data-ll="phone" title="Telefon do przyjaciela">
+          <svg viewBox="0 0 120 70"><ellipse cx="60" cy="35" rx="56" ry="31"/>
+            <path class="glyph" d="M47 18c-3 2-5 5-4 9 3 12 13 23 26 27 4 1 7-1 9-4l2-3c1-2 0-3-1-4l-7-5c-1-1-3-1-4 0l-3 3c-6-3-10-8-13-13l3-3c1-1 1-3 0-4l-5-7c-1-1-3-2-4-1z"/></svg>
+          <span class="ll-label">Telefon</span>
+        </button>
+        <button class="lifeline" data-ll="audience" title="Pytanie do publiczności">
+          <svg viewBox="0 0 120 70"><ellipse cx="60" cy="35" rx="56" ry="31"/>
+            <g class="glyph"><circle cx="42" cy="28" r="6"/><circle cx="60" cy="24" r="7"/><circle cx="78" cy="28" r="6"/>
+            <path d="M31 50c0-8 5-13 11-13s9 3 10 6c2-5 5-8 8-8s7 3 8 8c1-3 4-6 10-6s11 5 11 13z"/></g></svg>
+          <span class="ll-label">Publiczność</span>
+        </button>
+      </div>
+
+      <aside class="ladder-wrap" id="ladder-wrap">
+        <div class="ladder-head only-mobile">
+          <strong>Drabinka wygranych</strong>
+          <button class="icon-btn" id="btn-ladder-close" aria-label="Zamknij"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+        </div>
+        <ol class="ladder" id="ladder"></ol>
+      </aside>
+
+      <div class="stage">
+        <div class="stage-center" id="stage-center">
+          <div class="stage-emblem" id="stage-emblem">
+            <svg viewBox="0 0 100 100" class="emblem-anim"><use href="#emblem"/></svg>
+          </div>
+          <div class="panel" id="panel" hidden></div>
+          <div class="banner" id="banner" hidden></div>
+        </div>
+
+        <div class="qa">
+          <div class="q-label" id="q-label"></div>
+          <div class="hex question" id="question"><div class="hex-in"><p id="q-text"></p></div></div>
+          <div class="answers" id="answers">
+            <button class="hex answer" data-i="0"><span class="hex-in"><b class="letter">A:</b><span class="txt"></span></span></button>
+            <button class="hex answer" data-i="1"><span class="hex-in"><b class="letter">B:</b><span class="txt"></span></span></button>
+            <button class="hex answer" data-i="2"><span class="hex-in"><b class="letter">C:</b><span class="txt"></span></span></button>
+            <button class="hex answer" data-i="3"><span class="hex-in"><b class="letter">D:</b><span class="txt"></span></span></button>
+          </div>
+          <div class="actions" id="actions"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EKRAN KOŃCOWY -->
+    <section class="screen" id="screen-end">
+      <div class="end-wrap">
+        <svg viewBox="0 0 100 100" class="end-emblem emblem-anim"><use href="#emblem"/></svg>
+        <p class="end-kicker" id="end-kicker"></p>
+        <div class="hex end-amount"><div class="hex-in" id="end-amount"></div></div>
+        <p class="end-msg" id="end-msg"></p>
+        <div class="end-actions">
+          <button class="btn btn-gold" id="btn-again">Zagraj jeszcze raz</button>
+          <button class="btn" id="btn-review">Omówienie pytań</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal" id="modal" hidden>
+    <div class="modal-box" role="dialog" aria-modal="true">
+      <button class="icon-btn modal-close" id="modal-close" aria-label="Zamknij"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <div class="rotate-hint" id="toast" hidden></div>
+
+  <!-- Emblemat (własny projekt w stylu teleturnieju) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <radialGradient id="eg-core" cx="50%" cy="45%" r="55%">
+        <stop offset="0" stop-color="#1d3f9e"/>
+        <stop offset=".65" stop-color="#0a1a55"/>
+        <stop offset="1" stop-color="#040a26"/>
+      </radialGradient>
+      <linearGradient id="eg-gold" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#fff1b8"/>
+        <stop offset=".45" stop-color="#f3b33d"/>
+        <stop offset="1" stop-color="#b86a0c"/>
+      </linearGradient>
+      <linearGradient id="eg-ring" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#8fd8ff"/>
+        <stop offset="1" stop-color="#2a6fd6"/>
+      </linearGradient>
+      <symbol id="emblem" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="47" fill="url(#eg-core)" stroke="url(#eg-ring)" stroke-width="2.2"/>
+        <circle cx="50" cy="50" r="41" fill="none" stroke="#3aa0ff" stroke-width=".5" opacity=".7"/>
+        <g class="em-lines" stroke="#5bb6ff" stroke-width=".35" opacity=".55" fill="none">
+          <path d="M12 38 L88 62 M12 62 L88 38 M30 10 L70 90 M70 10 L30 90 M50 4 L50 96 M4 50 L96 50"/>
+        </g>
+        <g class="em-swirl" fill="none" stroke="url(#eg-gold)" stroke-linecap="round">
+          <path d="M14 34 C 32 14, 68 14, 86 34" stroke-width="2.4"/>
+          <path d="M86 66 C 68 86, 32 86, 14 66" stroke-width="2.4"/>
+          <path d="M22 26 C 40 40, 60 40, 78 26" stroke-width="1.1" opacity=".8"/>
+          <path d="M78 74 C 60 60, 40 60, 22 74" stroke-width="1.1" opacity=".8"/>
+          <animateTransform attributeName="transform" type="rotate" values="-6 50 50;6 50 50;-6 50 50" dur="9s" repeatCount="indefinite"/>
+        </g>
+        <g class="em-orbit" fill="none" stroke="#f7a43a" stroke-width=".7" opacity=".85">
+          <ellipse cx="50" cy="50" rx="44" ry="16" transform="rotate(-18 50 50)"/>
+          <ellipse cx="50" cy="50" rx="44" ry="16" transform="rotate(18 50 50)"/>
+          <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="40s" repeatCount="indefinite"/>
+        </g>
+        <text x="50" y="54.5" text-anchor="middle" font-family="Cinzel, Georgia, serif" font-weight="900" font-size="11.2" fill="#fff" stroke="#061444" stroke-width=".6" paint-order="stroke" letter-spacing=".3">MILIONERZY</text>
+      </symbol>
+    </defs>
+  </svg>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

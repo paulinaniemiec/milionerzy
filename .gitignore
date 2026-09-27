@@ -1,0 +1,6 @@
+.DS_Store
+# Muzyka z prezentacji (oryginalne utwory z programu TV) – prawa autorskie należą do ich właścicieli.
+# Domyślnie NIE trafia do publicznego repozytorium; gra używa wtedy własnej, syntezowanej oprawy.
+audio/*.mp3
+audio/pack.json
+.gstack/
