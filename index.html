@@ -56,6 +56,7 @@
         </div>
         <p class="set-title" id="set-title"></p>
         <form class="start-form" id="start-form" autocomplete="off">
+          <fieldset class="scenario-picker"><legend>Wybierz scenariusz</legend><div id="scenario-options"></div></fieldset>
           <label class="hex hex-input">
             <span class="hex-in">
               <span class="visually-hidden">Imię gracza</span>
@@ -112,7 +113,7 @@
 
         <div class="qa">
           <div class="q-label" id="q-label"></div>
-          <div class="hex question" id="question"><div class="hex-in"><p id="q-text"></p></div></div>
+          <div class="hex question" id="question"><div class="hex-in"><div id="q-text"></div></div></div>
           <div class="answers" id="answers">
             <button class="hex answer" data-i="0"><span class="hex-in"><b class="letter">A:</b><span class="txt"></span></span></button>
             <button class="hex answer" data-i="1"><span class="hex-in"><b class="letter">B:</b><span class="txt"></span></span></button>
@@ -129,6 +130,7 @@
       <div class="end-wrap">
         <svg viewBox="0 0 100 100" class="end-emblem emblem-anim"><use href="#emblem"/></svg>
         <p class="end-kicker" id="end-kicker"></p>
+        <figure id="teacher-award" class="teacher-award" hidden><img src="images/final-paulina.jpg" alt="Pani Paulina wręcza czek na milion złotych i trzy plusy" width="1536" height="1024"><figcaption>Brawo! Pani Paulina wręcza Ci milion i <strong>3 plusy za ukończenie quizu!</strong></figcaption><div class="award-pluses" aria-label="Trzy plusy">+ + +</div></figure>
         <div class="hex end-amount"><div class="hex-in" id="end-amount"></div></div>
         <p class="end-msg" id="end-msg"></p>
         <div class="end-actions">

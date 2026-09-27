@@ -1,7 +1,7 @@
 # Milionerzy – 8 klasa
 
 Teleturniej w stylu *Milionerów* do powtórki przed egzaminem ósmoklasisty z matematyki.
-12 pytań z prezentacji „Powtórzenie wiadomości przed egzaminem”, drabinka 500 zł → 1 000 000 zł,
+4 scenariusze (68 pytań łącznie), 12 pytań w jednej rozgrywce, drabinka 500 zł → 1 000 000 zł,
 progi gwarantowane (1000 zł i 40 000 zł), trzy koła ratunkowe i pełna oprawa dźwiękowa.
 
 Działa w przeglądarce na każdym urządzeniu: tablica interaktywna / rzutnik, laptop, tablet, telefon.
@@ -36,11 +36,30 @@ python3 -m http.server 8000
 
 ## Zmiana pytań
 
-Wszystkie pytania są w [`js/questions.js`](js/questions.js): treść, 4 odpowiedzi, indeks poprawnej
-(`0` = A … `3` = D) i omówienie. Można tam też zmienić tytuł zestawu i drabinkę wygranych.
+Dotychczasowe 12 pytań znajduje się w [`js/questions.js`](js/questions.js).
+Nowe zestawy i katalog scenariuszy są w [`js/scenarios.js`](js/scenarios.js):
+
+- Procenty na rozgrzewkę — 12 pytań.
+- Procenty w życiu, zestaw 1 — 25 pytań (losowanie 12).
+- Procenty w praktyce, zestaw 2 — 19 pytań (losowanie 12).
+
+Każde pytanie ma trwałe `id`, treść `q`, cztery `answers`, indeks `correct` (0–3) i `explain`.
+Zadania ze screenów zostały dostosowane do formatu A–D; podpunkty rozdzielono,
+a dane z diagramów odtworzono w tabelach. Wszystkie pytania scenariusza można przejrzeć
+przez „Omówienie pytań” przed startem. Zapis przechowuje scenariusz i identyfikatory
+wylosowanych pytań, więc wznowienie nie losuje nowej rozgrywki.
+
+Po 12 poprawnych odpowiedziach pojawia się ilustracja Pani Pauliny wręczającej
+czek na 1 000 000 zł oraz trzy plusy. Ilustracja znajduje się w `images/final-paulina.jpg`.
+Nie pojawia się przy przegranej ani rezygnacji.
 
 ## Dźwięk
 
 Domyślnie cała oprawa (czołówka, podkład napięcia rosnący z każdym pytaniem, „ostateczna odpowiedź”,
 dobra/zła odpowiedź, koła ratunkowe, oklaski, fanfara za milion) jest **syntezowana na żywo** w Web Audio –
 nie wymaga żadnych plików. Opcjonalnie można podłożyć własne nagrania – patrz [`audio/README.md`](audio/README.md).
+
+## Sprawdzenie zestawów
+
+Uruchom `node tests/scenarios.mjs` (Node.js 22+). Test obejmuje format pytań,
+losowanie bez powtórzeń, odtwarzanie zapisu i wybrane obliczenia.

@@ -1,4 +1,7 @@
-import { QUESTIONS, LADDER, THRESHOLDS, SET_TITLE, SET_SUBTITLE } from './questions.js';
+import { LADDER, THRESHOLDS } from './questions.js';
+import { SCENARIOS, makeRound, restoreRound } from './scenarios.js';
+let activeScenario = SCENARIOS[0];
+let QUESTIONS = activeScenario.questions.slice(0, 12);
 import { sound } from './audio.js';
 import { fx } from './fx.js';
 
@@ -88,6 +91,7 @@ const guaranteed = (i) => {
 
 async function startGame() {
   await sound.unlock();
+  QUESTIONS = makeRound(activeScenario);
   S.name = $('#player-name').value.trim();
   S.i = 0;
   S.lifelines = { fifty: true, phone: true, audience: true };
@@ -103,26 +107,29 @@ async function startGame() {
 
 const SAVE_KEY = 'mil-save';
 function saveGame() {
-  try { localStorage.setItem(SAVE_KEY, JSON.stringify({ name: S.name, i: S.i, lifelines: S.lifelines, correctCount: S.correctCount })); } catch (e) {}
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify({ scenarioId: activeScenario.id, questionIds: QUESTIONS.map(q => q.id), name: S.name, i: S.i, lifelines: S.lifelines, correctCount: S.correctCount })); } catch (e) {}
 }
 function clearSave() { try { localStorage.removeItem(SAVE_KEY); } catch (e) {} }
 function loadSave() {
   try {
     const d = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null');
-    return d && Number.isInteger(d.i) && d.i > 0 && d.i < LADDER.length ? d : null;
+    return d && Number.isInteger(d.i) && d.i >= 0 && d.i < LADDER.length && restoreRound(d) ? d : null;
   } catch (e) { return null; }
 }
 function renderResume() {
   const d = loadSave();
   const el = $('#resume');
   el.hidden = !d;
-  if (d) el.innerHTML = `Wznów przerwaną grę${d.name ? ` (${escapeHtml(d.name)})` : ''} – pytanie ${d.i + 1} za ${money(LADDER[d.i])}`;
+  if (d) el.innerHTML = `Wznów przerwaną grę${d.name ? ` (${escapeHtml(d.name)})` : ''} – ${restoreRound(d).scenario.title} · pytanie ${d.i + 1} za ${money(LADDER[d.i])}`;
 }
 
 async function resumeGame() {
   const d = loadSave();
   if (!d) return;
   await sound.unlock();
+  const restored = restoreRound(d);
+  selectScenario(restored.scenario.id);
+  QUESTIONS = restored.questions;
   S.name = d.name || '';
   S.lifelines = { fifty: !!d.lifelines?.fifty, phone: !!d.lifelines?.phone, audience: !!d.lifelines?.audience };
   S.correctCount = d.correctCount || d.i;
@@ -344,6 +351,8 @@ function finish() {
     msg = `Poprawne odpowiedzi: ${S.correctCount} z ${LADDER.length}. ${S.prize ? 'Próg gwarantowany uratował wygraną!' : 'Każda pomyłka to lekcja – przejrzyj omówienie i zagraj jeszcze raz!'}`;
   }
   if (S.outcome !== 'won') sound.ambient();
+  $('#teacher-award').hidden = S.outcome !== 'won';
+  $('#screen-end .end-emblem').toggleAttribute('hidden', S.outcome === 'won');
   $('#end-kicker').innerHTML = kicker;
   $('#end-amount').textContent = money(S.prize);
   $('#end-msg').textContent = msg;
@@ -621,19 +630,21 @@ function showExplain(i = S.i) {
   const q = QUESTIONS[i];
   openModal(`
     <h2>Pytanie ${i + 1} – rozwiązanie</h2>
-    <p class="rq">${q.q}</p>
+    <div class="rq">${q.q}</div>
     <p>Poprawna odpowiedź: <b style="color:var(--green-1)">${LETTERS[q.correct]}: ${q.answers[q.correct]}</b></p>
     <p class="explain">${q.explain}</p>
     <div class="row"><button class="btn btn-gold" data-modal="close">Rozumiem</button></div>`);
 }
 
 function showReview() {
+  const bank = $('#screen-title').classList.contains('active');
+  const reviewQuestions = bank ? activeScenario.questions : QUESTIONS;
   openModal(`
-    <h2>Omówienie wszystkich pytań</h2>
-    ${QUESTIONS.map((q, i) => `
+    <h2>${bank ? 'Baza pytań' : 'Omówienie rozgrywki'} · ${activeScenario.title}</h2>
+    ${reviewQuestions.map((q, i) => `
       <div class="review-item">
-        <h4>Pytanie ${i + 1} · ${money(LADDER[i])}</h4>
-        <p class="rq">${q.q}</p>
+        <h4>Pytanie ${i + 1}${bank ? '' : ` · ${money(LADDER[i])}`}</h4>
+        <div class="rq">${q.q}</div>
         <div class="ra">${q.answers.map((a, k) => `<span class="${k === q.correct ? 'ok' : ''}">${LETTERS[k]}: ${a}${k === q.correct ? ' ✓' : ''}</span>`).join('')}</div>
         <div class="rs">${q.explain}</div>
       </div>`).join('')}`);
@@ -643,6 +654,7 @@ function showRules() {
   openModal(`
     <h2>Zasady gry</h2>
     <ul>
+      <li>Wybierz scenariusz na ekranie startowym. Jeśli zawiera więcej niż 12 pytań, gra losuje 12 różnych zadań. Wznowienie zachowuje zestaw i kolejność.</li>
       <li><b>12 pytań</b> – od 500 zł do <b>1 000 000 zł</b>. Każde ma 4 odpowiedzi, tylko jedna jest poprawna.</li>
       <li>Po wybraniu odpowiedzi trzeba ją zatwierdzić – <i>„czy to ostateczna odpowiedź?”</i></li>
       <li><b>Progi gwarantowane:</b> ${money(LADDER[THRESHOLDS[0]])} i ${money(LADDER[THRESHOLDS[1]])}. Po błędnej odpowiedzi zabierasz kwotę z ostatniego osiągniętego progu.</li>
@@ -732,8 +744,19 @@ function goHome() {
 
 // ---------------------------------------------------------------- zdarzenia
 
+function selectScenario(id) {
+  const scenario = SCENARIOS.find(s => s.id === id);
+  if (!scenario) return;
+  activeScenario = scenario;
+  QUESTIONS = scenario.questions.slice(0, 12);
+  $('#set-title').innerHTML = `<strong>${scenario.title}</strong>Matematyka · gra o milion`;
+  $$('input[name="scenario"]').forEach(input => { input.checked = input.value === id; });
+}
+
 function bind() {
-  $('#set-title').innerHTML = `<strong>${SET_TITLE}</strong>${SET_SUBTITLE}`;
+  $('#scenario-options').innerHTML = SCENARIOS.map(s => `<label class="scenario-card"><input type="radio" name="scenario" value="${s.id}" ${s.id === activeScenario.id ? 'checked' : ''}><span><strong>${s.title}</strong><small>${s.description}</small><em>${s.questions.length} pytań w bazie · ${s.questions.length > 12 ? 'losujesz 12' : 'grasz wszystkie 12'}</em></span></label>`).join('');
+  $('#scenario-options').addEventListener('change', e => selectScenario(e.target.value));
+  selectScenario(activeScenario.id);
   document.body.classList.toggle('muted', sound.muted);
   if (!(document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen)) $('#btn-fullscreen').hidden = true;
 
@@ -821,7 +844,7 @@ bind();
 
 // Hak do testów: ?debug udostępnia stan gry w konsoli
 if (new URLSearchParams(location.search).has('debug')) {
-  window.__game = { S, loadQuestion, choose, lockIn, next, startGame, QUESTIONS, sound };
+  window.__game = { S, loadQuestion, choose, lockIn, next, startGame, get QUESTIONS() { return QUESTIONS; }, sound };
 }
 
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
