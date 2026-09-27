@@ -27,6 +27,10 @@ class Sound {
   // Musi być wywołane z gestu użytkownika (kliknięcie) – wymóg przeglądarek.
   async unlock() {
     if (!AC) return;
+    // Safari domyślnie traktuje Web Audio jak dźwięki interfejsu (tryb cichy).
+    try {
+      if (navigator.audioSession) navigator.audioSession.type = 'playback';
+    } catch (e) { /* starsze przeglądarki nie obsługują Audio Session */ }
     if (!this.ctx) {
       const ctx = (this.ctx = new AC());
       this.master = ctx.createGain();
@@ -48,7 +52,17 @@ class Sound {
       this._applyVolumes();
       this._loadPack();
     }
-    if (this.ctx.state !== 'running') await this.ctx.resume().catch(() => {});
+    await this.resume();
+  }
+
+  // Wywołanie resume musi nastąpić bezpośrednio podczas kliknięcia/dotknięcia.
+  // Ponawiamy je również po powrocie z innej aplikacji lub rozmowy telefonicznej.
+  async resume() {
+    if (!this.ctx || this.ctx.state === 'closed') return false;
+    if (this.ctx.state !== 'running') {
+      try { await this.ctx.resume(); } catch (e) { return false; }
+    }
+    return this.ctx.state === 'running';
   }
 
   get t() { return this.ctx ? this.ctx.currentTime : 0; }
@@ -251,6 +265,9 @@ class Sound {
     let alive = true;
     const tick = () => {
       if (!alive) return;
+      if (ctx.state !== 'running') return;
+      // Po uśpieniu karty nie odtwarzaj naraz wszystkich zaległych nut.
+      if (next < this.t - 0.2) next = this.t + 0.05;
       while (next < this.t + 0.2) {
         stepFn(step++, next, out);
         next += typeof interval === 'function' ? interval(step) : interval;

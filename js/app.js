@@ -748,10 +748,23 @@ function bind() {
     if (e.target.closest('button[type="submit"]')) return;
     introPlayed = true;
     await sound.unlock();
+    if (sound.ctx?.state !== 'running') { introPlayed = false; return; }
+    if (!$('#screen-title').classList.contains('active')) return;
     sound.intro();
   };
-  document.addEventListener('pointerdown', firstTouch);
+  // Na ekranie dotykowym gest odblokowuje audio dopiero po puszczeniu palca.
+  document.addEventListener('click', firstTouch);
   document.addEventListener('keydown', firstTouch);
+
+  const resumeAudio = () => { void sound.resume(); };
+  document.addEventListener('pointerup', resumeAudio, { capture: true, passive: true });
+  document.addEventListener('touchend', resumeAudio, { capture: true, passive: true });
+  document.addEventListener('click', resumeAudio, true);
+  document.addEventListener('keydown', resumeAudio, true);
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) resumeAudio();
+  });
+  window.addEventListener('pageshow', resumeAudio);
 
   $('#answers').addEventListener('click', (e) => {
     const b = e.target.closest('.answer');
