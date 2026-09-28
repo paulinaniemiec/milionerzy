@@ -2,6 +2,7 @@ import { LADDER, THRESHOLDS } from './questions.js';
 import { SCENARIOS, makeRound, restoreRound } from './scenarios.js';
 import { sound } from './audio.js';
 import { fx } from './fx.js';
+import { reportResult } from './results.js';
 
 let activeScenario = SCENARIOS[0];
 let QUESTIONS = activeScenario.questions.slice(0, 12);
@@ -97,6 +98,20 @@ function updateStatus() {
   const who = S.name ? `${escapeHtml(S.name)} · ` : '';
   $('#top-status').innerHTML = ['idle', 'over'].includes(S.phase) ? '' :
     `<span class="wide-only">${who}Pytanie </span>${S.i + 1}/${LADDER.length} · <span class="wide-only">gra o </span><b>${money(LADDER[S.i])}</b>`;
+}
+
+function recordResult() {
+  reportResult({
+    name: S.name,
+    grade: activeScenario.grade,
+    scenarioId: activeScenario.id,
+    scenario: activeScenario.title,
+    outcome: S.outcome,
+    prize: S.prize,
+    correct: S.correctCount,
+    question: S.i + 1,
+    lifelinesUsed: Object.values(S.lifelines).filter((v) => !v).length,
+  });
 }
 
 const guaranteed = (i) => {
@@ -307,6 +322,7 @@ function reveal() {
     sound.wrong(S.i);
     S.outcome = 'lost';
     S.prize = guaranteed(S.i);
+    recordResult();
     updateLadder('lost');
     later(() => {
       showBanner({
@@ -344,6 +360,7 @@ function walkAway() {
       S.phase = 'revealed';
       S.outcome = 'walk';
       S.prize = take;
+      recordResult();
       sound.walkAway();
       $$('.answer').forEach((b) => { b.disabled = true; b.classList.remove('pending'); });
       const q = QUESTIONS[S.i];
@@ -361,6 +378,7 @@ function walkAway() {
 
 function million() {
   S.outcome = 'won';
+  recordResult();
   sound.million();
   fx.rain(12000);
   finish();

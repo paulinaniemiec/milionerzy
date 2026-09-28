@@ -35,6 +35,27 @@ python3 -m http.server 8000
 3. Każdy push na `main` publikuje grę przez `.github/workflows/deploy.yml`.
    Adres: `https://<użytkownik>.github.io/<repozytorium>/`.
 
+## Zapisywanie wyników (arkusz Google)
+
+Po zakończeniu gry (błędna odpowiedź, rezygnacja, milion) wynik może trafić do arkusza Google:
+data, imię, klasa, zestaw, wynik, wygrana, liczba poprawnych odpowiedzi, ostatnie pytanie i liczba użytych kół.
+Bez internetu wyniki czekają na urządzeniu i wysyłają się później. Dopóki adres w `js/results.js` jest pusty,
+nic nie jest wysyłane.
+
+Konfiguracja (jednorazowo, ok. 10 minut):
+
+1. Utwórz **nowy, osobny** arkusz Google, np. „Milionerzy – wyniki”. Nie udostępniaj go publicznie.
+2. W arkuszu: **Rozszerzenia → Apps Script**, usuń domyślny kod i wklej zawartość [`apps-script/Code.gs`](apps-script/Code.gs). Zapisz.
+3. **Wdróż → Nowe wdrożenie → typ: Aplikacja internetowa**. Wykonaj jako: **Ja**, dostęp: **Każdy**. Kliknij „Wdróż”.
+4. Google poprosi o uprawnienia. Pojawi się ostrzeżenie „Google nie zweryfikował tej aplikacji”, bo to Twój własny skrypt:
+   **Zaawansowane → Przejdź do projektu**. Skrypt prosi tylko o dostęp do tego jednego arkusza (`@OnlyCurrentDoc`).
+5. Skopiuj adres aplikacji (`https://script.google.com/macros/s/…/exec`) i wklej go do `RESULTS_URL` w `js/results.js`.
+
+Bezpieczeństwo: adres skryptu jest widoczny w kodzie strony, więc ktoś może dopisać do arkusza fałszywy wiersz.
+Nie da się natomiast przez niego niczego odczytać ani zmienić poza dopisaniem wiersza. Skrypt nie ma dostępu do innych
+plików na koncie, a treść od graczy jest zapisywana jako zwykły tekst, a nie formuły. Grają uczniowie, więc wystarczy imię albo pseudonim.
+Po zmianie `Code.gs` trzeba zrobić **Wdróż → Zarządzaj wdrożeniami → Edytuj → Nowa wersja**, żeby adres się nie zmienił.
+
 ## Zmiana pytań
 
 Dotychczasowe 12 pytań znajduje się w [`js/questions.js`](js/questions.js).
