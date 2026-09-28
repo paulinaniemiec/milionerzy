@@ -79,8 +79,8 @@ const revision2 = [
 ];
 
 export const SCENARIOS = [
- {id:'diagrams', title:'Diagramy i wykresy', description:'12 nowych zadań w stylu egzaminu ósmoklasisty. Każde z innym wykresem.', questions:diagramQuestions},
- {id:'probability', title:'Prawdopodobieństwo', description:'12 nowych zadań w stylu egzaminu ósmoklasisty. Kostki, losy, monety i szanse.', questions:probabilityQuestions},
+ {id:'diagrams', title:'Diagramy i wykresy', description:'Nowe zadania w stylu egzaminu ósmoklasisty. Każde z innym wykresem.', questions:diagramQuestions},
+ {id:'probability', title:'Prawdopodobieństwo', description:'Nowe zadania w stylu egzaminu ósmoklasisty. Kostki, losy, monety i szanse.', questions:probabilityQuestions},
  {id:'original', title:'Powtórka przed egzaminem', description:'Liczby, algebra i geometria. Dotychczasowy zestaw.', questions:original.map((v,i)=>({...v,id:`original-${i+1}`,sourceGroup:`original-${i+1}`}))},
  {id:'check', title:'Procenty na rozgrzewkę', description:'„Sprawdź, czy potrafisz”. Ułamki, podziały i ceny.', questions:[...check, revision1.find(q=>q.id==='z1-1'), revision1.find(q=>q.id==='z1-7'), revision1.find(q=>q.id==='z1-14'), revision2.find(q=>q.id==='z2-11')]},
  {id:'revision-1', title:'Procenty w życiu · zestaw 1', description:'„Powtórzenie I”. Rabaty, frekwencja, proporcje i VAT.', questions:revision1},

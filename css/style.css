@@ -189,6 +189,11 @@ sup { font-size: .65em; line-height: 0; }
 .actions { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 10px 14px; min-height: 64px; padding-top: 14px; }
 .actions .prompt { width: 100%; text-align: center; font-family: var(--font-cond); font-size: 22px; font-weight: 600; letter-spacing: .03em; }
 .actions .hint { width: 100%; text-align: center; color: var(--muted); font-size: 14px; }
+.actions .hubert { width: 100%; display: flex; justify-content: center; align-items: center; gap: 12px; animation: ansIn .35s cubic-bezier(.2,.8,.2,1) both; }
+.hubert img { width: 64px; height: 64px; border-radius: 50%; border: 2px solid var(--gold); flex: none; }
+.hubert-bubble { position: relative; background: #fff; color: #10183a; border-radius: 14px; padding: 8px 14px; font-family: var(--font-cond); font-size: 22px; font-weight: 600; max-width: 480px; }
+.hubert-bubble::before { content: ''; position: absolute; left: -8px; top: 50%; margin-top: -8px; border: 8px solid transparent; border-left: 0; border-right-color: #fff; }
+.hubert-bubble .who { display: block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--gold); }
 
 /* ---------- koła ratunkowe ---------- */
 .lifelines { grid-area: life; display: flex; justify-content: center; gap: 10px; padding-top: 4px; }
@@ -387,10 +392,9 @@ kbd { display: inline-block; min-width: 1.8em; padding: 1px 6px; border-radius: 
 .scenario-card[aria-pressed="true"] { border-color: #f6c85c; background: #263051; box-shadow: inset 0 0 0 1px #f6c85c; }
 .scenario-card:focus-within { outline: 2px solid white; outline-offset: 3px; }
 .scenario-card input { accent-color: #f6c85c; margin-top: 4px; flex-shrink: 0; }
-.scenario-card strong, .scenario-card small, .scenario-card em { display: block; }
+.scenario-card strong, .scenario-card small { display: block; }
 .scenario-card strong { color: white; font-size: 16px; line-height: 1.3; }
 .scenario-card small { color: #c2cbe4; font-size: 13px; line-height: 1.4; margin-top: 5px; }
-.scenario-card em { color: #f6c85c; font-size: 12px; margin-top: 7px; font-style: normal; }
 .task-table-wrap { max-width: 100%; overflow-x: auto; margin: 14px auto; }
 .task-table { border-collapse: collapse; width: 100%; font-size: clamp(12px, 2vw, 17px); line-height: 1.4; text-align: center; }
 .task-table caption { margin-bottom: 7px; font-size: .85em; color: #c2cbe4; }

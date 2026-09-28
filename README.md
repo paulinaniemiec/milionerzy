@@ -51,8 +51,8 @@ a dane z diagramów odtworzono w tabelach. Każda rozgrywka losuje 12 różnych 
 przez „Omówienie pytań” przed startem. Zapis przechowuje scenariusz i identyfikatory
 wylosowanych pytań, więc wznowienie nie losuje nowej rozgrywki.
 
-Po 12 poprawnych odpowiedziach pojawia się oryginalne zdjęcie Pani Pauliny oraz osobny graficzny
-czek na 1 000 000 zł i trzy plusy. Zdjęcie znajduje się w `images/paulina-photo.jpg`.
+Po 12 poprawnych odpowiedziach pojawia się zdjęcie Huberta Urbańskiego wręczającego
+czek na 1 000 000 zł oraz trzy plusy. Zdjęcie znajduje się w `images/final-hubert.jpg`.
 Nie pojawia się przy przegranej ani rezygnacji.
 
 ## Dźwięk
