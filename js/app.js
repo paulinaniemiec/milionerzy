@@ -1,9 +1,14 @@
 import { LADDER, THRESHOLDS } from './questions.js';
 import { SCENARIOS, makeRound, restoreRound } from './scenarios.js';
-let activeScenario = SCENARIOS[0];
-let QUESTIONS = activeScenario.questions.slice(0, 12);
 import { sound } from './audio.js';
 import { fx } from './fx.js';
+
+let activeScenario = SCENARIOS[0];
+let QUESTIONS = activeScenario.questions.slice(0, 12);
+let selectedGrade = null;
+if (SCENARIOS.some(s => ![7, 8].includes(s.grade))) {
+  throw new Error('Każdy scenariusz musi mieć przypisaną klasę 7 albo 8.');
+}
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -53,7 +58,7 @@ const HUBERT_LINES = [
 
 function showScreen(id) {
   $$('.screen').forEach((s) => s.classList.toggle('active', s.id === id));
-  document.body.classList.toggle('on-title', id === 'screen-title');
+  document.body.classList.toggle('on-title', id === 'screen-title' || id === 'screen-classes');
   if (id !== 'screen-game') $('#ladder-wrap').classList.remove('open');
 }
 
@@ -132,7 +137,7 @@ function loadSave() {
 function renderResume() {
   const d = loadSave();
   const el = $('#resume');
-  el.hidden = !d;
+  el.hidden = !d || restoreRound(d).scenario.grade !== selectedGrade;
   if (d) el.innerHTML = `Wznów przerwaną grę${d.name ? ` (${escapeHtml(d.name)})` : ''} – ${restoreRound(d).scenario.title} · pytanie ${d.i + 1} za ${money(LADDER[d.i])}`;
 }
 
@@ -141,13 +146,14 @@ async function resumeGame() {
   if (!d) return;
   await sound.unlock();
   const restored = restoreRound(d);
+  if (selectedGrade !== restored.scenario.grade) chooseGrade(restored.scenario.grade);
   selectScenario(restored.scenario.id);
   QUESTIONS = restored.questions;
   S.name = d.name || '';
   S.lifelines = { fifty: !!d.lifelines?.fifty, phone: !!d.lifelines?.phone, audience: !!d.lifelines?.audience };
   S.correctCount = d.correctCount || d.i;
   S.outcome = null;
-  S.prize = LADDER[d.i - 1];
+  S.prize = d.i > 0 ? LADDER[d.i - 1] : 0;
   document.body.classList.remove('million');
   $$('.lifeline').forEach((b) => b.classList.remove('active'));
   fx.clear();
@@ -759,7 +765,7 @@ function goHome() {
     updateStatus();
     fx.clear();
     renderResume();
-    showScreen('screen-title');
+    showScreen('screen-classes');
     if (sound.ready) sound.ambient();
   };
   if (!inGame) return go();
@@ -773,25 +779,39 @@ function goHome() {
 // ---------------------------------------------------------------- zdarzenia
 
 function selectScenario(id) {
-  const scenario = SCENARIOS.find(s => s.id === id);
+  const scenario = SCENARIOS.find(s => s.id === id && s.grade === selectedGrade);
   if (!scenario) return;
   activeScenario = scenario;
   QUESTIONS = scenario.questions.slice(0, 12);
-  $('#set-title').innerHTML = `<strong>${scenario.title}</strong>Matematyka · gra o milion`;
+  $('#set-title').innerHTML = `<strong>${scenario.title}</strong>Matematyka · klasa ${scenario.grade}`;
   $('#scenario-select').value = id;
   $('#scenario-description').textContent = scenario.description;
   $$('.scenario-card').forEach(card => card.setAttribute('aria-pressed', String(card.dataset.scenario === id)));
 }
 
+function chooseGrade(grade) {
+  if (![7, 8].includes(grade)) return;
+  selectedGrade = grade;
+  $('#scenario-legend').textContent = `Wybierz zestaw · klasa ${grade}`;
+  const scenarios = SCENARIOS.filter(s => s.grade === grade);
+  $('#scenario-select').innerHTML = scenarios.map(s => `<option value="${s.id}">${s.title}</option>`).join('');
+  $('#scenario-options').innerHTML = scenarios.map(s => `<button type="button" class="scenario-card" data-scenario="${s.id}" aria-pressed="false"><span><strong>${s.title}</strong><small>${s.description}</small></span></button>`).join('');
+  selectScenario(activeScenario.grade === grade ? activeScenario.id : scenarios[0].id);
+  renderResume();
+  showScreen('screen-title');
+}
+
 function bind() {
-  $('#scenario-select').innerHTML = SCENARIOS.map(s => `<option value="${s.id}">${s.title}</option>`).join('');
   $('#scenario-select').addEventListener('change', e => selectScenario(e.target.value));
-  $('#scenario-options').innerHTML = SCENARIOS.map(s => `<button type="button" class="scenario-card" data-scenario="${s.id}" aria-pressed="${s.id === activeScenario.id}"><span><strong>${s.title}</strong><small>${s.description}</small></span></button>`).join('');
   $('#scenario-options').addEventListener('click', e => {
     const card = e.target.closest('[data-scenario]');
     if (card) selectScenario(card.dataset.scenario);
   });
-  selectScenario(activeScenario.id);
+  $('#class-list').addEventListener('click', e => {
+    const button = e.target.closest('[data-grade]');
+    if (button) chooseGrade(Number(button.dataset.grade));
+  });
+  $('#btn-change-grade').onclick = () => showScreen('screen-classes');
   document.body.classList.toggle('muted', sound.muted);
   if (!(document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen)) $('#btn-fullscreen').hidden = true;
 

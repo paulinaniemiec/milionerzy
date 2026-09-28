@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Milionerzy – 8 klasa</title>
-  <meta name="description" content="Teleturniej Milionerzy – powtórzenie wiadomości przed egzaminem ósmoklasisty z matematyki.">
+  <title>Milionerzy – matematyka, klasy 7 i 8</title>
+  <meta name="description" content="Teleturniej Milionerzy – quizy matematyczne dla klas 7 i 8.">
   <meta name="theme-color" content="#050a24">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
@@ -47,8 +47,20 @@
   </header>
 
   <main>
-    <!-- EKRAN TYTUŁOWY -->
-    <section class="screen active" id="screen-title">
+    <!-- WYBÓR KLASY -->
+    <section class="screen active" id="screen-classes">
+      <div class="selection-wrap">
+        <svg viewBox="0 0 100 100" class="selection-emblem emblem-anim" aria-hidden="true"><use href="#emblem"/></svg>
+        <h1>Wybierz klasę</h1>
+        <div class="class-list" id="class-list">
+          <button class="class-card" type="button" data-grade="7"><strong>Klasa 7</strong><span>Procenty na rozgrzewkę · Procenty w życiu, zestaw 1 · Procenty w praktyce, zestaw 2</span></button>
+          <button class="class-card" type="button" data-grade="8"><strong>Klasa 8</strong><span>Diagramy i wykresy · Prawdopodobieństwo · Przygotowanie do egzaminu</span></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- WYBÓR ZESTAWU -->
+    <section class="screen" id="screen-title">
       <div class="title-wrap">
         <div class="title-emblem">
           <svg viewBox="0 0 100 100" class="emblem-anim"><use href="#emblem"/></svg>
@@ -56,7 +68,7 @@
         </div>
         <p class="set-title" id="set-title"></p>
         <form class="start-form" id="start-form" autocomplete="off">
-          <fieldset class="scenario-picker"><legend>Wybierz scenariusz</legend><div class="scenario-mobile"><label for="scenario-select" class="visually-hidden">Scenariusz gry</label><select id="scenario-select" aria-describedby="scenario-description"></select><p id="scenario-description"></p></div><div id="scenario-options"></div></fieldset>
+          <fieldset class="scenario-picker"><legend id="scenario-legend">Wybierz zestaw</legend><div class="scenario-mobile"><label for="scenario-select" class="visually-hidden">Scenariusz gry</label><select id="scenario-select" aria-describedby="scenario-description"></select><p id="scenario-description"></p></div><div id="scenario-options"></div></fieldset>
           <label class="hex hex-input">
             <span class="hex-in">
               <span class="visually-hidden">Imię gracza</span>
@@ -67,6 +79,8 @@
           <button class="btn" type="button" id="resume" hidden></button>
         </form>
         <div class="title-links">
+          <button class="link-btn" id="btn-change-grade">Zmień klasę</button>
+          <span>·</span>
           <button class="link-btn" id="btn-rules">Zasady gry</button>
           <span>·</span>
           <button class="link-btn" id="btn-review-title">Omówienie pytań</button>

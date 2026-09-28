@@ -1,7 +1,8 @@
-# Milionerzy – 8 klasa
+# Milionerzy – matematyka, klasy 7 i 8
 
-Teleturniej w stylu *Milionerów* do powtórki przed egzaminem ósmoklasisty z matematyki.
-6 scenariuszy (92 unikalne pytania łącznie), 12 pytań w jednej rozgrywce, drabinka 500 zł → 1 000 000 zł,
+Teleturniej w stylu *Milionerów* z wyborem klasy, a następnie zestawu pytań.
+Klasa 7 zawiera trzy zestawy o procentach, a klasa 8 trzy zestawy z diagramów, prawdopodobieństwa i przygotowania do egzaminu.
+Łącznie jest 6 scenariuszy (92 unikalne pytania), 12 pytań w jednej rozgrywce, drabinka 500 zł → 1 000 000 zł,
 progi gwarantowane (1000 zł i 40 000 zł), trzy koła ratunkowe i pełna oprawa dźwiękowa.
 
 Działa w przeglądarce na każdym urządzeniu: tablica interaktywna / rzutnik, laptop, tablet, telefon.
@@ -37,13 +38,15 @@ python3 -m http.server 8000
 ## Zmiana pytań
 
 Dotychczasowe 12 pytań znajduje się w [`js/questions.js`](js/questions.js).
-Nowe zestawy i katalog scenariuszy są w [`js/scenarios.js`](js/scenarios.js):
+Nowe zestawy i katalog scenariuszy są w [`js/scenarios.js`](js/scenarios.js). Każdy scenariusz ma pole
+`grade` z wartością `7` albo `8`. Przed dodaniem następnego zestawu zapytaj właścicielkę projektu, do której klasy go przypisać.
 
-- Diagramy i wykresy — 12 autorskich pytań, każde z osobnym diagramem SVG.
-- Prawdopodobieństwo — 12 autorskich pytań.
-- Procenty na rozgrzewkę — 16 wariantów z 12 zadań źródłowych (4 zadania uzupełniające z pozostałych screenów).
-- Procenty w życiu, zestaw 1 — 25 pytań (losowanie 12).
-- Procenty w praktyce, zestaw 2 — 19 pytań (losowanie 12).
+- Klasa 7: Procenty na rozgrzewkę — 16 wariantów z 12 zadań źródłowych (4 zadania uzupełniające z pozostałych screenów).
+- Klasa 7: Procenty w życiu, zestaw 1 — 25 pytań (losowanie 12).
+- Klasa 7: Procenty w praktyce, zestaw 2 — 19 pytań (losowanie 12).
+- Klasa 8: Diagramy i wykresy — 12 autorskich pytań, każde z osobnym diagramem SVG.
+- Klasa 8: Prawdopodobieństwo — 12 autorskich pytań.
+- Klasa 8: Przygotowanie do egzaminu — dotychczasowe 12 pytań.
 
 Każde pytanie ma trwałe `id`, treść `q`, cztery `answers`, indeks `correct` (0–3) i `explain`.
 Zadania ze screenów zostały dostosowane do formatu A–D; podpunkty rozdzielono,

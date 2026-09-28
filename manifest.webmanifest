@@ -1,7 +1,7 @@
 {
-  "name": "Milionerzy – 8 klasa",
+  "name": "Milionerzy – klasy 7 i 8",
   "short_name": "Milionerzy",
-  "description": "Teleturniej Milionerzy – powtórka przed egzaminem ósmoklasisty z matematyki.",
+  "description": "Teleturniej Milionerzy – quizy matematyczne dla klas 7 i 8.",
   "start_url": "./",
   "scope": "./",
   "display": "fullscreen",

@@ -1,5 +1,5 @@
 // Offline: gra działa nawet przy słabym szkolnym Wi-Fi po pierwszym wczytaniu.
-const CACHE = 'milionerzy-v1';
+const CACHE = 'milionerzy-v2';
 const CORE = [
   './', 'index.html', 'css/style.css', 'js/app.js', 'js/audio.js', 'js/fx.js', 'js/questions.js', 'js/scenarios.js', 'js/exam-sets.js',
   'images/final-hubert.jpg', 'images/hubert-face.jpg', 'manifest.webmanifest', 'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png',
