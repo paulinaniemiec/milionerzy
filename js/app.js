@@ -654,7 +654,7 @@ function showRules() {
   openModal(`
     <h2>Zasady gry</h2>
     <ul>
-      <li>Wybierz scenariusz na ekranie startowym. Jeśli zawiera więcej niż 12 pytań, gra losuje 12 różnych zadań. Wznowienie zachowuje zestaw i kolejność.</li>
+      <li>Wybierz scenariusz na ekranie startowym. Jeśli zawiera więcej niż 12 pytań, gra losuje 12 różnych zadań źródłowych — najwyżej jeden podpunkt z każdej tabeli lub wykresu. Kolejność jest losowa. Wznowienie zachowuje zestaw i kolejność.</li>
       <li><b>12 pytań</b> – od 500 zł do <b>1 000 000 zł</b>. Każde ma 4 odpowiedzi, tylko jedna jest poprawna.</li>
       <li>Po wybraniu odpowiedzi trzeba ją zatwierdzić – <i>„czy to ostateczna odpowiedź?”</i></li>
       <li><b>Progi gwarantowane:</b> ${money(LADDER[THRESHOLDS[0]])} i ${money(LADDER[THRESHOLDS[1]])}. Po błędnej odpowiedzi zabierasz kwotę z ostatniego osiągniętego progu.</li>
@@ -758,7 +758,7 @@ function selectScenario(id) {
 function bind() {
   $('#scenario-select').innerHTML = SCENARIOS.map(s => `<option value="${s.id}">${s.title}</option>`).join('');
   $('#scenario-select').addEventListener('change', e => selectScenario(e.target.value));
-  $('#scenario-options').innerHTML = SCENARIOS.map(s => `<button type="button" class="scenario-card" data-scenario="${s.id}" aria-pressed="${s.id === activeScenario.id}"><span><strong>${s.title}</strong><small>${s.description}</small><em>${s.questions.length} pytań w bazie · ${s.questions.length > 12 ? 'losujesz 12' : 'grasz wszystkie 12'}</em></span></button>`).join('');
+  $('#scenario-options').innerHTML = SCENARIOS.map(s => `<button type="button" class="scenario-card" data-scenario="${s.id}" aria-pressed="${s.id === activeScenario.id}"><span><strong>${s.title}</strong><small>${s.description}</small><em>${s.questions.length} pytań w bazie · ${s.questions.length > 12 ? 'losujesz 12' : '12 różnych zadań'}</em></span></button>`).join('');
   $('#scenario-options').addEventListener('click', e => {
     const card = e.target.closest('[data-scenario]');
     if (card) selectScenario(card.dataset.scenario);

@@ -1,7 +1,8 @@
 import { QUESTIONS as original } from './questions.js';
+import { diagramQuestions, probabilityQuestions } from './exam-sets.js';
 
 // Każdy wpis ma trwałe ID: zapis gry odtwarza dokładnie te same pytania.
-const q = (id, text, answers, correct, explain) => ({ id, q: text, answers, correct, explain });
+const q = (id, text, answers, correct, explain) => ({ id, sourceGroup: id.replace(/[a-z]+$/, ''), q: text, answers, correct, explain });
 const table = (headers, rows, caption) => `<div class="task-table-wrap"><table class="task-table"><caption>${caption}</caption><thead><tr>${headers.map(h => `<th scope="col">${h}</th>`).join('')}</tr></thead><tbody>${rows.map(row => `<tr>${row.map((v, i) => i === 0 ? `<th scope="row">${v}</th>` : `<td>${v}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
 const pair = (id, context, a, b, truth, explain) => q(id, `${context}<div class="task-statements">I. ${a}<br>II. ${b}</div>Wybierz ocenę zdań (P — prawda, F — fałsz).`, ['I: P, II: P', 'I: P, II: F', 'I: F, II: P', 'I: F, II: F'], ['PP','PF','FP','FF'].indexOf(truth), explain);
 const strip = '<div class="fraction-strip" role="img" aria-label="Prostokąt podzielony na 7 równych części: 5 zielonych i 2 żółte">' + Array.from({length:7}, (_,i)=>`<span class="${i<5?'green':'yellow'}"></span>`).join('')+'</div>';
@@ -78,17 +79,32 @@ const revision2 = [
 ];
 
 export const SCENARIOS = [
- {id:'original', title:'Powtórka przed egzaminem', description:'Liczby, algebra i geometria. Dotychczasowy zestaw.', questions:original.map((v,i)=>({...v,id:`original-${i+1}`}))},
- {id:'check', title:'Procenty na rozgrzewkę', description:'„Sprawdź, czy potrafisz”. Ułamki, podziały i ceny.', questions:check},
+ {id:'diagrams', title:'Diagramy i wykresy', description:'12 nowych zadań w stylu egzaminu ósmoklasisty. Każde z innym wykresem.', questions:diagramQuestions},
+ {id:'probability', title:'Prawdopodobieństwo', description:'12 nowych zadań w stylu egzaminu ósmoklasisty. Kostki, losy, monety i szanse.', questions:probabilityQuestions},
+ {id:'original', title:'Powtórka przed egzaminem', description:'Liczby, algebra i geometria. Dotychczasowy zestaw.', questions:original.map((v,i)=>({...v,id:`original-${i+1}`,sourceGroup:`original-${i+1}`}))},
+ {id:'check', title:'Procenty na rozgrzewkę', description:'„Sprawdź, czy potrafisz”. Ułamki, podziały i ceny.', questions:[...check, revision1.find(q=>q.id==='z1-1'), revision1.find(q=>q.id==='z1-7'), revision1.find(q=>q.id==='z1-14'), revision2.find(q=>q.id==='z2-11')]},
  {id:'revision-1', title:'Procenty w życiu · zestaw 1', description:'„Powtórzenie I”. Rabaty, frekwencja, proporcje i VAT.', questions:revision1},
  {id:'revision-2', title:'Procenty w praktyce · zestaw 2', description:'„Powtórzenie I”. Diagramy, stężenia, skala i podział kosztów.', questions:revision2},
 ];
-export function makeRound(scenario, random = Math.random) {
- const indices = scenario.questions.map((_,i)=>i);
- if (indices.length > 12) {
-   for (let i=indices.length-1;i>0;i--) {const j=Math.floor(random()*(i+1)); [indices[i],indices[j]]=[indices[j],indices[i]];}
+function shuffle(items, random) {
+ const result = [...items];
+ for (let i=result.length-1;i>0;i--) {
+   const j=Math.floor(random()*(i+1));
+   [result[i],result[j]]=[result[j],result[i]];
  }
- return indices.slice(0,12).sort((a,b)=>a-b).map(i=>scenario.questions[i]);
+ return result;
+}
+export function makeRound(scenario, random = Math.random) {
+ const groups = new Map();
+ for (const question of scenario.questions) {
+   const key = question.sourceGroup;
+   if (!groups.has(key)) groups.set(key, []);
+   groups.get(key).push(question);
+ }
+ if (groups.size < 12) throw new Error('Scenariusz wymaga 12 różnych zadań źródłowych');
+ // Jeden podpunkt z danego zadania. Nigdy drugi raz ten sam wykres/tabela.
+ const selected = shuffle([...groups.values()], random).slice(0,12);
+ return selected.map(variants => variants[Math.floor(random()*variants.length)]);
 }
 export function restoreRound(save) {
  const scenario=SCENARIOS.find(s=>s.id===(save.scenarioId || 'original'));
