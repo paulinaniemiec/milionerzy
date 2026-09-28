@@ -1,6 +1,6 @@
 // Zapisywanie wyników do arkusza Google (przez Apps Script – kod w apps-script/Code.gs).
 // Pusty adres = zapisywanie wyłączone. Adres wkleja się po wdrożeniu skryptu (patrz README).
-const RESULTS_URL = '';
+const RESULTS_URL = 'https://script.google.com/macros/s/AKfycbzHFJukSBMvo8bwhVjSipE8kPS6dOOBa3nABS7zlDcu3-DoyYqT9o4BlV8g6ThVxaKk2w/exec';
 
 // Bez internetu wyniki czekają w kolejce i wysyłają się przy następnej okazji.
 const QUEUE_KEY = 'mil-results-queue';
