@@ -40,7 +40,7 @@ function toRow(r) {
   return [
     date(r.time),
     text(r.name, 24),
-    [7, 8].includes(r.grade) ? r.grade : '',
+    Number.isInteger(r.grade) && r.grade >= 1 && r.grade <= 8 ? r.grade : '',
     text(r.scenario, 80),
     OUTCOMES[r.outcome],
     int(r.prize, 0, 1000000),

@@ -1,8 +1,8 @@
-# Milionerzy – matematyka, klasy 7 i 8
+# Milionerzy – matematyka, klasy 5, 7 i 8
 
 Teleturniej w stylu *Milionerów* z wyborem klasy, a następnie zestawu pytań.
-Klasa 7 zawiera trzy zestawy o procentach, a klasa 8 trzy zestawy z diagramów, prawdopodobieństwa i przygotowania do egzaminu.
-Łącznie jest 6 scenariuszy (92 unikalne pytania), 12 pytań w jednej rozgrywce, drabinka 500 zł → 1 000 000 zł,
+Klasa 5 ma zestaw o podzielności i wielokrotnościach, klasa 7 trzy zestawy o procentach, a klasa 8 trzy zestawy z diagramów, prawdopodobieństwa i przygotowania do egzaminu.
+Łącznie jest 7 scenariuszy (122 unikalne pytania), 12 pytań w jednej rozgrywce, drabinka 500 zł → 1 000 000 zł,
 progi gwarantowane (1000 zł i 40 000 zł), trzy koła ratunkowe i pełna oprawa dźwiękowa.
 
 Działa w przeglądarce na każdym urządzeniu: tablica interaktywna / rzutnik, laptop, tablet, telefon.
@@ -60,8 +60,9 @@ Po zmianie `Code.gs` trzeba zrobić **Wdróż → Zarządzaj wdrożeniami → Ed
 
 Dotychczasowe 12 pytań znajduje się w [`js/questions.js`](js/questions.js).
 Nowe zestawy i katalog scenariuszy są w [`js/scenarios.js`](js/scenarios.js). Każdy scenariusz ma pole
-`grade` z wartością `7` albo `8`. Przed dodaniem następnego zestawu zapytaj właścicielkę projektu, do której klasy go przypisać.
+`grade` z wartością `5`, `7` albo `8` (lista dozwolonych klas: `GRADES` w `js/app.js`). Przed dodaniem następnego zestawu zapytaj właścicielkę projektu, do której klasy go przypisać.
 
+- Klasa 5: Podzielność i wielokrotności — 30 autorskich pytań (losowanie 12), plik `js/grade5-sets.js`.
 - Klasa 7: Procenty na rozgrzewkę — 16 wariantów z 12 zadań źródłowych (4 zadania uzupełniające z pozostałych screenów).
 - Klasa 7: Procenty w życiu, zestaw 1 — 25 pytań (losowanie 12).
 - Klasa 7: Procenty w praktyce, zestaw 2 — 19 pytań (losowanie 12).

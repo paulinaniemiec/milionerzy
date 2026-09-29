@@ -1,7 +1,7 @@
 {
-  "name": "Milionerzy – klasy 7 i 8",
+  "name": "Milionerzy – klasy 5, 7 i 8",
   "short_name": "Milionerzy",
-  "description": "Teleturniej Milionerzy – quizy matematyczne dla klas 7 i 8.",
+  "description": "Teleturniej Milionerzy – quizy matematyczne dla klas 5, 7 i 8.",
   "start_url": "./",
   "scope": "./",
   "display": "fullscreen",

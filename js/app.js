@@ -7,8 +7,9 @@ import { reportResult } from './results.js';
 let activeScenario = SCENARIOS[0];
 let QUESTIONS = activeScenario.questions.slice(0, 12);
 let selectedGrade = null;
-if (SCENARIOS.some(s => ![7, 8].includes(s.grade))) {
-  throw new Error('Każdy scenariusz musi mieć przypisaną klasę 7 albo 8.');
+const GRADES = [5, 7, 8];
+if (SCENARIOS.some(s => !GRADES.includes(s.grade))) {
+  throw new Error(`Każdy scenariusz musi mieć przypisaną klasę: ${GRADES.join(', ')}.`);
 }
 
 const $ = (s, r = document) => r.querySelector(s);
@@ -394,7 +395,7 @@ function finish() {
   if (S.outcome === 'won') {
     document.body.classList.add('million');
     kicker = who ? `${who} – Milion!` : 'Milion złotych!';
-    msg = 'Wszystkie 12 pytań bez jednego błędu. Egzamin ósmoklasisty? Pestka! 🏆';
+    msg = `Wszystkie 12 pytań bez jednego błędu. ${activeScenario.grade === 8 ? 'Egzamin ósmoklasisty' : 'Matematyka'}? Pestka! 🏆`;
   } else if (S.outcome === 'walk') {
     kicker = who ? `${who} zabiera` : 'Wygrana';
     msg = `Poprawne odpowiedzi: ${S.correctCount} z ${LADDER.length}. Zajrzyj do omówienia i spróbuj dojść do miliona!`;
@@ -808,7 +809,7 @@ function selectScenario(id) {
 }
 
 function chooseGrade(grade) {
-  if (![7, 8].includes(grade)) return;
+  if (!GRADES.includes(grade)) return;
   selectedGrade = grade;
   $('#scenario-legend').textContent = `Wybierz zestaw · klasa ${grade}`;
   const scenarios = SCENARIOS.filter(s => s.grade === grade);
