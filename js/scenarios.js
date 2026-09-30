@@ -1,6 +1,7 @@
 import { QUESTIONS as original } from './questions.js';
 import { diagramQuestions, probabilityQuestions } from './exam-sets.js';
 import { divisibilityQuestions } from './grade5-sets.js';
+import { percentExamQuestions } from './percent-exam-sets.js';
 
 // Każdy wpis ma trwałe ID: zapis gry odtwarza dokładnie te same pytania.
 const q = (id, text, answers, correct, explain) => ({ id, sourceGroup: id.replace(/[a-z]+$/, ''), q: text, answers, correct, explain });
@@ -85,9 +86,12 @@ export const SCENARIOS = [
  {id:'diagrams', grade:8, title:'Diagramy i wykresy', description:'Nowe zadania w stylu egzaminu ósmoklasisty. Każde z innym wykresem.', questions:diagramQuestions},
  {id:'probability', grade:8, title:'Prawdopodobieństwo', description:'Nowe zadania w stylu egzaminu ósmoklasisty. Kostki, losy, monety i szanse.', questions:probabilityQuestions},
  {id:'original', grade:8, title:'Przygotowanie do egzaminu', description:'Liczby, algebra i geometria. Dotychczasowy zestaw.', questions:original.map((v,i)=>({...v,id:`original-${i+1}`,sourceGroup:`original-${i+1}`}))},
+ // Ten sam zestaw w klasie 7 i 8: osobne wpisy, żeby wynik zapisywał się z właściwą klasą.
+ {id:'percent-exam-8', grade:8, title:'Procenty — zadania egzaminacyjne', description:'Zadania z egzaminów 2011–2026 i materiałów CKE. Rabaty, podwyżki, VAT i podatki.', questions:percentExamQuestions},
  {id:'check', grade:7, title:'Procenty na rozgrzewkę', description:'„Sprawdź, czy potrafisz”. Ułamki, podziały i ceny.', questions:[...check, revision1.find(q=>q.id==='z1-1'), revision1.find(q=>q.id==='z1-7'), revision1.find(q=>q.id==='z1-14'), revision2.find(q=>q.id==='z2-11')]},
  {id:'revision-1', grade:7, title:'Procenty w życiu, zestaw 1', description:'„Powtórzenie I”. Rabaty, frekwencja, proporcje i VAT.', questions:revision1},
  {id:'revision-2', grade:7, title:'Procenty w praktyce, zestaw 2', description:'„Powtórzenie I”. Diagramy, stężenia, skala i podział kosztów.', questions:revision2},
+ {id:'percent-exam-7', grade:7, title:'Procenty — zadania egzaminacyjne', description:'Zadania z egzaminów 2011–2026 i materiałów CKE. Rabaty, podwyżki, VAT i podatki.', questions:percentExamQuestions},
 ];
 function shuffle(items, random) {
  const result = [...items];

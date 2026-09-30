@@ -2,14 +2,14 @@ import assert from 'node:assert/strict';
 import {SCENARIOS, makeRound, restoreRound} from '../js/scenarios.js';
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
- 'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2',
+ 'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Procenty — zadania egzaminacyjne',
 ]);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
- 'Diagramy i wykresy', 'Prawdopodobieństwo', 'Przygotowanie do egzaminu',
+ 'Diagramy i wykresy', 'Prawdopodobieństwo', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne',
 ]);
-assert.equal(SCENARIOS.length,7);
+assert.equal(SCENARIOS.length,9);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,122);
+assert.equal(new Set(all.map(q=>q.id)).size,154);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -39,7 +39,7 @@ assert.equal(10620/9*4,4720);
 assert.equal(37+.30*120+.44*125,128);
 assert.equal(Math.round(129.60/1.08*1.23*100),14760);
 assert(10/160>15/250);
-console.log('PASS: 6000 rounds, no repeated source exercise/table/chart, all questions reachable, exact save restoration, arithmetic');
+console.log(`PASS: ${SCENARIOS.length*1000} rounds, no repeated source exercise/table/chart, all questions reachable, exact save restoration, arithmetic`);
 
 // Independent solutions for every new question, including enumeration of sample spaces.
 const range=(a,b)=>Array.from({length:b-a+1},(_,i)=>a+i);
@@ -60,3 +60,37 @@ const numbers=range(1,3).flatMap(a=>range(1,3).filter(b=>a!==b).map(b=>10*a+b));
 assert.equal(numbers.filter(n=>n%2===0).length/numbers.length,1/3);assert.equal(selected('chance-12'),'1/3');
 assert.equal(SCENARIOS.find(s=>s.id==='diagrams').questions.filter(q=>q.q.includes('<svg')).length,12);
 console.log('PASS: all 24 new answer keys checked with independent calculations');
+
+// Procenty — zadania egzaminacyjne: ten sam zestaw w klasie 7 i 8, każdy klucz liczony niezależnie.
+const exam7=SCENARIOS.find(s=>s.id==='percent-exam-7'), exam8=SCENARIOS.find(s=>s.id==='percent-exam-8');
+assert.equal(exam7.grade,7);assert.equal(exam8.grade,8);assert.equal(exam7.questions,exam8.questions);
+assert.equal(exam7.questions.length,32);assert.equal(new Set(exam7.questions.map(q=>q.sourceGroup)).size,29);
+const r2=x=>Math.round(x*100)/100, pct=x=>`${String(r2(x*100)).replace('.',',')}%`, zl=x=>`${r2(x).toFixed(2).replace('.',',')} zł`;
+const truth=(a,b)=>`I: ${a?'P':'F'}, II: ${b?'P':'F'}`;
+const raisins=.15*320, second=.7*5000, third=.6*second, maria=(43740-3*3780)/9;
+const examAnswers={
+ 'pe-1':'0,6x + 0,8y',
+ 'pe-2a':`${80-raisins} g`, 'pe-2b':pct(80/(320+80)),
+ 'pe-3':`${r2(50/.4)}`, 'pe-4':`${r2(1500/.8)} zł`,
+ 'pe-5':(9.60*.8/20<9.60/24 ? 'Tak, bo w promocji II 1 dag czekolady kosztuje mniej niż w promocji I' : ''),
+ 'pe-6a':'0,18 · 84 500 − 556,02', 'pe-6b':'14 839,02 + 0,32 · (97 300 − 85 528)',
+ 'pe-7':truth(r2((2400+150)/.85)===3000, 2400/3000===.85),
+ 'pe-8':zl(.85*45),
+ 'pe-9a':`${r2(4/(.44+.72-1))}`, 'pe-9b':truth(r2(.44+.72-1)===.16, r2(4/.16)===25),
+ 'pe-10':(2/3<.7&&2/3<.75 ? 'najniższa w sklepie Alfa' : ''),
+ 'pe-11':truth(r2(1.2*180)===r2(1.8*120), r2(.2*36)===r2(.4*18)),
+ 'pe-12':`wzrosła o ${pct((280-56)/56)}`,
+ 'pe-13':`${r2(40*3-40*.8)} zł`,
+ 'pe-14':truth(third===1400, r2(1-third/5000)===.7),
+ 'pe-15':`${r2(.65*240)} zł`, 'pe-16':`${r2(100-288/450*100)}`,
+ 'pe-17':truth(r2((2.70-2.50)/2.50)===.08, r2(22*1.05)===24.10),
+ 'pe-18':zl(49/.7), 'pe-19':`${r2(.4*175-15)} cm`,
+ 'pe-20':pct((54-.9*30-24)/24), 'pe-21':pct((150-60)/60), 'pe-22':`${r2(300/(.02*75))}`, 'pe-23':pct((4*1.12-4)/4),
+ 'pe-24':`o ${pct(1-.8*1.2)}`, 'pe-25':`${(4+8)/.8-(4+8)}`,
+ 'pe-26':`o ${pct((3780-maria)/maria)}`, 'pe-27':`${r2(1.2*(3*3+2*8+5*3))} zł`,
+ 'pe-28':`${r2(4/(.5625-(1-.5625)))}`,
+ 'pe-29':(1-.75*.8<.45 ? 'Od razu o 45%' : ''),
+};
+assert.deepEqual(Object.keys(examAnswers),exam7.questions.map(q=>q.id));
+for(const [id,answer] of Object.entries(examAnswers)) assert.equal(selected(id),answer,id);
+console.log('PASS: percent exam set in grades 7 and 8, all 32 answer keys checked');

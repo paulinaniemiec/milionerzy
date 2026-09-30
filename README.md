@@ -1,8 +1,8 @@
 # Milionerzy – matematyka, klasy 5, 7 i 8
 
 Teleturniej w stylu *Milionerów* z wyborem klasy, a następnie zestawu pytań.
-Klasa 5 ma zestaw o podzielności i wielokrotnościach, klasa 7 trzy zestawy o procentach, a klasa 8 trzy zestawy z diagramów, prawdopodobieństwa i przygotowania do egzaminu.
-Łącznie jest 7 scenariuszy (122 unikalne pytania), 12 pytań w jednej rozgrywce, drabinka 500 zł → 1 000 000 zł,
+Klasa 5 ma zestaw o podzielności i wielokrotnościach, klasa 7 cztery zestawy o procentach, a klasa 8 cztery zestawy: diagramy, prawdopodobieństwo, przygotowanie do egzaminu i procenty.
+Zestaw „Procenty — zadania egzaminacyjne” jest wspólny dla klas 7 i 8. Łącznie jest 9 scenariuszy (154 unikalne pytania), 12 pytań w jednej rozgrywce, drabinka 500 zł → 1 000 000 zł,
 progi gwarantowane (1000 zł i 40 000 zł), trzy koła ratunkowe i pełna oprawa dźwiękowa.
 
 Działa w przeglądarce na każdym urządzeniu: tablica interaktywna / rzutnik, laptop, tablet, telefon.
@@ -66,6 +66,7 @@ Nowe zestawy i katalog scenariuszy są w [`js/scenarios.js`](js/scenarios.js). K
 - Klasa 7: Procenty na rozgrzewkę — 16 wariantów z 12 zadań źródłowych (4 zadania uzupełniające z pozostałych screenów).
 - Klasa 7: Procenty w życiu, zestaw 1 — 25 pytań (losowanie 12).
 - Klasa 7: Procenty w praktyce, zestaw 2 — 19 pytań (losowanie 12).
+- Klasy 7 i 8: Procenty — zadania egzaminacyjne — 32 pytania z 29 zadań (losowanie 12), plik `js/percent-exam-sets.js`. Źródło: [zadania egzaminacyjne z procentów](https://matematykaszkolna.pl/strona/5538.html) (egzaminy 2011–2026 i materiały CKE); zadania otwarte przerobiono na format A–D. W `js/scenarios.js` są dwa wpisy (`percent-exam-7` i `percent-exam-8`) z tymi samymi pytaniami, żeby wynik zapisywał się z właściwą klasą.
 - Klasa 8: Diagramy i wykresy — 12 autorskich pytań, każde z osobnym diagramem SVG.
 - Klasa 8: Prawdopodobieństwo — 12 autorskich pytań.
 - Klasa 8: Przygotowanie do egzaminu — dotychczasowe 12 pytań.
