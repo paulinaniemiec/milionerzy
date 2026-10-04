@@ -77,12 +77,13 @@ export const powerQuestions = [
  q('pt-35','Którą z liczb można zapisać jako <b>kwadrat liczby naturalnej</b>?', ['24','48','49','50'],2,`<b>49</b> = 7 · 7 = ${p(7,2)}. Pozostałe leżą między kwadratami: 16, 25, 36, 49, 64.`),
 ];
 
-// Klasa 5: system rzymski — odczytywanie, zapisywanie, daty z obrazów, działania, zamazane liczby.
+// Klasa 5: system rzymski — odczytywanie, zapisywanie, daty z obrazów i budowli, działania, zamazane liczby.
 // Podpunkty tego samego zadania (ten sam obraz) mają wspólną grupę: rz-20a i rz-20b to jedno zadanie.
 const qv = (id, ...rest) => ({...q(id, ...rest), sourceGroup: id.replace(/[a-z]$/, '')});
 const R = (s) => `<span class="roman">${s}</span>`;
 const Rs = (list) => list.map(R);
-const painting = (file, title) => `<figure class="task-photo"><img src="images/roman/${file}" alt="Jan Matejko, „${title}”" loading="lazy"><figcaption>Jan Matejko, „${title}”</figcaption></figure>`;
+const photo = (file, title, credit) => `<figure class="task-photo"><img src="images/roman/${file}" alt="${title}" loading="lazy"><figcaption>${title}${credit ? ` · ${credit}` : ''}</figcaption></figure>`;
+const matejko = (file, title) => photo(file, `Jan Matejko, „${title}”`);
 const blot = '<span class="blot" role="img" aria-label="zamazana cyfra"></span>';
 const value = (s) => `Jaką liczbę oznacza zapis ${R(`<b>${s}</b>`)}?`;
 const write = (n) => `Jak zapisać liczbę <b>${n}</b> cyframi rzymskimi?`;
@@ -107,15 +108,15 @@ export const romanQuestions = [
  q('rz-16',write(400), Rs(['CCCC','DC','CD','XD']),2,`400 = 500 − 100, czyli <b>${R('CD')}</b>. DC to 600.`),
  q('rz-17',write(1972), Rs(['MCMLXXII','MDCCCCLXXII','MCMXXII','MCMLXII']),0,`1000 + 900 + 50 + 20 + 2 = M + CM + L + XX + II = <b>${R('MCMLXXII')}</b>.`),
  q('rz-18',write(2999), Rs(['MMIM','MMCMXCIX','MMCMIC','MMDCDXCIX']),1,`2000 + 900 + 90 + 9 = MM + CM + XC + IX = <b>${R('MMCMXCIX')}</b>. Nie wolno skracać do IM ani IC.`),
- qv('rz-19a',`${painting('chrzest.jpg','Zaprowadzenie chrześcijaństwa')}Chrzest Polski odbył się w roku ${R('<b>CMLXVI</b>')}. Który to rok?`, ['1066','966','946','964'],1,`CM = 900, LX = 60, VI = 6. Razem <b>966</b>.`),
- qv('rz-19b',`${painting('chrzest.jpg','Zaprowadzenie chrześcijaństwa')}Chrzest Polski odbył się w roku ${R('CMLXVI')}. W którym wieku?`, Rs(['IX','X','XI','VI']),1,`${R('CMLXVI')} = 966. Wiek X to lata 901–1000, więc chrzest był w <b>${R('X')} wieku</b>.`),
- qv('rz-20a',`${painting('unia.jpg','Unia lubelska')}Unię lubelską zawarto w roku ${R('<b>MDLXIX</b>')}. Który to rok?`, ['1569','1549','1571','1669'],0,`M = 1000, D = 500, LX = 60, IX = 9. Razem <b>1569</b>.`),
- qv('rz-20b',`${painting('unia.jpg','Unia lubelska')}Unię lubelską zawarto w roku ${R('MDLXIX')}. W którym wieku?`, Rs(['XV','XVI','XVII','XIV']),1,`${R('MDLXIX')} = 1569. Wiek XVI to lata 1501–1600, więc <b>${R('XVI')} wiek</b>.`),
- qv('rz-21a',`${painting('konstytucja.jpg','Konstytucja 3 Maja 1791 roku')}Konstytucję 3 maja uchwalono w roku ${R('<b>MDCCXCI</b>')}. Który to rok?`, ['1791','1891','1771','1741'],0,`M = 1000, D = 500, CC = 200, XC = 90, I = 1. Razem <b>1791</b>.`),
- qv('rz-21b',`${painting('konstytucja.jpg','Konstytucja 3 Maja 1791 roku')}Konstytucję 3 maja uchwalono w roku ${R('MDCCXCI')}. W którym wieku?`, Rs(['XVII','XVIII','XIX','VIII']),1,`${R('MDCCXCI')} = 1791. Wiek XVIII to lata 1701–1800, więc <b>${R('XVIII')} wiek</b>.`),
- qv('rz-22a',`${painting('grunwald.jpg','Bitwa pod Grunwaldem')}Bitwa pod Grunwaldem odbyła się w roku ${R('<b>MCDX</b>')}. Który to rok?`, ['1610','1410','1390','1460'],1,`M = 1000, CD = 400, X = 10. Razem <b>1410</b>.`),
- qv('rz-22b',`${painting('grunwald.jpg','Bitwa pod Grunwaldem')}Jan Matejko ukończył ten obraz w roku ${R('<b>MDCCCLXXVIII</b>')}. Który to rok?`, ['1878','1828','1873','1898'],0,`M = 1000, D = 500, CCC = 300, L = 50, XX = 20, V = 5, III = 3. Razem <b>1878</b>.`),
- q('rz-23',`Polska odzyskała niepodległość w roku ${R('<b>MCMXVIII</b>')}. Który to rok?`, ['1918','1928','1898','2018'],0,`M = 1000, CM = 900, X = 10, VIII = 8. Razem <b>1918</b>.`),
+ qv('rz-19a',`${matejko('hold-pruski.jpg','Hołd pruski')}Hołd pruski złożono w Krakowie w roku ${R('<b>MDXXV</b>')}. Który to rok?`, ['1525','1575','1515','1625'],0,`M = 1000, D = 500, XX = 20, V = 5. Razem <b>1525</b>.`),
+ qv('rz-19b',`${matejko('hold-pruski.jpg','Hołd pruski')}Hołd pruski złożono w roku ${R('MDXXV')}. W którym wieku?`, Rs(['XV','XVI','XVII','XIV']),1,`${R('MDXXV')} = 1525. Wiek XVI to lata 1501–1600, więc <b>${R('XVI')} wiek</b>.`),
+ qv('rz-20a',`${matejko('sobieski.jpg','Sobieski pod Wiedniem')}Król Jan III Sobieski pokonał Turków pod Wiedniem w roku ${R('<b>MDCLXXXIII</b>')}. Który to rok?`, ['1683','1633','1688','1483'],0,`M = 1000, D = 500, C = 100, LXXX = 80, III = 3. Razem <b>1683</b>.`),
+ qv('rz-20b',`${matejko('sobieski.jpg','Sobieski pod Wiedniem')}Bitwa pod Wiedniem odbyła się w roku ${R('MDCLXXXIII')}. W którym wieku?`, Rs(['XVI','XVII','XVIII','VII']),1,`${R('MDCLXXXIII')} = 1683. Wiek XVII to lata 1601–1700, więc <b>${R('XVII')} wiek</b>.`),
+ qv('rz-21a',`${photo('kolumna.jpg','Kolumna Zygmunta w Warszawie','Fot. Adrian Grycuk, CC BY-SA 3.0 PL')}Kolumnę Zygmunta w Warszawie postawiono w roku ${R('<b>MDCXLIV</b>')}. Który to rok?`, ['1644','1664','1646','1444'],0,`M = 1000, D = 500, C = 100, XL = 40, IV = 4. Razem <b>1644</b>.`),
+ qv('rz-21b',`${photo('kolumna.jpg','Kolumna Zygmunta w Warszawie','Fot. Adrian Grycuk, CC BY-SA 3.0 PL')}Kolumnę Zygmunta postawiono w roku ${R('MDCXLIV')}. W którym wieku?`, Rs(['XVI','XVII','XVIII','XIV']),1,`${R('MDCXLIV')} = 1644. Wiek XVII to lata 1601–1700, więc <b>${R('XVII')} wiek</b>.`),
+ qv('rz-22a',`${matejko('grunwald.jpg','Bitwa pod Grunwaldem')}Bitwa pod Grunwaldem odbyła się w roku ${R('<b>MCDX</b>')}. Który to rok?`, ['1610','1410','1390','1460'],1,`M = 1000, CD = 400, X = 10. Razem <b>1410</b>.`),
+ qv('rz-22b',`${matejko('grunwald.jpg','Bitwa pod Grunwaldem')}Jan Matejko ukończył ten obraz w roku ${R('<b>MDCCCLXXVIII</b>')}. Który to rok?`, ['1878','1828','1873','1898'],0,`M = 1000, D = 500, CCC = 300, L = 50, XX = 20, V = 5, III = 3. Razem <b>1878</b>.`),
+ q('rz-23',`${photo('pkin.jpg','Pałac Kultury i Nauki w Warszawie','Fot. Kallerna, CC BY-SA 4.0')}Pałac Kultury i Nauki w Warszawie oddano do użytku w roku ${R('<b>MCMLV</b>')}. Który to rok?`, ['1955','1945','1965','1555'],0,`M = 1000, CM = 900, L = 50, V = 5. Razem <b>1955</b>.`),
  q('rz-24',`Mikołaj Kopernik urodził się w roku ${R('<b>MCDLXXIII</b>')}. Który to rok?`, ['1473','1673','1523','1453'],0,`M = 1000, CD = 400, L = 50, XX = 20, III = 3. Razem <b>1473</b>.`),
  q('rz-25',`Igrzyska w Paryżu w 2024 roku to Igrzyska ${R('<b>XXXIII</b>')} Olimpiady. Które to igrzyska?`, ['23.','33.','38.','31.'],1,`XXX = 30, III = 3. To <b>33.</b> igrzyska.`),
  q('rz-26',`Na tarczy zegara z cyframi rzymskimi wskazówka godzinowa pokazuje ${R('X')}, a minutowa ${R('XII')}. Która jest godzina?`, ['12:10','10:00','10:12','2:00'],1,`Minutowa na XII oznacza pełną godzinę, a godzinowa na X — dziesiątą. Jest <b>10:00</b>.`),

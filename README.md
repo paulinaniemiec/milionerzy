@@ -65,7 +65,7 @@ Nowe zestawy i katalog scenariuszy są w [`js/scenarios.js`](js/scenarios.js). K
 - Klasa 5: Podzielność i wielokrotności — 30 autorskich pytań (losowanie 12), plik `js/grade5-sets.js`.
 - Klasa 5: Liczby pierwsze i złożone — 34 pytania z 29 zadań (losowanie 12): dzielniki, liczby pierwsze, rozkład na czynniki pierwsze. Plik `js/grade5-sets.js`.
 - Klasa 5: Potęgowanie — 35 pytań (losowanie 12): iloczyn ↔ potęga, obliczanie, odczytywanie („do kwadratu”, „do sześcianu”), kolejność działań.
-- Klasa 5: Cyfry rzymskie — 40 pytań z 36 zadań (losowanie 12): odczytywanie i zapisywanie liczb, daty na obrazach, działania, zamazane liczby. Obrazy Jana Matejki (domena publiczna, Wikimedia Commons) są w `images/roman/`.
+- Klasa 5: Cyfry rzymskie — 40 pytań z 36 zadań (losowanie 12): odczytywanie i zapisywanie liczb, daty z obrazów i budowli, działania, zamazane liczby. Ilustracje w `images/roman/` pochodzą z Wikimedia Commons: obrazy Jana Matejki (domena publiczna), zdjęcie Kolumny Zygmunta (Adrian Grycuk, CC BY-SA 3.0 PL) i Pałacu Kultury (Kallerna, CC BY-SA 4.0) — autorzy są podpisani pod zdjęciami w grze.
 - Klasa 7: Procenty na rozgrzewkę — 16 wariantów z 12 zadań źródłowych (4 zadania uzupełniające z pozostałych screenów).
 - Klasa 7: Procenty w życiu, zestaw 1 — 25 pytań (losowanie 12).
 - Klasa 7: Procenty w praktyce, zestaw 2 — 19 pytań (losowanie 12).
