@@ -1,4 +1,5 @@
 // Klasa 4: zegary, kalendarz, cyfry rzymskie (do XXXIX), jednostki długości — „wzdłuż i wszerz”.
+import { line } from './axis-sets.js';
 // Podpunkty jednego zadania mają wspólną grupę: k4-1a i k4-1b to jedno zadanie.
 const q = (id, text, answers, correct, explain) => ({id, sourceGroup:id.replace(/[a-z]$/, ''), q:text, answers, correct, explain});
 const UNITS = ['mm', 'cm', 'm', 'km'];
@@ -82,4 +83,57 @@ export const grade4Questions = [
  q('k4-28b','<b>250 cm</b> to:', ['2 m 5 cm','2 m 50 cm','25 m','25 m 0 cm'],1,'250 cm = 200 cm + 50 cm = <b>2 m 50 cm</b>.'),
  q('k4-29','Ola ma <b>1 m 32 cm</b> wzrostu, a jej brat <b>1 m 47 cm</b>. O ile brat jest wyższy?', ['15 cm','25 cm','115 cm','1 m 15 cm'],0,'Metry są takie same, porównujemy centymetry: 47 − 32 = <b>15 cm</b>.'),
  q('k4-30','Który pasek jest <b>najdłuższy</b>?', ['1 m','95 cm','1200 mm','1 m 15 cm'],2,'Zamieniamy na centymetry: 100 cm, 95 cm, 1200 mm = 120 cm, 115 cm. Najdłuższy jest pasek <b>1200 mm</b>.'),
+];
+
+// Klasa 4: oś liczbowa — tylko liczby naturalne. Oś rysuje ta sama funkcja co w klasie 8 (kreski 0 … seg).
+// Część osi ma podpisy w środku albo nie przy zerze: trzeba ustalić, o ile rosną liczby z kreski na kreskę.
+const ax = (svg, caption = '') => `<figure class="exam-chart axis-chart">${caption ? `<figcaption>${caption}</figcaption>` : ''}${svg}</figure>`;
+const which = (L) => `Jaką liczbę oznaczono na osi literą <i>${L}</i>?`;
+const STEP = 'Najpierw ustal, o ile rosną liczby z kreski na kreskę.';
+const n1 = ax(line(0, 10, 10, {labels: [0, 1], points: {A: 3, B: 6, C: 8}}));
+const n2 = ax(line(0, 50, 10, {labels: [0, 1], points: {A: 2, B: 5, C: 9}}));
+const n3 = ax(line(30, 60, 10, {labels: [0, 1], points: {A: 4, B: 7, C: 9}}));
+const n4 = ax(line(100, 300, 10, {labels: [0, 1, 5], points: {A: 3, B: 8, C: 9}}));
+const n5 = ax(line(50, 72, 11, {labels: [7, 8], points: {A: 2, B: 5, C: 10}}));
+const n6 = ax(line(0, 500, 10, {labels: [6, 7], points: {A: 1, B: 4, C: 9}}));
+const n7 = ax(line(0, 50, 10, {labels: [0, 3], points: {A: 2, B: 7, C: 10}}));
+const n8 = ax(line(0, 2000, 10, {labels: [0, 2], points: {A: 1, B: 5, C: 8}}));
+const n9 = ax(line(0, 2500, 10, {labels: [0, 4], points: {A: 2, B: 6, C: 9}}));
+const n10 = ax(line(0, 20, 10, {labels: [0, 3], points: {A: 4, B: 5, C: 7}}));
+const kg = ax(line(0, 40, 8, {labels: [0, 2, 4, 6, 8], points: {K: 1, P: 5, O: 8}}), 'Masy zwierząt w kilogramach: <i>K</i> — kot, <i>P</i> — pies, <i>O</i> — owca');
+
+export const axisQuestions4 = [
+ q('o4-1a',`${n1}${which('A')}`, ['3','4','6','30'],0,'Z kreski na kreskę liczby rosną o 1 (0, 1, 2, …). Punkt <i>A</i> leży 3 kreski za zerem: <b>3</b>.'),
+ q('o4-1b',`${n1}${which('C')}`, ['7','8','9','10'],1,'Liczby rosną o 1. Odliczamy od zera 8 kresek: <b>8</b>.'),
+ q('o4-2a',`${n2}${which('A')}`, ['2','10','15','20'],1,`${STEP} Od 0 do 5 jest jeden odcinek, więc liczby rosną o 5: 0, 5, <b>10</b>.`),
+ q('o4-2b',`${n2}${which('B')}`, ['5','20','25','30'],2,'Liczby rosną o 5: 0, 5, 10, 15, 20, <b>25</b>.'),
+ q('o4-2c',`${n2}${which('C')}`, ['9','40','45','50'],2,'Punkt <i>C</i> leży 9 kresek za zerem, a każda kreska to 5: 9 · 5 = <b>45</b>. Wynik 9 to sama liczba kresek.'),
+ q('o4-3a',`${n3}${which('A')}`, ['34','40','42','43'],2,`${STEP} Od 30 do 33 liczby rosną o 3. Punkt <i>A</i> leży 4 kreski za 30: 30 + 4 · 3 = <b>42</b>.`),
+ q('o4-3b',`${n3}${which('C')}`, ['39','54','57','60'],2,'Liczby rosną o 3: 30, 33, 36, 39, 42, 45, 48, 51, 54, <b>57</b>.'),
+ q('o4-4a',`${n4}${which('A')}`, ['130','150','160','180'],2,`${STEP} Od 100 do 120 liczby rosną o 20. Punkt <i>A</i>: 100, 120, 140, <b>160</b>.`),
+ q('o4-4b',`${n4}${which('B')}`, ['180','240','260','280'],2,'Od 200 liczymy dalej co 20: 220, 240, <b>260</b>.'),
+ q('o4-5a',`${n5}${which('A')}`, ['54','56','59','62'],0,`${STEP} Od 64 do 66 liczby rosną o 2. Cofamy się od 64 co 2: 62, 60, 58, 56, <b>54</b>. Wynik 59 to cofanie się co 1.`),
+ q('o4-5b',`${n5}${which('C')}`, ['67','68','70','72'],2,'Od 66 liczymy dalej co 2: 68, <b>70</b>.'),
+ q('o4-6a',`${n6}${which('A')}`, ['5','50','100','250'],1,`${STEP} Od 300 do 350 liczby rosną o 50. Cofamy się od 300: 250, 200, 150, 100, <b>50</b>.`),
+ q('o4-6b',`${n6}${which('C')}`, ['353','400','450','500'],2,'Od 350 liczymy dalej co 50: 400, <b>450</b>.'),
+ q('o4-7a',`${n7}${which('A')}`, ['2','8','10','12'],2,`${STEP} Od 0 do 15 są 3 odcinki, więc każdy to 15 : 3 = 5. Punkt <i>A</i>: 0, 5, <b>10</b>.`),
+ q('o4-7b',`${n7}${which('B')}`, ['21','30','35','45'],2,'Każdy odcinek to 5. Punkt <i>B</i> leży 7 kresek za zerem: 7 · 5 = <b>35</b>.'),
+ q('o4-7c',`${n7}${which('C')}`, ['30','45','50','60'],2,'Każdy odcinek to 5, a punkt <i>C</i> leży 10 kresek za zerem: <b>50</b>.'),
+ q('o4-8a',`${n8}${which('A')}`, ['100','200','300','400'],1,`${STEP} Od 0 do 400 są 2 odcinki, więc każdy to 200. Punkt <i>A</i> leży na pierwszej kresce: <b>200</b>.`),
+ q('o4-8b',`${n8}${which('B')}`, ['500','800','1000','1200'],2,'Każdy odcinek to 200: 200, 400, 600, 800, <b>1000</b>.'),
+ q('o4-8c',`${n8}${which('C')}`, ['800','1200','1600','2000'],2,'Punkt <i>C</i> leży 8 kresek za zerem: 8 · 200 = <b>1600</b>.'),
+ q('o4-9a',`${n9}${which('A')}`, ['200','250','500','2000'],2,`${STEP} Od 0 do 1000 są 4 odcinki, więc każdy to 1000 : 4 = 250. Punkt <i>A</i>: 250, <b>500</b>.`),
+ q('o4-9b',`${n9}${which('C')}`, ['900','2000','2250','2500'],2,'Każdy odcinek to 250. Od 1000 liczymy dalej: 1250, 1500, 1750, 2000, <b>2250</b>.'),
+ q('o4-10a',`${n10}Który punkt oznacza liczbę <b>10</b>?`, ['A','B','C','Żaden z nich'],1,'Od 0 do 6 są 3 odcinki, więc liczby rosną o 2: A = 8, B = 10, C = 14. Liczbę 10 oznacza punkt <b><i>B</i></b>.'),
+ q('o4-10b',`${n10}Który punkt oznacza liczbę <b>12</b>?`, ['A','B','C','Żaden z nich'],3,'Liczby rosną o 2: A = 8, B = 10, C = 14. Liczba 12 leży na kresce między <i>B</i> i <i>C</i>, ale tam nie ma punktu — <b>żaden z nich</b>.'),
+ q('o4-11',`${ax(line(0, 6, 3, {labels: [0, 1, 2, 3]}))}Kacper mówi: „Na tej osi nie da się zaznaczyć liczby 3, bo są na niej tylko liczby parzyste”. Czy ma rację?`, ['Tak, bo 3 jest liczbą nieparzystą','Nie, 3 leży w połowie między 2 i 4','Nie, 3 leży na kresce z liczbą 4','Tak, bo przy 3 nie ma kreski'],1,'Na osi leżą wszystkie liczby, a nie tylko te podpisane. Liczba 3 jest dokładnie <b>w połowie między 2 i 4</b> — wystarczy postawić tam kropkę.'),
+ q('o4-12',`${ax(line(0, 30, 10, {labels: [0, 1, 4]}))}Ile odcinków od zera leży na tej osi liczba <b>21</b>?`, ['3','7','18','21'],1,'Od 0 do 3 jest jeden odcinek, więc każdy to 3. 21 : 3 = <b>7 odcinków</b>.'),
+ q('o4-13',`${ax(line(0, 16, 8, {labels: [0, 4]}))}O ile rosną liczby z kreski na kreskę na tej osi?`, ['o 1','o 2','o 4','o 8'],1,'Od 0 do 8 są 4 odcinki, więc każdy to 8 : 4 = <b>2</b>.'),
+ q('o4-14a',`${kg}Ile waży pies?`, ['5 kg','20 kg','25 kg','30 kg'],2,'Podpisy rosną o 10 co dwie kreski, więc jedna kreska to 5 kg. Pies leży na kresce za 20: <b>25 kg</b>.'),
+ q('o4-14b',`${kg}O ile kilogramów owca jest cięższa od kota?`, ['3 kg','30 kg','35 kg','45 kg'],2,'Kot waży 5 kg, owca 40 kg. 40 − 5 = <b>35 kg</b>.'),
+ q('o4-15','Na osi liczbowej liczby rosną o 25 z kreski na kreskę. Przy pierwszej kresce jest 0. Jaka liczba leży 4 kreski na prawo od zera?', ['4','29','75','100'],3,'Liczymy co 25: 25, 50, 75, <b>100</b> (4 · 25).'),
+ q('o4-16','Na osi liczbowej liczby rosną o 10 z kreski na kreskę. Ile odcinków dzieli liczby 30 i 90?', ['3','6','9','60'],1,'Od 30 do 90 jest 60, a każdy odcinek to 10: 60 : 10 = <b>6</b>.'),
+ q('o4-17','Która z liczb leży na osi liczbowej <b>najbliżej</b> liczby 50?', ['44','46','53','57'],2,'Odległości od 50: 44 → 6, 46 → 4, 53 → 3, 57 → 7. Najbliżej jest <b>53</b>.'),
+ q('o4-18','Która liczba leży na osi liczbowej dokładnie <b>w połowie</b> między 20 i 30?', ['22','25','26','50'],1,'Od 20 do 30 jest 10, połowa to 5. 20 + 5 = <b>25</b>.'),
+ q('o4-19','Punkt <i>A</i> oznacza na osi liczbę 40. Punkt <i>B</i> leży 3 odcinki na prawo od <i>A</i>, a każdy odcinek to 5. Jaką liczbę oznacza <i>B</i>?', ['43','45','55','70'],2,'3 odcinki po 5 to 15. 40 + 15 = <b>55</b>. Wynik 43 to dodanie samej liczby odcinków.'),
 ];

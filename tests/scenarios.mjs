@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {SCENARIOS, makeRound, restoreRound} from '../js/scenarios.js';
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.title), ['Zegary, kalendarz i jednostki długości']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.title), ['Zegary, kalendarz i jednostki długości', 'Oś liczbowa']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności', 'Liczby pierwsze i złożone', 'Potęgowanie', 'Cyfry rzymskie', 'Kolejność wykonywania działań']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
  'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Potęgi', 'Procenty — zadania egzaminacyjne',
@@ -8,9 +8,9 @@ assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
  'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne',
 ]);
-assert.equal(SCENARIOS.length,16);
+assert.equal(SCENARIOS.length,17);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,443);
+assert.equal(new Set(all.map(q=>q.id)).size,476);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -291,3 +291,30 @@ assert.equal(mm(selected('k4-29')),1470-1320);
 const l30=ask('k4-30').answers.map(mm);assert.equal(l30.indexOf(Math.max(...l30)),ask('k4-30').correct);
 assert.deepEqual(['k4-26a','k4-26b','k4-26c','k4-26d','k4-26e','k4-25'].map(pick),['mm','m','km','cm','mm','centymetry']);
 console.log('PASS: grade 4 — all 56 answer keys checked (real 2026 calendar)');
+
+// Klasa 4: oś liczbowa — wartości punktów liczone tylko z tego, co widać: podpisów pod kreskami i położenia punktów.
+const ax4=SCENARIOS.find(s=>s.id==='axis-4');
+assert.equal(ax4.grade,4);assert.equal(ax4.questions.length,33);assert.equal(new Set(ax4.questions.map(q=>q.sourceGroup)).size,19);
+const seen4=html=>{
+ const labels=[...html.matchAll(/<text x="([\d.]+)" y="62"[^>]*>([^<]+)<\/text>/g)].map(([,x,v])=>[+x,+v]);
+ const ticks=[...html.matchAll(/<path d="M([\d.]+) 30V42"/g)].map(m=>+m[1]);
+ const [[x1,v1],[x2,v2]]=[labels[0],labels.at(-1)], at=x=>v1+(x-x1)*(v2-v1)/(x2-x1);
+ labels.forEach(([x,v])=>assert(near(at(x),v),'labels must lie on one scale'));
+ const points=Object.fromEntries([...html.matchAll(/<circle cx="([\d.]+)" cy="36" r="5.5" fill="#f6c85c"\/><text[^>]*>(\w+)<\/text>/g)].map(([,x,n])=>[n,at(+x)]));
+ Object.values(points).forEach(v=>assert(Number.isInteger(Math.round(v*1e6)/1e6),'grade 4: natural numbers only'));
+ return {points,ticks:ticks.map(at)};
+};
+for(const q of ax4.questions.filter(q=>q.q.startsWith('<figure')&&q.q.includes('literą'))){
+ const L=plain(q.q).match(/literą (\w)\?/)[1], v=seen4(q.q).points[L];
+ assert.equal(+selected(q.id),v,q.id);assert.equal(q.answers.filter(a=>+a===v).length,1,q.id);
+}
+assert.equal(ax4.questions.filter(q=>q.q.includes('literą')).length,21);
+for(const [id,n] of [['o4-10a',10],['o4-10b',12]]){const p=seen4(ask(id).q).points;assert.equal(pick(id),Object.keys(p).find(k=>p[k]===n)??'Żaden z nich',id);}
+const t11=seen4(ask('o4-11').q).ticks;assert(!t11.includes(3)&&Math.min(...t11)<3&&Math.max(...t11)>3);assert.equal(pick('o4-11'),'Nie, 3 leży w połowie między 2 i 4');
+assert.equal(+pick('o4-12'),seen4(ask('o4-12').q).ticks.indexOf(21));
+const t13=seen4(ask('o4-13').q).ticks;assert.equal(pick('o4-13'),`o ${t13[1]-t13[0]}`);
+const k4=seen4(ask('o4-14a').q).points;assert.equal(pick('o4-14a'),`${k4.P} kg`);assert.equal(pick('o4-14b'),`${k4.O-k4.K} kg`);
+assert.equal(+pick('o4-15'),4*25);assert.equal(+pick('o4-16'),(90-30)/10);
+const d17=ask('o4-17').answers.map(a=>Math.abs(a-50));assert.equal(d17.indexOf(Math.min(...d17)),ask('o4-17').correct);
+assert.equal(+pick('o4-18'),(20+30)/2);assert.equal(+pick('o4-19'),40+3*5);
+console.log('PASS: grade 4 number line — all 33 answer keys checked from visible labels');

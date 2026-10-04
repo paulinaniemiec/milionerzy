@@ -5,10 +5,10 @@ const q = (id, text, answers, correct, explain) => ({id, sourceGroup:id.replace(
 const pair = (id, context, a, b, truth, explain) => q(id, `${context}<div class="task-statements">I. ${a}<br>II. ${b}</div>Wybierz ocenę zdań (P — prawda, F — fałsz).`, ['I: P, II: P', 'I: P, II: F', 'I: F, II: P', 'I: F, II: F'], ['PP','PF','FP','FF'].indexOf(truth), explain);
 export const fmt = (v) => String(Math.round(v * 1e4) / 1e4).replace('.', ',').replace('-', '−');
 const f = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
-const t = (x, y, value, extra = '') => `<text x="${x}" y="${y}" text-anchor="middle" fill="#f3f5ff" font-family="Arial, sans-serif" font-size="17" ${extra}>${value}</text>`;
+const t = (x, y, value, extra = '', fill = '#f3f5ff') => `<text x="${x}" y="${y}" text-anchor="middle" fill="${fill}" font-family="Arial, sans-serif" font-size="17" ${extra}>${value}</text>`;
 
 // a, b — liczby pod kreską 0 i kreską seg; labels — indeksy podpisanych kresek; points — {A: indeks}; ray — [indeks, 'left'|'right', zamalowane kółko].
-function line(a, b, seg, {labels = [0, seg], points = {}, ray = null, label = (k) => fmt(a + k * (b - a) / seg)} = {}) {
+export function line(a, b, seg, {labels = [0, seg], points = {}, ray = null, label = (k) => fmt(a + k * (b - a) / seg)} = {}) {
  const x = (k) => 30 + k * 330 / seg, y = 36;
  let body = '';
  if (ray) {
@@ -18,7 +18,7 @@ function line(a, b, seg, {labels = [0, seg], points = {}, ray = null, label = (k
  body += `<path d="M8 ${y}H386" stroke="#f3f5ff" stroke-width="2"/><path d="M384 ${y - 6}L396 ${y}L384 ${y + 6}Z" fill="#f3f5ff"/>`;
  for (let k = 0; k <= seg; k++) body += `<path d="M${x(k)} ${y - 6}V${y + 6}" stroke="#f3f5ff" stroke-width="2"/>`;
  labels.forEach((k) => body += t(x(k), 62, label(k)));
- Object.entries(points).forEach(([name, k]) => body += `<circle cx="${x(k)}" cy="${y}" r="5.5" fill="#f6c85c"/>` + t(x(k), 22, name, 'font-weight="700" font-style="italic" fill="#f6c85c"'));
+ Object.entries(points).forEach(([name, k]) => body += `<circle cx="${x(k)}" cy="${y}" r="5.5" fill="#f6c85c"/>` + t(x(k), 22, name, 'font-weight="700" font-style="italic"', '#f6c85c'));
  if (ray) body += `<circle cx="${x(ray[0])}" cy="${y}" r="5.5" fill="${ray[2] ? '#63d6e8' : '#101b3b'}" stroke="#63d6e8" stroke-width="2.5"/>`;
  const data = `data-axis="${a},${b},${seg}" data-points="${Object.entries(points).map(([n, k]) => `${n}:${k}`).join(';')}" data-ray="${ray ? ray.join(',') : ''}"`;
  const desc = `Oś liczbowa od ${fmt(a)} do ${fmt(b)}, ${seg} równych odcinków` + Object.entries(points).map(([n, k]) => `, punkt ${n} na kresce ${k}`).join('') + (ray ? `, zaznaczona półprosta ${ray[1] === 'right' ? 'w prawo' : 'w lewo'} od kreski ${ray[0]}, kółko ${ray[2] ? 'zamalowane' : 'puste'}` : '');
