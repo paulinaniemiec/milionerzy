@@ -1,6 +1,6 @@
 import { QUESTIONS as original } from './questions.js';
 import { diagramQuestions, probabilityQuestions } from './exam-sets.js';
-import { divisibilityQuestions } from './grade5-sets.js';
+import { divisibilityQuestions, powerQuestions, romanQuestions, primeQuestions } from './grade5-sets.js';
 import { percentExamQuestions } from './percent-exam-sets.js';
 
 // Każdy wpis ma trwałe ID: zapis gry odtwarza dokładnie te same pytania.
@@ -83,6 +83,9 @@ const revision2 = [
 export const SCENARIOS = [
  // Przy dodawaniu kolejnego scenariusza zapytaj właścicielkę, do której klasy go przypisać.
  {id:'divisibility', grade:5, title:'Podzielność i wielokrotności', description:'Cechy podzielności przez 2, 3, 4, 5, 9 i 10 oraz wielokrotności liczb.', questions:divisibilityQuestions},
+ {id:'primes', grade:5, title:'Liczby pierwsze i złożone', description:'Dzielniki, liczby pierwsze i złożone, rozkład na czynniki pierwsze.', questions:primeQuestions},
+ {id:'powers', grade:5, title:'Potęgowanie', description:'Iloczyn jako potęga, obliczanie i odczytywanie potęg: do kwadratu, do sześcianu.', questions:powerQuestions},
+ {id:'roman', grade:5, title:'Cyfry rzymskie', description:'Odczytywanie i zapisywanie liczb, daty z obrazów Matejki, działania i zamazane liczby.', questions:romanQuestions},
  {id:'diagrams', grade:8, title:'Diagramy i wykresy', description:'Nowe zadania w stylu egzaminu ósmoklasisty. Każde z innym wykresem.', questions:diagramQuestions},
  {id:'probability', grade:8, title:'Prawdopodobieństwo', description:'Nowe zadania w stylu egzaminu ósmoklasisty. Kostki, losy, monety i szanse.', questions:probabilityQuestions},
  {id:'original', grade:8, title:'Przygotowanie do egzaminu', description:'Liczby, algebra i geometria. Dotychczasowy zestaw.', questions:original.map((v,i)=>({...v,id:`original-${i+1}`,sourceGroup:`original-${i+1}`}))},

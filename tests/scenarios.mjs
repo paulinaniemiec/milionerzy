@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
 import {SCENARIOS, makeRound, restoreRound} from '../js/scenarios.js';
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności', 'Liczby pierwsze i złożone', 'Potęgowanie', 'Cyfry rzymskie']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
  'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Procenty — zadania egzaminacyjne',
 ]);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
  'Diagramy i wykresy', 'Prawdopodobieństwo', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne',
 ]);
-assert.equal(SCENARIOS.length,9);
+assert.equal(SCENARIOS.length,12);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,154);
+assert.equal(new Set(all.map(q=>q.id)).size,263);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -94,3 +94,70 @@ const examAnswers={
 assert.deepEqual(Object.keys(examAnswers),exam7.questions.map(q=>q.id));
 for(const [id,answer] of Object.entries(examAnswers)) assert.equal(selected(id),answer,id);
 console.log('PASS: percent exam set in grades 7 and 8, all 32 answer keys checked');
+
+// Klasa 5: potęgi, cyfry rzymskie i liczby pierwsze — klucze liczone niezależnie.
+const plain=html=>html.replace(/<sup>(\d+)<\/sup>/g,'^$1').replace(/<[^>]+>/g,'').trim();
+const ev=t=>Function(`return ${plain(t).replace(/\^/g,'**').replace(/·/g,'*').replace(/ /g,'')}`)();
+const ask=id=>all.find(q=>q.id===id);
+const pick=id=>plain(selected(id));
+const powers=SCENARIOS.find(s=>s.id==='powers'), roman=SCENARIOS.find(s=>s.id==='roman'), primes=SCENARIOS.find(s=>s.id==='primes');
+assert.deepEqual([powers.grade,roman.grade,primes.grade],[5,5,5]);
+assert.deepEqual([powers.questions.length,roman.questions.length,primes.questions.length],[35,40,34]);
+// Iloczyn → potęga i potęga → iloczyn.
+for(const id of ['pt-1','pt-2','pt-3','pt-4']){const f=plain(ask(id).q).match(/[\d ·]+(?=\s+w postaci)/)[0].trim().split(' · ');assert.equal(pick(id),`${f[0]}^${f.length}`,id);}
+assert.equal(pick('pt-5'),'13^1');assert.equal(ev(pick('pt-6')),4**4);assert.equal(ev(pick('pt-7')),13**2);
+// „Oblicz …” — wynik z kluczem.
+for(const q of powers.questions.filter(q=>q.q.startsWith('Oblicz'))) assert.equal(Number(pick(q.id).replace(/ /g,'')),ev(plain(q.q).replace(/^Oblicz|\.$/g,'')),q.id);
+assert.deepEqual(['pt-19','pt-20','pt-21','pt-22','pt-23'].map(pick),['dwa do kwadratu','trzy do sześcianu','pięć do potęgi czwartej','10^3','7^2']);
+assert.equal(pick('pt-25'),String(9**2));assert.equal(pick('pt-26'),String(2**3));assert(2**3<3**2);assert.equal(pick('pt-27'),'2^3 < 3^2');
+assert.equal(ask('pt-28').answers.map(a=>ev(a)).reduce((m,v,i,a)=>v>a[m]?i:m,0),ask('pt-28').correct);
+assert.equal(pick('pt-32'),`${6**2} cm^2`);assert.equal(pick('pt-33'),String(4**3));assert.equal(pick('pt-34'),truth(5**2===10,1**5===1));
+assert.equal(ask('pt-35').answers.filter(a=>Number.isInteger(Math.sqrt(a))).join(),pick('pt-35'));
+// Cyfry rzymskie: zamiana w obie strony, tylko poprawne zapisy.
+const RV={M:1000,CM:900,D:500,CD:400,C:100,XC:90,L:50,XL:40,X:10,IX:9,V:5,IV:4,I:1};
+const toRoman=n=>Object.entries(RV).reduce((s,[k,v])=>{while(n>=v){s+=k;n-=v;}return s;},'');
+const fromRoman=s=>{const n=[...s].reduce((t,c,i,a)=>RV[c]<RV[a[i+1]]?t-RV[c]:t+RV[c],0);return toRoman(n)===s?n:NaN;};
+const romanIn=t=>plain(t).match(/[MDCLXVI]{2,}|\b[MDCLXVI]\b/g);
+for(const q of roman.questions){
+ const text=plain(q.q), ans=pick(q.id);
+ if(text.startsWith('Jaką liczbę')||/Który to rok\?/.test(text)||text.startsWith('Igrzyska')){const r=romanIn(q.q).at(-1);assert.equal(Number(ans.replace('.','')),fromRoman(r),q.id);}
+ else if(/W którym wieku/.test(text)){const y=fromRoman(romanIn(q.q).at(-1));assert.equal(ans,toRoman(Math.ceil(y/100)),q.id);}
+ else if(text.startsWith('Jak zapisać')){const n=Number(text.match(/\d+/)[0]);assert.equal(ans,toRoman(n),q.id);assert.equal(q.answers.filter(a=>fromRoman(plain(a))===n).length,1,q.id);}
+ else if(text.startsWith('Oblicz')){const [a,op,b]=plain(q.q).replace('Oblicz:','').trim().split(' ');const x=fromRoman(a),y=fromRoman(b);assert.equal(fromRoman(ans),op==='+'?x+y:op==='−'?x-y:x*y,q.id);}
+}
+assert.equal(roman.questions.filter(q=>/Jaką liczbę|Który to rok|W którym wieku|Jak zapisać|Oblicz|Igrzyska/.test(q.q)).length,34);
+assert.equal(pick('rz-26'),'10:00');
+const blotted=(pattern,ans)=>{const hits=Object.keys(RV).filter(k=>k.length===1).map(c=>pattern.replace('?',c)).filter(s=>!Number.isNaN(fromRoman(s)));assert.deepEqual(hits.map(fromRoman),[Number(ans)]);};
+blotted('XV?II',pick('rz-32'));blotted('LX?VIII',pick('rz-33'));
+assert.deepEqual(ask('rz-34').answers.map(plain).filter(a=>Number.isNaN(fromRoman(a))),[pick('rz-34')]);
+assert.equal(Math.max(...ask('rz-35').answers.map(a=>fromRoman(plain(a)))),fromRoman(pick('rz-35')));
+assert.equal(pick('rz-36'),String(toRoman(38).length));
+// Liczby pierwsze: dzielniki, pierwszość, rozkłady.
+const isPrime=n=>n>1&&range(2,Math.floor(Math.sqrt(n))).every(d=>n%d);
+const divisors=n=>range(1,n).filter(d=>n%d===0);
+const factor=n=>{const f=[];for(let d=2;n>1;d++)while(n%d===0){f.push(d);n/=d;}return f;};
+const product=s=>s.split(' · ').map(Number).reduce((a,b)=>a*b,1);
+const decomp='2 · 3 · 5 · 11', big='2 · 2 · 3 · 7 · 7 · 11';
+assert.equal(pick('lp-1'),divisors(18).join(', '));assert.equal(pick('lp-29'),divisors(30).join(', '));
+assert.equal(pick('lp-2'),String(divisors(24).length));
+for(const id of ['lp-3','lp-20']) assert.deepEqual(ask(id).answers.filter(a=>isPrime(+a)),[pick(id)]);
+assert.deepEqual(ask('lp-4').answers.filter(a=>!isPrime(+a)),[pick('lp-4')]);
+assert.deepEqual(ask('lp-19').answers.filter(a=>divisors(+a).length===2),[pick('lp-19')]);
+assert.equal(pick('lp-6'),String(range(1,19).filter(isPrime).length));assert.equal(pick('lp-28'),String(range(21,29).filter(isPrime).length));
+assert.equal(pick('lp-8'),[504,4525,6454,1581,1750,2383,7537].filter(isPrime).join(' i '));
+for(const [id,n] of [['lp-9',110],['lp-14',84],['lp-15',360],['lp-23',1001]]) assert.equal(pick(id),factor(n).join(' · '),id);
+assert.equal(pick('lp-16'),`72 = ${factor(72).join(' · ')}`);
+for(const [id,f] of [['lp-10','2 · 3 · 3 · 5 · 7'],['lp-11a',decomp],['lp-26','2 · 2 · 5 · 5']]) assert.equal(+pick(id),product(f),id);
+assert.deepEqual(ask('lp-11b').answers.filter(a=>product(decomp)%a),[pick('lp-11b')]);
+assert.deepEqual(ask('lp-11c').answers.filter(a=>product(decomp)%a===0),[pick('lp-11c')]);
+assert.deepEqual(ask('lp-12a').answers.filter(a=>product(big)%a),[pick('lp-12a')]);
+assert.deepEqual(ask('lp-12b').answers.filter(a=>product(big)%a===0),[pick('lp-12b')]);
+assert.equal(pick('lp-12c'),truth(product(big)%49===0,product(big)%9===0));
+const box=n=>factor(n).length>=3;
+assert.deepEqual(ask('lp-13a').answers.filter(a=>box(+a)),[pick('lp-13a')]);assert.deepEqual(ask('lp-13b').answers.filter(a=>!box(+a)),[pick('lp-13b')]);
+assert.equal(pick('lp-17'),String(range(10,99).find(isPrime)));assert.equal(pick('lp-18'),String(range(1,99).filter(isPrime).at(-1)));
+assert.equal(pick('lp-21'),'złożoną, bo 143 = 11 · 13');assert.equal(11*13,143);
+assert.equal(pick('lp-22'),'7 i 13');assert(isPrime(7)&&isPrime(13)&&7+13===20&&7*13===91);
+assert.equal(pick('lp-24'),String(factor(96).length));
+assert.deepEqual(ask('lp-27').answers.filter(a=>factor(+a).includes(7)),[pick('lp-27')]);
+console.log('PASS: grade 5 — powers, Roman numerals and primes answer keys checked');

@@ -1,8 +1,9 @@
 // Offline: gra działa nawet przy słabym szkolnym Wi-Fi po pierwszym wczytaniu.
-const CACHE = 'milionerzy-v3';
+const CACHE = 'milionerzy-v4';
 const CORE = [
   './', 'index.html', 'css/style.css', 'js/app.js', 'js/audio.js', 'js/fx.js', 'js/questions.js', 'js/scenarios.js', 'js/exam-sets.js', 'js/grade5-sets.js', 'js/percent-exam-sets.js', 'js/results.js',
-  'images/final-hubert.jpg', 'images/hubert-face.jpg', 'manifest.webmanifest', 'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png',
+  'images/final-hubert.jpg', 'images/hubert-face.jpg',
+  'images/roman/chrzest.jpg', 'images/roman/unia.jpg', 'images/roman/konstytucja.jpg', 'images/roman/grunwald.jpg', 'manifest.webmanifest', 'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png',
 ];
 
 self.addEventListener('install', (e) => {
