@@ -1,7 +1,7 @@
 // Offline: gra działa nawet przy słabym szkolnym Wi-Fi po pierwszym wczytaniu.
-const CACHE = 'milionerzy-v5';
+const CACHE = 'milionerzy-v6';
 const CORE = [
-  './', 'index.html', 'css/style.css', 'js/app.js', 'js/audio.js', 'js/fx.js', 'js/questions.js', 'js/scenarios.js', 'js/exam-sets.js', 'js/grade5-sets.js', 'js/percent-exam-sets.js', 'js/results.js',
+  './', 'index.html', 'css/style.css', 'js/app.js', 'js/audio.js', 'js/fx.js', 'js/questions.js', 'js/scenarios.js', 'js/exam-sets.js', 'js/grade5-sets.js', 'js/percent-exam-sets.js', 'js/grade7-sets.js', 'js/results.js',
   'images/final-hubert.jpg', 'images/hubert-face.jpg',
   'images/roman/hold-pruski.jpg', 'images/roman/sobieski.jpg', 'images/roman/grunwald.jpg', 'images/roman/kolumna.jpg', 'images/roman/pkin.jpg', 'manifest.webmanifest', 'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png',
 ];

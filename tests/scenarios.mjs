@@ -2,14 +2,14 @@ import assert from 'node:assert/strict';
 import {SCENARIOS, makeRound, restoreRound} from '../js/scenarios.js';
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności', 'Liczby pierwsze i złożone', 'Potęgowanie', 'Cyfry rzymskie', 'Kolejność wykonywania działań']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
- 'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Procenty — zadania egzaminacyjne',
+ 'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Potęgi', 'Procenty — zadania egzaminacyjne',
 ]);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
  'Diagramy i wykresy', 'Prawdopodobieństwo', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne',
 ]);
-assert.equal(SCENARIOS.length,13);
+assert.equal(SCENARIOS.length,14);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,302);
+assert.equal(new Set(all.map(q=>q.id)).size,356);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -184,3 +184,37 @@ assert.deepEqual(ask('kd-30').answers.slice(0,3).map(calc).map(v=>v===16),[true,
 assert.equal(pick('kd-31'),truth(20-5*2===30,20/5*2===8));
 assert.equal(order.questions.filter(q=>q.q.startsWith('Które wyrażenie ma większą')).length,6);
 console.log('PASS: order of operations — all 40 answer keys checked');
+
+// Klasa 7: potęgi — każdy wynik liczony niezależnie, dokładnie jedna odpowiedź ma poprawną wartość.
+const pow7=SCENARIOS.find(s=>s.id==='powers-7');
+assert.equal(pow7.grade,7);assert.equal(pow7.questions.length,54);assert.equal(new Set(pow7.questions.map(q=>q.sourceGroup)).size,33);
+assert.deepEqual(SCENARIOS.filter(s=>s.questions===pow7.questions).map(s=>s.grade),[7]);
+const num=html=>Function(`return ${html
+ .replace(/(\d+)<span class="frac"><span>(\d+)<\/span><span>(\d+)<\/span><\/span>/g,'($1+$2/$3)')
+ .replace(/<span class="frac"><span>(\d+)<\/span><span>(\d+)<\/span><\/span>/g,'($1/$2)')
+ .replace(/ cm<sup>2<\/sup>| m<sup>3<\/sup>/,'').replace(/,/g,'.').replace(/−/g,'-').replace(/ /g,'')}`)();
+const near=(a,b)=>Math.abs(a-b)<1e-9;
+const values7={
+ 'p7-1a':3**4,'p7-1b':2**5,'p7-2a':.3**2,'p7-2b':.2**3,'p7-2c':1.1**2,'p7-3a':(2/5)**2,'p7-3b':(3/4)**3,'p7-4a':(4/3)**2,'p7-4b':(5/2)**3,
+ 'p7-5a':37**0,'p7-5b':(-(4+2/7))**0,'p7-6a':.48**1,'p7-6b':(-9)**1,'p7-7a':(-3)**4,'p7-7b':(-2)**5,'p7-8a':-(5**2),'p7-8b':-((-2)**3),
+ 'p7-9a':(-.5)**2,'p7-9b':(-.1)**3,'p7-10a':(-1)**101,'p7-10b':(-1)**64,'p7-16':String(10n**20n).length-1,
+ 'p7-20a':2.5**2-1.5**2,'p7-20b':1.2**2+.8**2,'p7-20c':3**2-(-3)**2,'p7-21':(-1)**7+(-1)**8+1**9,'p7-22':2**3*(1/2)**2,'p7-23':.1**2*10**3,
+ 'p7-29':3**4,'p7-30':.3**3,'p7-31':(3/2)**2,'p7-32':2**6,
+ 'p7-33a':[5,6,8,32].find(n=>2**n===64),'p7-33b':[2,3,4,9].find(n=>(-3)**n===-27),'p7-33c':[4,5,16,32].find(n=>near((1/2)**n,1/32)),
+};
+for(const [id,v] of Object.entries(values7)){const a=ask(id).answers.map(num);assert(near(a[ask(id).correct],v),id);assert.equal(a.filter(x=>near(x,v)).length,1,id);}
+// Prawda/fałsz, potęgi liczby 10, wybór liczby.
+assert.equal(pick('p7-11'),truth(-(3**4)===(-3)**4,-(5**3)===(-5)**3));
+assert.equal(pick('p7-12'),truth(15**0===1**15,near((2/3)**3,2**3/3)));
+assert.equal(pick('p7-13'),truth(4**3===8**2,2**4===4**2));
+assert.equal(pick('p7-14'),truth(6**0===0**6,2**3===3**2));
+for(const [id,n] of [['p7-15a',100000],['p7-15b',1e10],['p7-15c',100000000],['p7-15d',1e12]]) assert.equal(pick(id),`10^${Math.log10(n)}`,id);
+assert.deepEqual([15e6,150e6,1.5e6,15e8].map(v=>v===150000000),ask('p7-17').answers.map((_,i)=>i===ask('p7-17').correct));
+const signs=[(-5)**4,-((-2)**3),(-.3)**3,(-1)**100];assert.equal(signs.findIndex(v=>v<0),ask('p7-24').correct);assert.equal(signs.filter(v=>v<0).length,1);
+const big7=[.9**2,.9**3,.9,.9**0];assert.equal(big7.indexOf(Math.max(...big7)),ask('p7-25').correct);
+const small7=[(-2)**3,(-2)**2,-(2**2),(-2)**0];assert.equal(small7.indexOf(Math.min(...small7)),ask('p7-26').correct);
+assert((3/5)**2<3**2/5);assert.equal(pick('p7-27'),'Pierwsza jest mniejsza');
+assert.equal(pick('p7-28'),`2^${180/20} = ${2**(180/20)}`);
+assert.equal(pick('p7-19a'),'(−1,5)^4');assert.equal(pick('p7-19b'),'(23)^5');
+assert.equal(plain(selected('p7-18a')).split(' · ').length,3);assert.equal(pick('p7-18b').split(' · ').length,4);assert.equal(pick('p7-18c').split(' · ').length,6);
+console.log('PASS: grade 7 powers — all 54 answer keys checked');

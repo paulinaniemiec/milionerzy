@@ -70,6 +70,7 @@ Nowe zestawy i katalog scenariuszy są w [`js/scenarios.js`](js/scenarios.js). K
 - Klasa 7: Procenty na rozgrzewkę — 16 wariantów z 12 zadań źródłowych (4 zadania uzupełniające z pozostałych screenów).
 - Klasa 7: Procenty w życiu, zestaw 1 — 25 pytań (losowanie 12).
 - Klasa 7: Procenty w praktyce, zestaw 2 — 19 pytań (losowanie 12).
+- Klasa 7: Potęgi — 54 pytania z 33 zadań (losowanie 12): ułamki zwykłe, dziesiętne i liczby mieszane do potęgi, liczby ujemne (−3⁴ a (−3)⁴), wykładnik 0 i 1, potęgi liczby 10, potęga ↔ iloczyn, zadania tekstowe (bakterie, składanie kartki). Plik `js/grade7-sets.js`.
 - Klasy 7 i 8: Procenty — zadania egzaminacyjne — 32 pytania z 29 zadań (losowanie 12), plik `js/percent-exam-sets.js`. Źródło: [zadania egzaminacyjne z procentów](https://matematykaszkolna.pl/strona/5538.html) (egzaminy 2011–2026 i materiały CKE); zadania otwarte przerobiono na format A–D. W `js/scenarios.js` są dwa wpisy (`percent-exam-7` i `percent-exam-8`) z tymi samymi pytaniami, żeby wynik zapisywał się z właściwą klasą.
 - Klasa 8: Diagramy i wykresy — 12 autorskich pytań, każde z osobnym diagramem SVG.
 - Klasa 8: Prawdopodobieństwo — 12 autorskich pytań.
