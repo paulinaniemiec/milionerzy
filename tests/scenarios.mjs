@@ -9,7 +9,7 @@ assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
 ]);
 assert.equal(SCENARIOS.length,12);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,263);
+assert.equal(new Set(all.map(q=>q.id)).size,262);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -102,7 +102,7 @@ const ask=id=>all.find(q=>q.id===id);
 const pick=id=>plain(selected(id));
 const powers=SCENARIOS.find(s=>s.id==='powers'), roman=SCENARIOS.find(s=>s.id==='roman'), primes=SCENARIOS.find(s=>s.id==='primes');
 assert.deepEqual([powers.grade,roman.grade,primes.grade],[5,5,5]);
-assert.deepEqual([powers.questions.length,roman.questions.length,primes.questions.length],[35,40,34]);
+assert.deepEqual([powers.questions.length,roman.questions.length,primes.questions.length],[34,40,34]);
 // Iloczyn → potęga i potęga → iloczyn.
 for(const id of ['pt-1','pt-2','pt-3','pt-4']){const f=plain(ask(id).q).match(/[\d ·]+(?=\s+w postaci)/)[0].trim().split(' · ');assert.equal(pick(id),`${f[0]}^${f.length}`,id);}
 assert.equal(pick('pt-5'),'13^1');assert.equal(ev(pick('pt-6')),4**4);assert.equal(ev(pick('pt-7')),13**2);
