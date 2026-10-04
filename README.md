@@ -74,6 +74,7 @@ Nowe zestawy i katalog scenariuszy są w [`js/scenarios.js`](js/scenarios.js). K
 - Klasy 7 i 8: Procenty — zadania egzaminacyjne — 32 pytania z 29 zadań (losowanie 12), plik `js/percent-exam-sets.js`. Źródło: [zadania egzaminacyjne z procentów](https://matematykaszkolna.pl/strona/5538.html) (egzaminy 2011–2026 i materiały CKE); zadania otwarte przerobiono na format A–D. W `js/scenarios.js` są dwa wpisy (`percent-exam-7` i `percent-exam-8`) z tymi samymi pytaniami, żeby wynik zapisywał się z właściwą klasą.
 - Klasa 8: Diagramy i wykresy — 12 autorskich pytań, każde z osobnym diagramem SVG.
 - Klasa 8: Prawdopodobieństwo — 12 autorskich pytań.
+- Klasa 8: Liczby na osi liczbowej — 31 pytań z 25 zadań (losowanie 12): odczytywanie współrzędnych, która oś pokazuje dany zbiór, zapisywanie warunku (x > a, x ≤ a), liczby naturalne i całkowite w zbiorze, odległość i środek odcinka. Osie rysowane w SVG, plik `js/axis-sets.js`.
 - Klasa 8: Przygotowanie do egzaminu — dotychczasowe 12 pytań.
 
 Każde pytanie ma trwałe `id`, treść `q`, cztery `answers`, indeks `correct` (0–3) i `explain`.

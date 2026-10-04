@@ -3,6 +3,7 @@ import { diagramQuestions, probabilityQuestions } from './exam-sets.js';
 import { divisibilityQuestions, powerQuestions, romanQuestions, primeQuestions, orderQuestions } from './grade5-sets.js';
 import { percentExamQuestions } from './percent-exam-sets.js';
 import { powerQuestions7 } from './grade7-sets.js';
+import { axisQuestions } from './axis-sets.js';
 
 // Każdy wpis ma trwałe ID: zapis gry odtwarza dokładnie te same pytania.
 const q = (id, text, answers, correct, explain) => ({ id, sourceGroup: id.replace(/[a-z]+$/, ''), q: text, answers, correct, explain });
@@ -90,6 +91,7 @@ export const SCENARIOS = [
  {id:'order', grade:5, title:'Kolejność wykonywania działań', description:'Co liczymy najpierw, wyniki działań, porównywanie wyrażeń i zadania tekstowe.', questions:orderQuestions},
  {id:'diagrams', grade:8, title:'Diagramy i wykresy', description:'Nowe zadania w stylu egzaminu ósmoklasisty. Każde z innym wykresem.', questions:diagramQuestions},
  {id:'probability', grade:8, title:'Prawdopodobieństwo', description:'Nowe zadania w stylu egzaminu ósmoklasisty. Kostki, losy, monety i szanse.', questions:probabilityQuestions},
+ {id:'axis', grade:8, title:'Liczby na osi liczbowej', description:'Współrzędne punktów, zbiory liczb spełniających warunek (x > a, x ≤ a), odległość i środek odcinka.', questions:axisQuestions},
  {id:'original', grade:8, title:'Przygotowanie do egzaminu', description:'Liczby, algebra i geometria. Dotychczasowy zestaw.', questions:original.map((v,i)=>({...v,id:`original-${i+1}`,sourceGroup:`original-${i+1}`}))},
  // Ten sam zestaw w klasie 7 i 8: osobne wpisy, żeby wynik zapisywał się z właściwą klasą.
  {id:'percent-exam-8', grade:8, title:'Procenty — zadania egzaminacyjne', description:'Zadania z egzaminów 2011–2026 i materiałów CKE. Rabaty, podwyżki, VAT i podatki.', questions:percentExamQuestions},

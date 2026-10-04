@@ -5,11 +5,11 @@ assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
  'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Potęgi', 'Procenty — zadania egzaminacyjne',
 ]);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
- 'Diagramy i wykresy', 'Prawdopodobieństwo', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne',
+ 'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne',
 ]);
-assert.equal(SCENARIOS.length,14);
+assert.equal(SCENARIOS.length,15);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,356);
+assert.equal(new Set(all.map(q=>q.id)).size,387);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -218,3 +218,40 @@ assert.equal(pick('p7-28'),`2^${180/20} = ${2**(180/20)}`);
 assert.equal(pick('p7-19a'),'(−1,5)^4');assert.equal(pick('p7-19b'),'(23)^5');
 assert.equal(plain(selected('p7-18a')).split(' · ').length,3);assert.equal(pick('p7-18b').split(' · ').length,4);assert.equal(pick('p7-18c').split(' · ').length,6);
 console.log('PASS: grade 7 powers — all 54 answer keys checked');
+
+// Liczby na osi: współrzędne liczone z danych rysunku (kreski), warunki i zbiory sprawdzane niezależnie.
+const axis=SCENARIOS.find(s=>s.id==='axis');
+assert.equal(axis.grade,8);assert.equal(axis.questions.length,31);assert.equal(new Set(axis.questions.map(q=>q.sourceGroup)).size,25);
+const axesOf=html=>[...html.matchAll(/data-axis="([^"]*)" data-points="([^"]*)" data-ray="([^"]*)"/g)].map(([,ab,pts,ray])=>{
+ const [a,b,seg]=ab.split(',').map(Number), at=k=>a+k*(b-a)/seg;
+ return {points:Object.fromEntries(pts?pts.split(';').map(p=>{const [n,k]=p.split(':');return [n,at(+k)];}):[]),
+  ray:ray?(([k,dir,closed])=>({v:at(+k),dir,closed:closed==='true'}))(ray.split(',')):null};});
+const val=s=>{const m=s.match(/^(\d+)\/(\d+)$/);return m?m[1]/m[2]:Number(s.replace(',','.').replace('−','-'));};
+const condOf=r=>`x ${r.dir==='right'?(r.closed?'≥':'>'):(r.closed?'≤':'<')} ${r.v}`;
+const parseCond=s=>{const [,op,v]=plain(s).replace(/&gt;/,'>').replace(/&lt;/,'<').match(/^x ([<>≤≥]) (.+)$/);return `x ${op} ${val(v)}`;};
+const sat=(r,v)=>r.dir==='right'?(r.closed?v>=r.v:v>r.v):(r.closed?v<=r.v:v<r.v);
+// Odczytywanie współrzędnych: dokładnie jedna odpowiedź równa wartości z rysunku.
+for(const q of axis.questions.filter(q=>q.q.includes('Jaka jest współrzędna punktu')&&q.q.includes('data-axis'))){
+ const name=plain(q.q).match(/punktu (\w)\?/)[1], v=axesOf(q.q)[0].points[name];
+ const vals=q.answers.map(a=>val(plain(a.replace(/<span class="frac"><span>(\d+)<\/span><span>(\d+)<\/span><\/span>/,'$1/$2'))));
+ assert(near(vals[q.correct],v),q.id);assert.equal(vals.filter(x=>near(x,v)).length,1,q.id);
+}
+assert.equal(axis.questions.filter(q=>q.q.includes('Jaka jest współrzędna punktu')&&q.q.includes('data-axis')).length,11);
+// Która oś: X ≠ 180 oraz zbiory x ≤ 5 i x > −2.
+const xs=axesOf(ask('os-7').q).map(a=>a.points.X);assert.deepEqual(xs.map(v=>v!==180).map((b,i)=>b?i:-1).filter(i=>i>=0),[ask('os-7').correct]);
+for(const [id,want] of [['os-8','x ≤ 5'],['os-9','x > -2']]){const c=axesOf(ask(id).q).map(a=>condOf(a.ray));assert.deepEqual(c.map((s,i)=>s===want?i:-1).filter(i=>i>=0),[ask(id).correct],id);}
+// Zapisz warunek: odpowiedź = warunek z rysunku, tylko jedna taka.
+for(const id of ['os-10','os-11','os-12','os-13','os-14']){const c=condOf(axesOf(ask(id).q)[0].ray);assert.equal(parseCond(selected(id)),c,id);assert.equal(ask(id).answers.filter(a=>parseCond(a)===c).length,1,id);}
+const rM1=axesOf(ask('os-19a').q)[0].ray, r4=axesOf(ask('os-21').q)[0].ray;
+assert.deepEqual(ask('os-19a').answers.filter(a=>sat(rM1,val(a))),[selected('os-19a')]);
+assert.equal(pick('os-19b'),truth(sat(rM1,-.5),!sat(rM1,-1)));
+assert.equal(pick('os-21'),truth(sat(r4,4),range(0,10).find(n=>sat(r4,n))===5));
+// Bez rysunków.
+const ints=range(-20,20);
+assert.equal(+pick('os-15'),range(0,20).find(n=>n>4));assert.equal(+pick('os-16'),range(0,20).find(n=>n>=-7));
+assert.equal(val(pick('os-17')),Math.max(...ints.filter(n=>n<-3)));
+assert.equal(+pick('os-18'),ints.filter(n=>n>-3&&n<=2).length);
+assert.deepEqual(ask('os-20').answers.filter(a=>!(val(a)>=-1.5)),[selected('os-20')]);
+assert.equal(val(pick('os-22')),2-(-3.5));assert.equal(val(pick('os-23')),(-4+10)/2);assert.equal(val(pick('os-24')),-7+5);
+assert.equal(+pick('os-25'),ints.filter(n=>n>-2.5&&n<1).length);
+console.log('PASS: number line — all 31 answer keys checked against the drawings');
