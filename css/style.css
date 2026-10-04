@@ -460,6 +460,7 @@ kbd { display: inline-block; min-width: 1.8em; padding: 1px 6px; border-radius: 
 .exam-chart { width: 100%; max-width: 460px; margin: 10px auto 14px; padding: 10px 4px 2px; border: 1px solid #465478; border-radius: 12px; background: #101b3b; }
 .exam-chart figcaption { font-size: clamp(13px, 2vw, 17px); line-height: 1.35; padding: 0 8px 6px; color: #f6c85c; }
 .exam-chart svg { display: block; width: 100%; height: auto; }
+.clock-chart { max-width: 230px; }
 .axis-row { display: flex; align-items: center; gap: 6px; }
 .axis-row b { color: #f6c85c; min-width: 1.4em; }
 .axis-row svg { flex: 1; min-width: 0; }

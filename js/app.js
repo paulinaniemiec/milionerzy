@@ -7,7 +7,7 @@ import { reportResult } from './results.js';
 let activeScenario = SCENARIOS[0];
 let QUESTIONS = activeScenario.questions.slice(0, 12);
 let selectedGrade = null;
-const GRADES = [5, 7, 8];
+const GRADES = [4, 5, 7, 8];
 if (SCENARIOS.some(s => !GRADES.includes(s.grade))) {
   throw new Error(`Każdy scenariusz musi mieć przypisaną klasę: ${GRADES.join(', ')}.`);
 }

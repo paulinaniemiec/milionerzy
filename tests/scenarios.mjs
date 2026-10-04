@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {SCENARIOS, makeRound, restoreRound} from '../js/scenarios.js';
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.title), ['Zegary, kalendarz i jednostki długości']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności', 'Liczby pierwsze i złożone', 'Potęgowanie', 'Cyfry rzymskie', 'Kolejność wykonywania działań']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
  'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Potęgi', 'Procenty — zadania egzaminacyjne',
@@ -7,9 +8,9 @@ assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
  'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne',
 ]);
-assert.equal(SCENARIOS.length,15);
+assert.equal(SCENARIOS.length,16);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,387);
+assert.equal(new Set(all.map(q=>q.id)).size,443);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -255,3 +256,38 @@ assert.deepEqual(ask('os-20').answers.filter(a=>!(val(a)>=-1.5)),[selected('os-2
 assert.equal(val(pick('os-22')),2-(-3.5));assert.equal(val(pick('os-23')),(-4+10)/2);assert.equal(val(pick('os-24')),-7+5);
 assert.equal(+pick('os-25'),ints.filter(n=>n>-2.5&&n<1).length);
 console.log('PASS: number line — all 31 answer keys checked against the drawings');
+
+// Klasa 4: czas, kalendarz (prawdziwe daty 2026), wieki, cyfry rzymskie, długości — klucze liczone niezależnie.
+const g4=SCENARIOS.find(s=>s.id==='time-length');
+assert.equal(g4.grade,4);assert.equal(g4.questions.length,56);assert.equal(new Set(g4.questions.map(q=>q.sourceGroup)).size,30);
+assert.deepEqual(SCENARIOS.filter(s=>s.questions===g4.questions).map(s=>s.grade),[4]);
+const hm=s=>{const [h,m]=s.split(':').map(Number);return h*60+m;}, clk=n=>`${Math.floor(((n%1440)+1440)%1440/60)}:${String(((n%60)+60)%60).padStart(2,'0')}`;
+assert.deepEqual(['k4-1a','k4-1b','k4-1c','k4-1d','k4-2'].map(pick).map(Number),[60/2,3*15,2*60,2*24,2*60/15]);
+assert.equal(pick('k4-3a'),clk(hm('9:50')+25));assert.equal(pick('k4-3b'),clk(hm('14:10')-35));
+assert.equal(pick('k4-4'),clk(hm('8:55')+45));assert.equal(pick('k4-5'),clk(hm('17:40')+95));assert.equal(pick('k4-7'),clk(hm('10:25')+50));
+const d6=hm('9:10')-hm('7:45');assert.equal(pick('k4-6'),`${Math.floor(d6/60)} h ${d6%60} min`);
+for(const id of ['k4-8','k4-9','k4-10']){const t=ask(id).q.match(/data-time="([^"]+)"/)[1];assert.equal(pick(id),t,id);assert.equal(ask(id).answers.filter(a=>a===t).length,1);}
+assert.equal(pick('k4-11a'),clk(hm('7:00')+12*60).padStart(5,'0'));
+const days=(y,m)=>new Date(Date.UTC(y,m,0)).getUTCDate();
+assert.deepEqual(['k4-12a','k4-12b','k4-12c'].map(pick).map(Number),[days(2026,5),days(2026,9),days(2026,2)]);
+const MONTHS=['styczeń','luty','marzec','kwiecień','maj','czerwiec','lipiec','sierpień','wrzesień','październik','listopad','grudzień'];
+assert.deepEqual(ask('k4-13').answers.filter(a=>days(2026,MONTHS.indexOf(a)+1)===30),[pick('k4-13')]);
+assert.deepEqual(['k4-14a','k4-14b','k4-14c'].map(pick).map(Number),[5*7,2*12,3*100]);
+assert.equal(pick('k4-15'),`${20-14+1} dni i ${20-14} noclegów`);
+const day=(m,d)=>Date.UTC(2026,m-1,d)/864e5, DOW=['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'], dow=(m,d)=>DOW[new Date(Date.UTC(2026,m-1,d)).getUTCDay()];
+assert.equal(+pick('k4-16'),day(11,3)-day(10,25));
+assert.equal(pick('k4-17'),'1 marca 2026 r.');assert.equal(new Date(Date.UTC(2026,1,28+1)).getUTCMonth(),2);
+assert.equal(dow(9,1),'wtorek');assert.equal(pick('k4-18'),dow(9,20));
+assert.equal(dow(6,27),'sobota');const dep=new Date(Date.UTC(2026,5,27+12));assert.equal(pick('k4-19'),`${dep.getUTCDate()} lipca, ${DOW[dep.getUTCDay()]}`);
+for(const id of ['k4-20a','k4-20b','k4-20c','k4-20d','k4-20e']){const y=+plain(ask(id).q).match(/\d+/)[0];assert.equal(pick(id),toRoman(Math.ceil(y/100)),id);}
+assert.deepEqual(ask('k4-21').answers.filter(y=>Math.ceil(y/100)===20),[pick('k4-21')]);
+for(const id of ['k4-22a','k4-22b','k4-22c','k4-22d']) assert.equal(+pick(id),fromRoman(plain(ask(id).q).match(/[IVX]+/)[0]),id);
+for(const id of ['k4-23a','k4-23b','k4-23c']){const n=+plain(ask(id).q).match(/\d+/)[0];assert.equal(pick(id),toRoman(n),id);assert.equal(ask(id).answers.filter(a=>fromRoman(plain(a))===n).length,1,id);}
+const r24=ask('k4-24').answers.map(a=>fromRoman(plain(a)));assert.equal(r24.indexOf(Math.max(...r24)),ask('k4-24').correct);
+assert(g4.questions.every(q=>!/[LCDM]/.test(plain(q.answers.join(' ')).replace(/[a-ząćęłńóśźż]+/gi,w=>/^[IVX]+$/.test(w)?w:''))),'grade 4 roman numerals only I, V, X');
+const mm=s=>[...s.matchAll(/(\d[\d ]*)\s*(mm|cm|km|m)\b/g)].reduce((t,[,v,u])=>t+Number(v.replace(/ /g,''))*{mm:1,cm:10,m:1000,km:1e6}[u],0);
+for(const [id,v] of [['k4-27a',1000],['k4-27b',30],['k4-27c',2e6],['k4-27d',5e5],['k4-28a',4*1000+50],['k4-28b',2500]]){assert.equal(mm(selected(id)),v,id);assert.equal(ask(id).answers.filter(a=>mm(a)===v).length,1,id);}
+assert.equal(mm(selected('k4-29')),1470-1320);
+const l30=ask('k4-30').answers.map(mm);assert.equal(l30.indexOf(Math.max(...l30)),ask('k4-30').correct);
+assert.deepEqual(['k4-26a','k4-26b','k4-26c','k4-26d','k4-26e','k4-25'].map(pick),['mm','m','km','cm','mm','centymetry']);
+console.log('PASS: grade 4 — all 56 answer keys checked (real 2026 calendar)');

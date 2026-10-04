@@ -60,8 +60,9 @@ Po zmianie `Code.gs` trzeba zrobić **Wdróż → Zarządzaj wdrożeniami → Ed
 
 Dotychczasowe 12 pytań znajduje się w [`js/questions.js`](js/questions.js).
 Nowe zestawy i katalog scenariuszy są w [`js/scenarios.js`](js/scenarios.js). Każdy scenariusz ma pole
-`grade` z wartością `5`, `7` albo `8` (lista dozwolonych klas: `GRADES` w `js/app.js`). Przed dodaniem następnego zestawu zapytaj właścicielkę projektu, do której klasy go przypisać.
+`grade` z wartością `4`, `5`, `7` albo `8` (lista dozwolonych klas: `GRADES` w `js/app.js`). Przed dodaniem następnego zestawu zapytaj właścicielkę projektu, do której klasy go przypisać.
 
+- Klasa 4: Zegary, kalendarz i jednostki długości — 56 pytań z 30 zadań (losowanie 12), na wzór testu „Zegary, kalendarz, cyfry rzymskie, wzdłuż i wszerz”: jednostki czasu, obliczenia na godzinach, tarcza zegara (rysowana w SVG), dni miesięcy i daty w 2026 r., wieki, cyfry rzymskie do XXXIX, mm/cm/m/km. Plik `js/grade4-sets.js`.
 - Klasa 5: Podzielność i wielokrotności — 30 autorskich pytań (losowanie 12), plik `js/grade5-sets.js`.
 - Klasa 5: Liczby pierwsze i złożone — 34 pytania z 29 zadań (losowanie 12): dzielniki, liczby pierwsze, rozkład na czynniki pierwsze. Plik `js/grade5-sets.js`.
 - Klasa 5: Potęgowanie — 34 pytania (losowanie 12): iloczyn ↔ potęga, obliczanie, odczytywanie („do kwadratu”, „do sześcianu”), kolejność działań.
