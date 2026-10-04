@@ -171,3 +171,55 @@ export const primeQuestions = [
  q('lp-28','Ile jest liczb pierwszych między 20 a 30?', ['1','2','3','4'],1,'21 = 3 · 7, 22, 24, 26, 28 są parzyste, 25 = 5 · 5, 27 = 3 · 9. Pierwsze są tylko 23 i 29 — razem <b>2</b>.'),
  q('lp-29','Które liczby to <b>wszystkie dzielniki</b> liczby 30?', ['1, 2, 3, 5, 6, 10, 15, 30','2, 3, 5','1, 2, 3, 5, 10, 15, 30','1, 3, 5, 6, 10, 30'],0,'Pary: 1 · 30, 2 · 15, 3 · 10, 5 · 6. Dzielniki: <b>1, 2, 3, 5, 6, 10, 15, 30</b>. 2, 3, 5 to tylko dzielniki pierwsze.'),
 ];
+
+// Klasa 5: kolejność wykonywania działań — co najpierw, wynik, porównywanie, zadania tekstowe.
+// Wariant „a” pyta o pierwsze działanie, „b” o wynik tego samego wyrażenia (jedna grupa).
+const first = (e) => `Które działanie wykonamy <b>jako pierwsze</b> w wyrażeniu <b>${e}</b>?`;
+const result = (e) => `Oblicz: <b>${e}</b>`;
+const compare = (a, b) => `Które wyrażenie ma większą wartość?<div class="task-statements">A = ${a}<br>B = ${b}</div>`;
+const AB = ['A','B','Mają równe wartości','Nie da się porównać'];
+const prices = 'Cennik: <b>zeszyt — 3 zł</b>, <b>ołówek — 2 zł</b>.<br>';
+const shop = 'Ola kupiła 3 batoniki po 4 zł i 2 soki po 5 zł. Zapłaciła banknotem 50 zł.';
+
+export const orderQuestions = [
+ qv('kd-1a',first('4 + 6 · 3'), ['4 + 6','6 · 3','4 + 3','Kolejność nie ma znaczenia'],1,'Mnożenie i dzielenie wykonujemy <b>przed</b> dodawaniem i odejmowaniem. Najpierw <b>6 · 3</b>.'),
+ qv('kd-1b',result('4 + 6 · 3'), ['30','22','13','24'],1,'Najpierw mnożenie: 6 · 3 = 18, potem 4 + 18 = <b>22</b>. Wynik 30 to (4 + 6) · 3.'),
+ qv('kd-2a',first('(9 − 4) · 2'), ['9 − 4','4 · 2','9 · 2','9 − 2'],0,'Działania w nawiasie wykonujemy najpierw: <b>9 − 4</b>.'),
+ qv('kd-2b',result('(9 − 4) · 2'), ['10','1','14','18'],0,'Nawias: 9 − 4 = 5, potem 5 · 2 = <b>10</b>. Wynik 1 to 9 − 4 · 2, czyli bez nawiasu.'),
+ qv('kd-3a',first('20 − 12 : 4 + 1'), ['20 − 12','12 : 4','4 + 1','20 + 1'],1,'Dzielenie ma pierwszeństwo przed odejmowaniem i dodawaniem: najpierw <b>12 : 4</b>.'),
+ qv('kd-3b',result('20 − 12 : 4 + 1'), ['3','18','16','9'],1,'12 : 4 = 3. Potem od lewej: 20 − 3 = 17, 17 + 1 = <b>18</b>.'),
+ qv('kd-4a',first('18 : 3 · 2'), ['18 : 3','3 · 2','18 · 2','Kolejność nie ma znaczenia'],0,'Mnożenie i dzielenie są „równoważne” — wykonujemy je <b>od lewej do prawej</b>. Najpierw <b>18 : 3</b>.'),
+ qv('kd-4b',result('18 : 3 · 2'), ['3','12','9','36'],1,'Od lewej: 18 : 3 = 6, potem 6 · 2 = <b>12</b>. Wynik 3 powstaje, gdy błędnie zaczniemy od 3 · 2.'),
+ qv('kd-5a',first('30 − 8 + 5'), ['30 − 8','8 + 5','30 + 5','8 − 5'],0,'Dodawanie i odejmowanie wykonujemy <b>od lewej do prawej</b>. Najpierw <b>30 − 8</b>.'),
+ qv('kd-5b',result('30 − 8 + 5'), ['17','27','43','25'],1,'Od lewej: 30 − 8 = 22, 22 + 5 = <b>27</b>. Wynik 17 to 30 − (8 + 5).'),
+ qv('kd-6a',first(`5 + 2 · ${p(3,2)}`), ['5 + 2','2 · 3',p(3,2),'5 + 3'],2,`Potęgowanie wykonujemy przed mnożeniem i dodawaniem. Najpierw <b>${p(3,2)}</b>.`),
+ qv('kd-6b',result(`5 + 2 · ${p(3,2)}`), ['41','23','63','49'],1,`${p(3,2)} = 9, potem 2 · 9 = 18, na końcu 5 + 18 = <b>23</b>.`),
+ qv('kd-7a',first('40 : [2 · (7 − 3)]'), ['40 : 2','2 · 7','7 − 3','2 · 3'],2,'Najpierw nawias okrągły, który jest najgłębiej: <b>7 − 3</b>. Potem nawias kwadratowy.'),
+ qv('kd-7b',result('40 : [2 · (7 − 3)]'), ['5','80','16','10'],0,'7 − 3 = 4, 2 · 4 = 8, 40 : 8 = <b>5</b>. Wynik 80 to 40 : 2 · 4, czyli bez nawiasu kwadratowego.'),
+ q('kd-8',result('(4 + 6) · 3'), ['22','30','13','18'],1,'Nawias: 4 + 6 = 10, potem 10 · 3 = <b>30</b>.'),
+ q('kd-9',result('24 − 3 · (10 − 6)'), ['84','12','18','60'],1,'Nawias: 10 − 6 = 4. Mnożenie: 3 · 4 = 12. Odejmowanie: 24 − 12 = <b>12</b>.'),
+ q('kd-10',result('6 · 5 − 4 · 3'), ['78','18','54','42'],1,'Oba mnożenia najpierw: 30 i 12. Potem 30 − 12 = <b>18</b>.'),
+ q('kd-11',result('[(8 + 4) : 3 − 1] · 5'), ['15','55','10','3'],0,'8 + 4 = 12, 12 : 3 = 4, 4 − 1 = 3, a 3 · 5 = <b>15</b>.'),
+ q('kd-12',result(`${p(2,3)} + 4 · 5`), ['60','28','50','26'],1,`${p(2,3)} = 8, 4 · 5 = 20, 8 + 20 = <b>28</b>.`),
+ q('kd-13',result(`${p(10,2)} − ${p(6,2)}`), ['16','64','4','136'],1,`${p(10,2)} = 100, ${p(6,2)} = 36, 100 − 36 = <b>64</b>. Wynik 16 to (10 − 6)<sup>2</sup>.`),
+ q('kd-14',result('36 : (2 + 7) · 2'), ['2','8','18','20'],1,'Nawias: 2 + 7 = 9. Potem od lewej: 36 : 9 = 4, 4 · 2 = <b>8</b>.'),
+ q('kd-15',result('7 · 0 + 7 : 1'), ['0','7','14','1'],1,'7 · 0 = 0, 7 : 1 = 7, 0 + 7 = <b>7</b>.'),
+ q('kd-16',compare('3 + 4 · 5','(3 + 4) · 5'), AB,1,'A = 3 + 20 = 23, B = 7 · 5 = 35. Większe jest <b>B</b>.'),
+ q('kd-17',compare('48 : 4 · 2','48 : (4 · 2)'), AB,0,'A = 12 · 2 = 24, B = 48 : 8 = 6. Większe jest <b>A</b>.'),
+ q('kd-18',compare('50 − 20 − 10','50 − (20 − 10)'), AB,1,'A = 30 − 10 = 20, B = 50 − 10 = 40. Większe jest <b>B</b>.'),
+ q('kd-19',compare(`2 · ${p(3,2)}`,'(2 · 3)<sup>2</sup>'), AB,1,`A = 2 · 9 = 18, B = ${p(6,2)} = 36. Większe jest <b>B</b>.`),
+ q('kd-20',compare('12 + 8 : 4','12 : 4 + 8'), AB,0,'A = 12 + 2 = 14, B = 3 + 8 = 11. Większe jest <b>A</b>.'),
+ q('kd-21',compare('6 · 4 : 2','6 · (4 : 2)'), AB,2,'A = 24 : 2 = 12, B = 6 · 2 = 12. Wartości są <b>równe</b>.'),
+ q('kd-22','Które wyrażenie ma <b>największą</b> wartość?', ['2 + 3 · 4','(2 + 3) · 4','2 · 3 + 4','2 · (3 + 4)'],1,'2 + 12 = 14; 5 · 4 = <b>20</b>; 6 + 4 = 10; 2 · 7 = 14. Największe jest <b>(2 + 3) · 4</b>.'),
+ q('kd-23',`${prices}Kasia kupiła 4 zeszyty i 1 ołówek. Którym wyrażeniem obliczysz, ile zapłaciła?`, ['4 · 3 + 2','(4 + 1) · 3','4 · (3 + 2)','4 + 3 + 2'],0,'4 zeszyty po 3 zł to 4 · 3, do tego ołówek 2 zł: <b>4 · 3 + 2</b> = 14 zł.'),
+ q('kd-24',`${prices}Tomek kupił 2 zeszyty i 2 ołówki. Którym wyrażeniem obliczysz, ile zapłacił?`, ['2 · 3 + 2','2 · (3 + 2)','2 + 3 · 2','(2 + 2) · 3'],1,'Tomek kupił 2 komplety „zeszyt + ołówek”: <b>2 · (3 + 2)</b> = 10 zł. Bez nawiasu wyszłoby za mało.'),
+ q('kd-25','Na parkingu stoją 4 samochody i 3 rowery. Samochód ma 4 koła, a rower 2. Którym wyrażeniem obliczysz liczbę wszystkich kół?', ['(4 + 3) · 4','4 · 4 + 3 · 2','4 · 4 + 3 + 2','4 + 4 · 3 + 2'],1,'Koła samochodów: 4 · 4 = 16, koła rowerów: 3 · 2 = 6. Razem <b>4 · 4 + 3 · 2</b> = 22.'),
+ q('kd-26','Przed przedszkolem stoi 5 rowerków trójkołowych i 2 hulajnogi (każda ma 2 kółka). Ile kółek mają razem?', ['19','21','14','35'],0,'5 · 3 + 2 · 2 = 15 + 4 = <b>19</b>. Wynik 21 to (5 + 2) · 3.'),
+ qv('kd-27a',`${shop} Którym wyrażeniem obliczysz, ile reszty dostała?`, ['50 − 3 · 4 + 2 · 5','50 − (3 · 4 + 2 · 5)','50 − 3 − 4 − 2 − 5','(50 − 3) · 4 − 2 · 5'],1,'Zakupy kosztowały 3 · 4 + 2 · 5 i całą tę kwotę odejmujemy od 50: <b>50 − (3 · 4 + 2 · 5)</b>. Bez nawiasu soki zostałyby dodane zamiast odjęte.'),
+ qv('kd-27b',`${shop} Ile reszty dostała?`, ['28 zł','48 zł','36 zł','22 zł'],0,'Batoniki: 3 · 4 = 12 zł, soki: 2 · 5 = 10 zł. Razem 22 zł, a reszta 50 − 22 = <b>28 zł</b>.'),
+ qv('kd-27c',`${shop} Które wyrażenie <b>również</b> pozwala obliczyć resztę?`, ['50 − 3 · 4 − 2 · 5','50 − 3 · 4 + 2 · 5','50 − (3 + 4 + 2 + 5)','50 − 3 · (4 + 2) · 5'],0,'Można odejmować po kolei: najpierw koszt batoników, potem soków: <b>50 − 3 · 4 − 2 · 5</b> = 50 − 12 − 10 = 28.'),
+ q('kd-28','Bilet do kina kosztuje 18 zł, a duży popcorn 12 zł. Rodzina kupiła 3 bilety i jeden popcorn. Ile zapłaciła?', ['90 zł','66 zł','54 zł','33 zł'],1,'3 · 18 + 12 = 54 + 12 = <b>66 zł</b>. Wynik 90 zł to 3 · (18 + 12), czyli trzy popcorny.'),
+ q('kd-29','Pani podzieliła 60 cukierków po równo między 5 dzieci, a każde dziecko zjadło od razu 4 cukierki. Ile cukierków zostało każdemu dziecku?', ['8','60','12','56'],0,'Każde dziecko dostało 60 : 5 = 12 cukierków, a po zjedzeniu 4 zostało 12 − 4 = <b>8</b>. Wyrażenie: 60 : 5 − 4.'),
+ q('kd-30','Gdzie wstawić nawias w wyrażeniu <b>3 + 5 · 2</b>, aby jego wartość wynosiła 16?', ['(3 + 5) · 2','3 + (5 · 2)','3 + 5 · (2)','Nie da się'],0,'(3 + 5) · 2 = 8 · 2 = <b>16</b>. Bez nawiasu, a także z nawiasem 3 + (5 · 2), wynik to 13.'),
+ pair('kd-31','20 − 5 · 2 = 30','20 : 5 · 2 = 8','FP','I: najpierw mnożenie, 20 − 10 = 10, a nie 30 — fałsz. II: od lewej, 20 : 5 = 4, 4 · 2 = 8 — prawda. <b>F, P</b>.'),
+];

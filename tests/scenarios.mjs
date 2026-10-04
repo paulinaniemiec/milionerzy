@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
 import {SCENARIOS, makeRound, restoreRound} from '../js/scenarios.js';
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności', 'Liczby pierwsze i złożone', 'Potęgowanie', 'Cyfry rzymskie']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności', 'Liczby pierwsze i złożone', 'Potęgowanie', 'Cyfry rzymskie', 'Kolejność wykonywania działań']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
  'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Procenty — zadania egzaminacyjne',
 ]);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
  'Diagramy i wykresy', 'Prawdopodobieństwo', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne',
 ]);
-assert.equal(SCENARIOS.length,12);
+assert.equal(SCENARIOS.length,13);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,262);
+assert.equal(new Set(all.map(q=>q.id)).size,302);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -161,3 +161,26 @@ assert.equal(pick('lp-22'),'7 i 13');assert(isPrime(7)&&isPrime(13)&&7+13===20&&
 assert.equal(pick('lp-24'),String(factor(96).length));
 assert.deepEqual(ask('lp-27').answers.filter(a=>factor(+a).includes(7)),[pick('lp-27')]);
 console.log('PASS: grade 5 — powers, Roman numerals and primes answer keys checked');
+
+// Kolejność działań: każdy wynik i porównanie liczone przez JavaScript (te same zasady kolejności).
+const order=SCENARIOS.find(s=>s.id==='order');
+assert.equal(order.grade,5);assert.equal(order.questions.length,40);assert.equal(new Set(order.questions.map(q=>q.sourceGroup)).size,31);
+const calc=t=>Function(`return ${plain(t).replace(/\^/g,'**').replace(/·/g,'*').replace(/:/g,'/').replace(/−/g,'-').replace(/\[/g,'(').replace(/\]/g,')')}`)();
+const exprOf=q=>plain(q.q).replace(/^.*?(Oblicz: |wyrażeniu )/,'').replace(/\?$/,'');
+for(const q of order.questions.filter(q=>q.q.startsWith('Oblicz'))) assert.equal(+pick(q.id),calc(exprOf(q)),q.id);
+for(const q of order.questions.filter(q=>q.q.startsWith('Które wyrażenie ma większą'))){const [a,b]=plain(q.q).match(/A = (.*)B = (.*)$/).slice(1).map(calc);assert.equal(pick(q.id),a>b?'A':b>a?'B':'Mają równe wartości',q.id);}
+// Pierwsze działanie, potem reszta wyrażenia od nowa.
+assert.deepEqual(['kd-1a','kd-2a','kd-3a','kd-4a','kd-5a','kd-6a','kd-7a'].map(pick),['6 · 3','9 − 4','12 : 4','18 : 3','30 − 8','3^2','7 − 3']);
+const vals=id=>ask(id).answers.map(a=>calc(a));
+assert.equal(vals('kd-22').indexOf(Math.max(...vals('kd-22'))),ask('kd-22').correct);
+assert.equal(calc(pick('kd-23')),4*3+2);assert.deepEqual(vals('kd-23').filter(v=>v===14).length,1);
+assert.equal(calc(pick('kd-24')),2*3+2*2);assert.deepEqual(vals('kd-24').filter(v=>v===10).length,1);
+assert.equal(calc(pick('kd-25')),4*4+3*2);assert.deepEqual(vals('kd-25').filter(v=>v===22).length,1);
+assert.equal(+pick('kd-26'),5*3+2*2);
+assert.deepEqual(vals('kd-27a').map(v=>v===28),[false,true,false,false]);assert.equal(pick('kd-27b'),`${50-(3*4+2*5)} zł`);
+assert.deepEqual(vals('kd-27c').map(v=>v===28),[true,false,false,false]);
+assert.equal(pick('kd-28'),`${3*18+12} zł`);assert.equal(+pick('kd-29'),60/5-4);
+assert.deepEqual(ask('kd-30').answers.slice(0,3).map(calc).map(v=>v===16),[true,false,false]);
+assert.equal(pick('kd-31'),truth(20-5*2===30,20/5*2===8));
+assert.equal(order.questions.filter(q=>q.q.startsWith('Które wyrażenie ma większą')).length,6);
+console.log('PASS: order of operations — all 40 answer keys checked');

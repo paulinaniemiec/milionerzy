@@ -1,8 +1,8 @@
 # Milionerzy – matematyka, klasy 5, 7 i 8
 
 Teleturniej w stylu *Milionerów* z wyborem klasy, a następnie zestawu pytań.
-Klasa 5 ma cztery zestawy: podzielność i wielokrotności, liczby pierwsze i złożone, potęgowanie oraz cyfry rzymskie, klasa 7 cztery zestawy o procentach, a klasa 8 cztery zestawy: diagramy, prawdopodobieństwo, przygotowanie do egzaminu i procenty.
-Zestaw „Procenty — zadania egzaminacyjne” jest wspólny dla klas 7 i 8. Łącznie jest 12 scenariuszy (262 unikalne pytania), 12 pytań w jednej rozgrywce, drabinka 500 zł → 1 000 000 zł,
+Klasa 5 ma pięć zestawów: podzielność i wielokrotności, liczby pierwsze i złożone, potęgowanie, cyfry rzymskie oraz kolejność wykonywania działań, klasa 7 cztery zestawy o procentach, a klasa 8 cztery zestawy: diagramy, prawdopodobieństwo, przygotowanie do egzaminu i procenty.
+Zestaw „Procenty — zadania egzaminacyjne” jest wspólny dla klas 7 i 8. Łącznie jest 13 scenariuszy (302 unikalne pytania), 12 pytań w jednej rozgrywce, drabinka 500 zł → 1 000 000 zł,
 progi gwarantowane (1000 zł i 40 000 zł), trzy koła ratunkowe i pełna oprawa dźwiękowa.
 
 Działa w przeglądarce na każdym urządzeniu: tablica interaktywna / rzutnik, laptop, tablet, telefon.
@@ -66,6 +66,7 @@ Nowe zestawy i katalog scenariuszy są w [`js/scenarios.js`](js/scenarios.js). K
 - Klasa 5: Liczby pierwsze i złożone — 34 pytania z 29 zadań (losowanie 12): dzielniki, liczby pierwsze, rozkład na czynniki pierwsze. Plik `js/grade5-sets.js`.
 - Klasa 5: Potęgowanie — 34 pytania (losowanie 12): iloczyn ↔ potęga, obliczanie, odczytywanie („do kwadratu”, „do sześcianu”), kolejność działań.
 - Klasa 5: Cyfry rzymskie — 40 pytań z 36 zadań (losowanie 12): odczytywanie i zapisywanie liczb, daty z obrazów i budowli, działania, zamazane liczby. Ilustracje w `images/roman/` pochodzą z Wikimedia Commons: obrazy Jana Matejki (domena publiczna), zdjęcie Kolumny Zygmunta (Adrian Grycuk, CC BY-SA 3.0 PL) i Pałacu Kultury (Kallerna, CC BY-SA 4.0) — autorzy są podpisani pod zdjęciami w grze.
+- Klasa 5: Kolejność wykonywania działań — 40 pytań z 31 zadań (losowanie 12): które działanie najpierw, wynik, porównywanie wyrażeń, zadania tekstowe (wybór wyrażenia).
 - Klasa 7: Procenty na rozgrzewkę — 16 wariantów z 12 zadań źródłowych (4 zadania uzupełniające z pozostałych screenów).
 - Klasa 7: Procenty w życiu, zestaw 1 — 25 pytań (losowanie 12).
 - Klasa 7: Procenty w praktyce, zestaw 2 — 19 pytań (losowanie 12).
