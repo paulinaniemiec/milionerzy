@@ -137,3 +137,65 @@ export const axisQuestions4 = [
  q('o4-18','Która liczba leży na osi liczbowej dokładnie <b>w połowie</b> między 20 i 30?', ['22','25','26','50'],1,'Od 20 do 30 jest 10, połowa to 5. 20 + 5 = <b>25</b>.'),
  q('o4-19','Punkt <i>A</i> oznacza na osi liczbę 40. Punkt <i>B</i> leży 3 odcinki na prawo od <i>A</i>, a każdy odcinek to 5. Jaką liczbę oznacza <i>B</i>?', ['43','45','55','70'],2,'3 odcinki po 5 to 15. 40 + 15 = <b>55</b>. Wynik 43 to dodanie samej liczby odcinków.'),
 ];
+
+// Klasa 4: dodawanie i odejmowanie w pamięci — przez próg dziesiątkowy, pełne setki i tysiące, okienka,
+// nazwy liczb w działaniach i zadania tekstowe. Błędne odpowiedzi to typowe pomyłki (zgubione przeniesienie,
+// odejmowanie mniejszej cyfry od większej, suma zamiast różnicy).
+const calc = (id, expr, answers, correct, explain) => q(id, `Ile to <b>${expr}</b>?`, answers, correct, explain);
+const BOX = '<span class="answer-box" role="img" aria-label="okienko"></span>';
+// Kwadrat magiczny: puste pola i znak zapytania; data-cells pozwala testom sprawdzić klucz.
+const MAGIC = [[5, '?', 9], ['', 8, ''], ['', '', 11]];
+const magic = `<div class="task-table-wrap"><table class="task-table magic-square" data-cells="${MAGIC.flat().join(',')}"><caption>Kwadrat magiczny</caption><tbody>${MAGIC.map(row => `<tr>${row.map(v => `<td>${v}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+const MAGIC_RULE = 'W tym kwadracie suma liczb w każdym wierszu, w każdej kolumnie i na każdej przekątnej jest taka sama.';
+
+export const additionQuestions4 = [
+ // Dwucyfrowe przez próg dziesiątkowy
+ calc('d4-1a','47 + 8',['45','54','55','65'],2,'47 + 3 = 50, zostaje jeszcze 5: 50 + 5 = <b>55</b>.'),
+ calc('d4-1b','9 + 66',['65','74','75','85'],2,'66 + 4 = 70, zostaje jeszcze 5: 70 + 5 = <b>75</b>. Kolejność składników nie zmienia sumy.'),
+ calc('d4-1c','58 + 27',['75','81','85','95'],2,'58 + 20 = 78, a 78 + 7 = 85. Wynik <b>85</b>. Odpowiedź 75 to zgubiona dziesiątka z 8 + 7 = 15.'),
+ calc('d4-2a','63 − 7',['54','56','64','66'],1,'63 − 3 = 60, trzeba odjąć jeszcze 4: 60 − 4 = <b>56</b>. Wynik 64 wychodzi, gdy od 7 odejmiemy 3 zamiast od 3 odjąć 7.'),
+ calc('d4-2b','92 − 36',['46','56','64','66'],1,'92 − 30 = 62, a 62 − 6 = <b>56</b>. Sprawdzenie: 56 + 36 = 92.'),
+ calc('d4-2c','81 − 45',['34','36','44','46'],1,'81 − 40 = 41, a 41 − 5 = <b>36</b>. Sprawdzenie: 36 + 45 = 81.'),
+ // Pełne setki i tysiące
+ calc('d4-3a','700 + 600',['130','1200','1300','13 000'],2,'7 setek + 6 setek = 13 setek, czyli <b>1300</b>.'),
+ calc('d4-3b','2800 + 400',['2840','3100','3200','6800'],2,'2800 + 200 = 3000, zostaje jeszcze 200: <b>3200</b>.'),
+ calc('d4-3c','4600 + 70',['4607','4670','4760','5300'],1,'Do 4600 dodajemy 7 dziesiątek: <b>4670</b>. Setki się nie zmieniają.'),
+ calc('d4-3d','400 + 3800',['3840','4100','4200','7800'],2,'3800 + 200 = 4000, zostaje jeszcze 200: <b>4200</b>.'),
+ calc('d4-4a','1200 − 500',['600','700','800','1700'],1,'12 setek − 5 setek = 7 setek, czyli <b>700</b>.'),
+ calc('d4-4b','6000 − 400',['2000','5400','5600','6400'],2,'6000 − 1000 = 5000, a 1000 − 400 = 600. Razem <b>5600</b>. Wynik 2000 to odjęcie 4000 zamiast 400.'),
+ calc('d4-4c','910 − 50',['410','860','870','960'],1,'910 − 10 = 900, trzeba odjąć jeszcze 40: 900 − 40 = <b>860</b>.'),
+ // Okienka i liczby szukane
+ q('d4-5a',`Jaką liczbę trzeba wpisać w okienko?<div class="task-statements">${BOX} − 15 = 28</div>`,['13','33','42','43'],3,'Szukamy odjemnej: dodajemy różnicę i odjemnik. 28 + 15 = <b>43</b>. Sprawdzenie: 43 − 15 = 28.'),
+ q('d4-5b',`Jaką liczbę trzeba wpisać w okienko?<div class="task-statements">34 + ${BOX} = 61</div>`,['27','33','37','95'],0,'Szukamy składnika: od sumy odejmujemy drugi składnik. 61 − 34 = <b>27</b>. Sprawdzenie: 34 + 27 = 61.'),
+ q('d4-5c',`Jaką liczbę trzeba wpisać w okienko?<div class="task-statements">72 − ${BOX} = 38</div>`,['34','44','46','110'],0,'Szukamy odjemnika: od odjemnej odejmujemy różnicę. 72 − 38 = <b>34</b>. Sprawdzenie: 72 − 34 = 38.'),
+ q('d4-6','Od jakiej liczby trzeba odjąć 9, aby otrzymać 26?',['17','27','35','37'],2,'Dodajemy: 26 + 9 = <b>35</b>. Sprawdzenie: 35 − 9 = 26. Wynik 17 to odjęcie 9 od 26.'),
+ q('d4-7','Jaką liczbę trzeba dodać do 48, aby otrzymać 75?',['23','27','33','123'],1,'Odejmujemy: 75 − 48 = <b>27</b>. Sprawdzenie: 48 + 27 = 75.'),
+ // Sprawdzanie i nazwy
+ q('d4-8','Którym działaniem sprawdzisz, czy odejmowanie <b>83 − 46 = 37</b> jest wykonane poprawnie?',['37 + 46','83 + 46','83 + 37','46 − 37'],0,'Różnica + odjemnik = odjemna. 37 + 46 = 83 — zgadza się, więc odejmowanie jest dobre. Odpowiedź: <b>37 + 46</b>.'),
+ q('d4-9','Jarek obliczył cztery odejmowania. Które z nich jest <b>błędne</b>?',['74 − 28 = 46','91 − 57 = 34','65 − 39 = 34','80 − 43 = 37'],2,'Sprawdzamy dodawaniem: 46 + 28 = 74, 34 + 57 = 91, 37 + 43 = 80. Ale 34 + 39 = 73, a nie 65. Błędne jest <b>65 − 39 = 34</b> — poprawny wynik to 26.'),
+ q('d4-10a','W działaniu <b>52 − 17 = 35</b> liczba 52 to:',['składnik','odjemna','odjemnik','różnica'],1,'Liczba, od której odejmujemy, to <b>odjemna</b>. 17 to odjemnik, a 35 — różnica.'),
+ q('d4-10b','W działaniu <b>52 − 17 = 35</b> liczba 17 to:',['suma','odjemna','odjemnik','różnica'],2,'Liczba, którą odejmujemy, to <b>odjemnik</b>. 52 to odjemna, a 35 — różnica.'),
+ q('d4-10c','Jak nazywają się liczby, które do siebie dodajemy?',['składniki','czynniki','odjemniki','różnice'],0,'Dodawane liczby to <b>składniki</b>, a wynik dodawania to suma. Czynniki występują w mnożeniu.'),
+ q('d4-11a','Suma liczb 38 i 45 wynosi:',['7','73','83','93'],2,'Suma to wynik dodawania: 38 + 45 = <b>83</b>. Liczba 7 to ich różnica.'),
+ q('d4-11b','Różnica liczb 90 i 34 wynosi:',['56','64','66','124'],0,'Różnica to wynik odejmowania: 90 − 34 = <b>56</b>. Liczba 124 to ich suma.'),
+ q('d4-12','O ile liczba 85 jest większa od 49?',['36','44','46','134'],0,'„O ile większa” — odejmujemy: 85 − 49 = <b>36</b>. Sprawdzenie: 49 + 36 = 85.'),
+ // Porównywanie wyników
+ q('d4-13','Która suma jest <b>największa</b>?',['39 + 48','56 + 29','17 + 66','44 + 37'],0,'39 + 48 = 87, 56 + 29 = 85, 17 + 66 = 83, 44 + 37 = 81. Największa jest <b>39 + 48</b>.'),
+ q('d4-14','Która różnica jest <b>najmniejsza</b>?',['70 − 46','83 − 57','61 − 39','95 − 68'],2,'70 − 46 = 24, 83 − 57 = 26, 61 − 39 = 22, 95 − 68 = 27. Najmniejsza jest <b>61 − 39</b>.'),
+ // Zadania tekstowe
+ q('d4-15a','Tomek ma 46 naklejek, a Zosia 19. Ile naklejek mają razem?',['27','55','65','75'],2,'Razem — dodajemy: 46 + 19 = <b>65</b>.'),
+ q('d4-15b','Tomek ma 46 naklejek, a Zosia 19. O ile więcej naklejek ma Tomek niż Zosia?',['27','33','37','65'],0,'„O ile więcej” — odejmujemy: 46 − 19 = <b>27</b>. 65 to liczba naklejek razem.'),
+ q('d4-16','Antek przebiegł 38 okrążeń, a Wojtek o 14 okrążeń więcej. Ile okrążeń przebiegli razem?',['52','66','90','100'],2,'Wojtek: 38 + 14 = 52. Razem: 38 + 52 = <b>90</b>. 52 to tylko okrążenia Wojtka.'),
+ q('d4-17','Klasa 4a zebrała 54 kg kasztanów, a klasa 4b o 18 kg mniej. Ile kilogramów kasztanów zebrały obie klasy?',['36','72','90','126'],2,'Klasa 4b: 54 − 18 = 36 kg. Obie klasy: 54 + 36 = <b>90 kg</b>. 72 to dodanie 54 i 18.'),
+ q('d4-18','W bibliotece jest 90 książek przygodowych: 37 o piratach, a reszta o kosmosie. O ile więcej jest książek o kosmosie niż o piratach?',['16','24','53','127'],0,'O kosmosie: 90 − 37 = 53. Różnica: 53 − 37 = <b>16</b>. 53 to liczba książek o kosmosie.'),
+ q('d4-19','Ola miała 100 zł. Kupiła grę za 58 zł i kubek za 27 zł. Ile pieniędzy jej zostało?',['15','25','42','85'],0,'Wydała 58 + 27 = 85 zł. Zostało jej 100 − 85 = <b>15 zł</b>. 42 zł zostałoby po kupieniu samej gry.'),
+ q('d4-20','Kasia miała 80 zł. Za książkę zapłaciła 36 zł, a za puzzle 29 zł. O ile więcej zapłaciła za książkę niż za puzzle?',['7','13','15','65'],0,'Porównujemy ceny: 36 − 29 = <b>7 zł</b>. Kwota 80 zł nie jest tu potrzebna — 15 zł to reszta, która jej została.'),
+ q('d4-21','Sójka ukryła pod dębem 45 żołędzi i 16 orzechów laskowych, a pod bukiem 27 żołędzi i 8 orzechów laskowych. Ile wszystkich żołędzi i orzechów ukryła sójka?',['24','72','96','106'],2,'Żołędzie: 45 + 27 = 72. Orzechy: 16 + 8 = 24. Razem 72 + 24 = <b>96</b>.'),
+ q('d4-22','Różnica dwóch liczb wynosi 11 i jest o 14 mniejsza od ich sumy. Jakie to liczby?',['18 i 7','15 i 4','20 i 9','25 i 14'],0,'Suma jest o 14 większa od różnicy: 11 + 14 = 25. Wszystkie pary mają różnicę 11, ale sumę 25 ma tylko <b>18 i 7</b> (18 + 7 = 25).'),
+ // Kartoniki z cyframi od 1 do 9 (każda cyfra raz)
+ q('d4-23a',`Ala ma kartoniki z cyframi od 1 do 9 — każdą cyfrę raz. Układa je w okienkach działania <b>1${BOX} − ${BOX}</b>. Jaki <b>największy</b> wynik może otrzymać?`,['8','17','18','19'],2,'Pierwsza liczba ma być jak największa: 19. Odejmujemy jak najmniej — zostaje kartonik 1: 19 − 1 = <b>18</b>.'),
+ q('d4-23b',`Ala ma kartoniki z cyframi od 1 do 9 — każdą cyfrę raz. Układa je w okienkach działania <b>${BOX}00 − ${BOX}0</b>. Jaki <b>najmniejszy</b> wynik może otrzymać?`,['10','20','90','100'],0,'Pierwsza liczba ma być jak najmniejsza (100), a odejmujemy jak najwięcej (90): 100 − 90 = <b>10</b>.'),
+ // Kwadrat magiczny
+ q('d4-24a',`${magic}${MAGIC_RULE} Ile wynosi ta suma?`,['14','22','24','33'],2,'Na przekątnej znamy wszystkie liczby: 5 + 8 + 11 = <b>24</b>.'),
+ q('d4-24b',`${magic}${MAGIC_RULE} Jaką liczbę trzeba wpisać w miejsce znaku zapytania?`,['4','10','12','14'],1,'Suma na przekątnej: 5 + 8 + 11 = 24. W górnym wierszu: 24 − 5 − 9 = <b>10</b>.'),
+];

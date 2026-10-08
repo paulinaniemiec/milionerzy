@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {SCENARIOS, makeRound, restoreRound} from '../js/scenarios.js';
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.title), ['Zegary, kalendarz i jednostki długości', 'Oś liczbowa']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.title), ['Zegary, kalendarz i jednostki długości', 'Oś liczbowa', 'Dodawanie i odejmowanie']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności', 'Liczby pierwsze i złożone', 'Potęgowanie', 'Cyfry rzymskie', 'Kolejność wykonywania działań']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
  'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Potęgi', 'Procenty — zadania egzaminacyjne',
@@ -8,9 +8,9 @@ assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
  'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne',
 ]);
-assert.equal(SCENARIOS.length,17);
+assert.equal(SCENARIOS.length,18);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,476);
+assert.equal(new Set(all.map(q=>q.id)).size,517);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -318,3 +318,35 @@ assert.equal(+pick('o4-15'),4*25);assert.equal(+pick('o4-16'),(90-30)/10);
 const d17=ask('o4-17').answers.map(a=>Math.abs(a-50));assert.equal(d17.indexOf(Math.min(...d17)),ask('o4-17').correct);
 assert.equal(+pick('o4-18'),(20+30)/2);assert.equal(+pick('o4-19'),40+3*5);
 console.log('PASS: grade 4 number line — all 33 answer keys checked from visible labels');
+
+// Klasa 4: dodawanie i odejmowanie — każdy klucz liczony z treści zadania.
+{
+const add4=SCENARIOS.find(s=>s.id==='addition-4');
+assert.equal(add4.grade,4);assert.equal(add4.questions.length,41);assert.equal(new Set(add4.questions.map(q=>q.sourceGroup)).size,24);
+assert.deepEqual(SCENARIOS.filter(s=>s.questions===add4.questions).map(s=>s.grade),[4]);
+const ev=s=>s.replace(/\s/g,'').split(/(?=[+−])/).reduce((t,p)=>p[0]==='−'?t-p.slice(1):t+Number(p.replace('+','')),0);
+const only=(id,ok)=>assert.deepEqual(ask(id).answers.filter(ok),[selected(id)],id);
+const calcs=add4.questions.filter(q=>q.q.startsWith('Ile to'));assert.equal(calcs.length,13);
+for(const q of calcs){const v=ev(plain(q.q).slice(7,-1));only(q.id,a=>ev(a)===v);}
+for(const id of ['d4-5a','d4-5b','d4-5c']){
+ const st=ask(id).q.match(/task-statements">(.*?)<\/div>/)[1];
+ only(id,a=>{const [l,r]=plain(st.replace(/<span class="answer-box"[^>]*><\/span>/,a)).split('=');return ev(l)===+r;});
+}
+for(const [id,v] of [['d4-6',26+9],['d4-7',75-48],['d4-11a',38+45],['d4-11b',90-34],['d4-12',85-49],['d4-15a',46+19],['d4-15b',46-19],['d4-16',38+(38+14)],
+ ['d4-17',54+(54-18)],['d4-18',(90-37)-37],['d4-19',100-58-27],['d4-20',36-29],['d4-21',45+16+27+8]]) only(id,a=>+a===v);
+only('d4-8',a=>a.includes('+')&&ev(a)===83&&a.split(' + ').every(n=>['37','46'].includes(n)));
+only('d4-9',a=>{const [l,r]=a.split('=');return ev(l)!==+r;});
+assert.deepEqual(['d4-10a','d4-10b','d4-10c'].map(pick),['odjemna','odjemnik','składniki']);
+const s13=ask('d4-13').answers.map(ev);assert.equal(s13.indexOf(Math.max(...s13)),ask('d4-13').correct);assert.equal(new Set(s13).size,4);
+const s14=ask('d4-14').answers.map(ev);assert.equal(s14.indexOf(Math.min(...s14)),ask('d4-14').correct);assert.equal(new Set(s14).size,4);
+ask('d4-22').answers.forEach(a=>{const [x,y]=a.split(' i ').map(Number);assert.equal(x-y,11);});
+only('d4-22',a=>{const [x,y]=a.split(' i ').map(Number);return x+y===11+14;});
+const cards=range(1,9).flatMap(a=>range(1,9).filter(b=>b!==a).map(b=>[a,b]));
+assert.equal(+pick('d4-23a'),Math.max(...cards.map(([a,b])=>10+a-b)));assert.equal(+pick('d4-23b'),Math.min(...cards.map(([a,b])=>100*a-10*b)));
+const mc=ask('d4-24a').q.match(/data-cells="([^"]+)"/)[1].split(',');assert.equal(ask('d4-24b').q.match(/data-cells="([^"]+)"/)[1],mc.join(','));
+const S=+mc[0]+ +mc[4]+ +mc[8];assert.equal(+pick('d4-24a'),S);assert.equal(mc[1],'?');assert.equal(+pick('d4-24b'),S-mc[0]-mc[2]);
+// Kwadrat da się uzupełnić liczbami naturalnymi.
+const [a,,c,,e,,,,i]=mc.map(Number),b=S-a-c,g=S-c-e,d=S-a-g,f=S-d-e,h=S-b-e,sq=[[a,b,c],[d,e,f],[g,h,i]];
+[...sq,...[0,1,2].map(k=>sq.map(r=>r[k])),[a,e,i],[c,e,g]].forEach(l=>assert.equal(l.reduce((x,y)=>x+y),S));assert(sq.flat().every(n=>n>0));
+console.log('PASS: grade 4 addition and subtraction — all 41 answer keys computed independently');
+}
