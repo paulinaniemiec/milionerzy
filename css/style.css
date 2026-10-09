@@ -439,6 +439,7 @@ kbd { display: inline-block; min-width: 1.8em; padding: 1px 6px; border-radius: 
 .teacher-award img { display: block; width: 100%; height: auto; border-radius: 16px; border: 2px solid var(--gold); }
 .teacher-award figcaption { margin-top: 12px; line-height: 1.5; color: #fff1cd; }
 .teacher-award strong { display: block; }
+.award-password { display: inline-block; margin: 6px 0; padding: 4px 16px; border: 2px solid var(--gold); border-radius: 10px; color: var(--gold-hi); font-size: 28px; font-weight: 900; letter-spacing: .15em; }
 .award-pluses { color: var(--gold-hi); font-size: 36px; font-weight: 900; letter-spacing: .3em; margin-top: 6px; }
 #resume { height: auto; min-height: 58px; padding-top: 12px; padding-bottom: 12px; font-size: 14px; line-height: 1.4; }
 .stage-center:has(.banner:not([hidden])), .stage-center:has(.panel:not([hidden])) { min-height: 210px; }

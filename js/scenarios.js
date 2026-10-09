@@ -87,7 +87,7 @@ export const SCENARIOS = [
  // Przy dodawaniu kolejnego scenariusza zapytaj właścicielkę, do której klasy go przypisać.
  {id:'time-length', grade:4, title:'Zegary, kalendarz i jednostki długości', description:'Godziny i minuty, tarcza zegara, miesiące i daty, wieki, cyfry rzymskie, mm, cm, m i km.', questions:grade4Questions},
  {id:'axis-4', grade:4, title:'Oś liczbowa', description:'Jakie liczby oznaczono literami? Podpisy przy zerze, w środku osi i co kilka kresek.', questions:axisQuestions4},
- {id:'addition-4', grade:4, title:'Dodawanie i odejmowanie', description:'Rachunki w pamięci, pełne setki i tysiące, okienka, odjemna i odjemnik, zadania tekstowe i kwadrat magiczny.', questions:additionQuestions4},
+ {id:'addition-4', grade:4, title:'Dodawanie i odejmowanie', description:'Rachunki w pamięci, pełne setki i tysiące, okienka, odjemna i odjemnik, zadania tekstowe i kwadrat magiczny.', questions:additionQuestions4, award:{password:'AUTOBUSIK', pluses:2}},
  {id:'divisibility', grade:5, title:'Podzielność i wielokrotności', description:'Cechy podzielności przez 2, 3, 4, 5, 9 i 10 oraz wielokrotności liczb.', questions:divisibilityQuestions},
  {id:'primes', grade:5, title:'Liczby pierwsze i złożone', description:'Dzielniki, liczby pierwsze i złożone, rozkład na czynniki pierwsze.', questions:primeQuestions},
  {id:'powers', grade:5, title:'Potęgowanie', description:'Iloczyn jako potęga, obliczanie i odczytywanie potęg: do kwadratu, do sześcianu.', questions:powerQuestions},
