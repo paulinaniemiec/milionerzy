@@ -383,6 +383,9 @@ const DEFAULT_AWARD = {
   label: $('#award-pluses').getAttribute('aria-label'),
 };
 
+// 1 plus, 2–4 plusy, 5 plusów (ale 12–14 plusów).
+const plusWord = (n) => n === 1 ? 'plus' : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 'plusy' : 'plusów';
+
 function million() {
   S.outcome = 'won';
   recordResult();
@@ -414,7 +417,7 @@ function finish() {
   // Zestaw może mieć własną nagrodę: hasło do powiedzenia nauczycielce za plusy.
   const award = activeScenario.award;
   $('#award-caption').innerHTML = award
-    ? `Brawo! Hubert Urbański wręcza Ci milion! Twoje hasło:<br><span class="award-password">${award.password}</span><strong>Przyjdź do mnie i powiedz hasło, a dostaniesz za nie ${award.pluses} plusy!</strong>`
+    ? `Brawo! Hubert Urbański wręcza Ci milion! Twoje hasło:<br><span class="award-password">${award.password}</span><strong>Przyjdź do mnie i powiedz hasło, a dostaniesz za nie ${award.pluses} ${plusWord(award.pluses)}!</strong>`
     : DEFAULT_AWARD.caption;
   $('#award-pluses').textContent = award ? Array(award.pluses).fill('+').join(' ') : DEFAULT_AWARD.pluses;
   $('#award-pluses').setAttribute('aria-label', award ? `Plusy: ${award.pluses}` : DEFAULT_AWARD.label);

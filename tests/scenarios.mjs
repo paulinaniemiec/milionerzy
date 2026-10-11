@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {SCENARIOS, makeRound, restoreRound} from '../js/scenarios.js';
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.title), ['Zegary, kalendarz i jednostki długości', 'Oś liczbowa', 'Dodawanie i odejmowanie']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.title), ['Zegary, kalendarz i jednostki długości', 'Oś liczbowa', 'Dodawanie i odejmowanie', 'Szacowanie']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności', 'Liczby pierwsze i złożone', 'Potęgowanie', 'Cyfry rzymskie', 'Kolejność wykonywania działań']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
  'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Potęgi', 'Procenty — zadania egzaminacyjne',
@@ -8,9 +8,9 @@ assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
  'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne',
 ]);
-assert.equal(SCENARIOS.length,18);
+assert.equal(SCENARIOS.length,19);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,517);
+assert.equal(new Set(all.map(q=>q.id)).size,566);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -349,4 +349,60 @@ const S=+mc[0]+ +mc[4]+ +mc[8];assert.equal(+pick('d4-24a'),S);assert.equal(mc[1
 const [a,,c,,e,,,,i]=mc.map(Number),b=S-a-c,g=S-c-e,d=S-a-g,f=S-d-e,h=S-b-e,sq=[[a,b,c],[d,e,f],[g,h,i]];
 [...sq,...[0,1,2].map(k=>sq.map(r=>r[k])),[a,e,i],[c,e,g]].forEach(l=>assert.equal(l.reduce((x,y)=>x+y),S));assert(sq.flat().every(n=>n>0));
 console.log('PASS: grade 4 addition and subtraction — all 41 answer keys computed independently');
+}
+
+// Klasa 4: szacowanie — każdy klucz liczony z treści zadania.
+{
+const est=SCENARIOS.find(s=>s.id==='estimation-4');
+assert.equal(est.grade,4);assert.equal(est.questions.length,49);assert.equal(new Set(est.questions.map(q=>q.sourceGroup)).size,25);
+assert.deepEqual(SCENARIOS.filter(s=>s.questions===est.questions).map(s=>s.grade),[4]);
+assert.deepEqual(est.award,{password:'ZAKUPY',pluses:1});
+const num=s=>+s.replace(/\s/g,'');
+const ev=s=>s.replace(/\s/g,'').split(/(?=[+−])/).reduce((t,p)=>p[0]==='−'?t-p.slice(1):t+Number(p.replace('+','')),0);
+const only=(id,ok)=>assert.deepEqual(ask(id).answers.filter(ok),[selected(id)],id);
+// Znaczenie określeń: „prawie”, „niecałe”, „trochę mniej” — tuż poniżej; „trochę więcej/ponad” — tuż powyżej.
+const means=(text,n)=>{const x=num(text.match(/[\d ]+$/)[0]);
+ if(/^(prawie|niecałe|trochę mniej niż)/.test(text)) return n<x&&x-n<=50;
+ if(/^trochę (więcej niż|ponad)/.test(text)) return n>x&&n-x<=50;
+ if(/^około/.test(text)) return Math.abs(n-x)<=50;
+ if(/^ponad/.test(text)) return n>x;
+ throw new Error(text);};
+for(const id of ['s4-1a','s4-1b','s4-1c','s4-1d']) only(id,a=>means(a,+plain(ask(id).q).match(/\d+/)[0]));
+for(const id of ['s4-2a','s4-2b','s4-2c']) only(id,a=>means(plain(ask(id).q).match(/określenia (.*)\?/)[1],+a));
+for(const id of ['s4-3a','s4-3b','s4-3c','s4-3d']){const [,n,w]=plain(ask(id).q).match(/(\d+) to (.*) ___/);only(id,a=>means(`${w} ${a}`,+n));}
+for(const id of ['s4-4a','s4-4b','s4-4c']) only(id,a=>num(a)===ev(plain(ask(id).q).match(/działania (.*)\. Oszacuj/)[1]));
+// Hasło: litery od najmniejszego wyniku.
+const cells=[...ask('s4-5').q.matchAll(/<td>(.*?)<\/td>/g)].map(m=>m[1]),k=cells.length/2;
+assert.equal(pick('s4-5'),range(0,k-1).sort((i,j)=>ev(cells[i])-ev(cells[j])).map(i=>plain(cells[k+i])).join(''));
+assert.equal(pick('s4-5'),'SKLEP');
+// Szacunek z ramki: każda liczba zastąpiona bliską pełną liczbą.
+for(const id of ['s4-6a','s4-6b','s4-6c']){const t=plain(ask(id).q).match(/działania (.*)\?/)[1].split(' + ').map(Number);
+ only(id,a=>a.split(' + ').map(Number).every((v,i)=>Math.abs(v-t[i])<=50));}
+for(const id of ['s4-7a','s4-7b','s4-7c','s4-8a','s4-8b']){const v=ev(plain(ask(id).q).match(/działania (.*) to/)[1]),d=ask(id).answers.map(a=>Math.abs(num(a)-v));
+ assert.equal(d.indexOf(Math.min(...d)),ask(id).correct,id);assert(Math.min(...d)<=50,id);}
+for(const id of ['s4-9a','s4-9b']){const v=ev(plain(ask(id).q).match(/działania (.*)\?/)[1]);only(id,a=>{const [lo,hi]=a.match(/\d+/g).map(Number);return lo<=v&&v<hi&&hi-lo===100;});}
+for(const id of ['s4-10a','s4-10b']) only(id,a=>{const [l,r]=a.split('=');return ev(l)!==+r;});
+only('s4-11a',a=>ev(a)>1000);only('s4-11b',a=>ev(a)<500);
+assert.equal(pick('s4-12a'),48+33<90?'jest mniejszy od 90':'?');assert.equal(pick('s4-12b'),62+27>80?'jest większy od 80':'?');
+for(const [id,v] of [['s4-13a',38+47],['s4-13b',512+389]]){const d=ask(id).answers.map(a=>Math.abs(+a.match(/\d+$/)[0]-v));
+ assert.equal(d.indexOf(Math.min(...d)),ask(id).correct,id);assert(pick(id).startsWith('Błąd'),id);}
+for(const [id,v] of [['s4-14a',7429],['s4-14b',1125]]) only(id,a=>ev(a)===v);
+// Czy wystarczy: pierwsza kwota to budżet, pozostałe to ceny.
+for(const id of ['s4-15a','s4-15b','s4-15c']){const [b,...p]=[...plain(ask(id).q).matchAll(/(\d+) zł/g)].map(m=>+m[1]),left=b-p.reduce((x,y)=>x+y);
+ assert.equal(ask(id).correct,left>0?0:left===0?1:left>=-10?2:3,id);}
+const polaRows=[...ask('s4-16a').q.matchAll(/<td>(\d+) zł<\/td>/g)].map(m=>+m[1]),pola=polaRows.reduce((x,y)=>x+y);
+const near=(id,v)=>{const d=ask(id).answers.map(a=>Math.abs(+a.match(/\d+/)[0]-v));assert.equal(d.indexOf(Math.min(...d)),ask(id).correct,id);assert(Math.min(...d)<10,id);};
+near('s4-16a',pola);near('s4-16b',100-pola);assert.equal(ask('s4-16b').q.match(/<td>(\d+) zł<\/td>/g).length,4);
+const shop=Object.fromEntries([...ask('s4-17').q.matchAll(/<th scope="row">(.*?)<\/th><td>(\d+) zł/g)].map(m=>[m[1],+m[2]]));
+const stem={piórnik:'piórnik',książkę:'książka',farby:'farby',grę:'gra'};
+only('s4-17',a=>a.split(' i ').reduce((t,w)=>t+shop[stem[w]],0)<=50);
+const zl=(n,gr)=>n*100+gr;
+assert(5*zl(3,90)+6*zl(2,10)<=zl(40,0));near('s4-18',(5*zl(3,90)+6*zl(2,10))/100);assert(pick('s4-18').startsWith('Tak'));
+assert(8*zl(2,90)+4*zl(5,10)+zl(6,0)<=zl(70,0));near('s4-19',(8*zl(2,90)+4*zl(5,10)+zl(6,0))/100);assert(pick('s4-19').startsWith('Tak'));
+near('s4-20',4*19);
+{const d=ask('s4-21').answers.map(a=>Math.abs(num(a)-4870));assert.equal(d.indexOf(Math.min(...d)),ask('s4-21').correct);}
+near('s4-22',312+289);near('s4-23',503-198);
+{const d=ask('s4-24').answers.map(a=>Math.abs(num(a.replace('około ',''))-(1960+2030)));assert.equal(d.indexOf(Math.min(...d)),ask('s4-24').correct);}
+assert(7*9>2*24&&pick('s4-25').includes('więcej niż dwie doby'));near('s4-25',7*9);
+console.log('PASS: grade 4 estimation — all 49 answer keys computed independently');
 }

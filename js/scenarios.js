@@ -4,7 +4,7 @@ import { divisibilityQuestions, powerQuestions, romanQuestions, primeQuestions, 
 import { percentExamQuestions } from './percent-exam-sets.js';
 import { powerQuestions7 } from './grade7-sets.js';
 import { axisQuestions } from './axis-sets.js';
-import { grade4Questions, axisQuestions4, additionQuestions4 } from './grade4-sets.js';
+import { grade4Questions, axisQuestions4, additionQuestions4, estimationQuestions4 } from './grade4-sets.js';
 
 // Każdy wpis ma trwałe ID: zapis gry odtwarza dokładnie te same pytania.
 const q = (id, text, answers, correct, explain) => ({ id, sourceGroup: id.replace(/[a-z]+$/, ''), q: text, answers, correct, explain });
@@ -88,6 +88,7 @@ export const SCENARIOS = [
  {id:'time-length', grade:4, title:'Zegary, kalendarz i jednostki długości', description:'Godziny i minuty, tarcza zegara, miesiące i daty, wieki, cyfry rzymskie, mm, cm, m i km.', questions:grade4Questions},
  {id:'axis-4', grade:4, title:'Oś liczbowa', description:'Jakie liczby oznaczono literami? Podpisy przy zerze, w środku osi i co kilka kresek.', questions:axisQuestions4},
  {id:'addition-4', grade:4, title:'Dodawanie i odejmowanie', description:'Rachunki w pamięci, pełne setki i tysiące, okienka, odjemna i odjemnik, zadania tekstowe i kwadrat magiczny.', questions:additionQuestions4, award:{password:'AUTOBUSIK', pluses:2}},
+ {id:'estimation-4', grade:4, title:'Szacowanie', description:'Około, prawie, trochę ponad, niecałe. Który wynik jest prawdziwy? Czy wystarczy pieniędzy na zakupy?', questions:estimationQuestions4, award:{password:'ZAKUPY', pluses:1}},
  {id:'divisibility', grade:5, title:'Podzielność i wielokrotności', description:'Cechy podzielności przez 2, 3, 4, 5, 9 i 10 oraz wielokrotności liczb.', questions:divisibilityQuestions},
  {id:'primes', grade:5, title:'Liczby pierwsze i złożone', description:'Dzielniki, liczby pierwsze i złożone, rozkład na czynniki pierwsze.', questions:primeQuestions},
  {id:'powers', grade:5, title:'Potęgowanie', description:'Iloczyn jako potęga, obliczanie i odczytywanie potęg: do kwadratu, do sześcianu.', questions:powerQuestions},

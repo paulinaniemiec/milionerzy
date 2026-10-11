@@ -422,6 +422,8 @@ kbd { display: inline-block; min-width: 1.8em; padding: 1px 6px; border-radius: 
 .task-photo figcaption { margin-top: 6px; font-size: .7em; color: #c2cbe4; }
 .answer-box { display: inline-block; width: 1.3em; height: 1.3em; margin: 0 .12em; border: 2px solid currentColor; border-radius: 4px; vertical-align: -.25em; }
 .task-table.magic-square { width: auto; margin: 0 auto; font-size: clamp(18px, 3vw, 26px); }
+.task-table.receipt { width: auto; min-width: 14em; margin: 0 auto; }
+.receipt tbody th { text-align: left; }
 .magic-square td { width: 2.4em; height: 2.4em; padding: 0; }
 .roman { font-family: Georgia, 'Times New Roman', serif; letter-spacing: .06em; }
 .roman-big { display: block; margin: 12px 0; font-size: 1.6em; }

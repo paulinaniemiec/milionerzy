@@ -199,3 +199,78 @@ export const additionQuestions4 = [
  q('d4-24a',`${magic}${MAGIC_RULE} Ile wynosi ta suma?`,['14','22','24','33'],2,'Na przekątnej znamy wszystkie liczby: 5 + 8 + 11 = <b>24</b>.'),
  q('d4-24b',`${magic}${MAGIC_RULE} Jaką liczbę trzeba wpisać w miejsce znaku zapytania?`,['4','10','12','14'],1,'Suma na przekątnej: 5 + 8 + 11 = 24. W górnym wierszu: 24 − 5 − 9 = <b>10</b>.'),
 ];
+
+// Klasa 4: szacowanie — określenia „około”, „prawie”, „trochę ponad”, „niecałe”, wybór wyniku bez liczenia
+// dokładnie, szacunki z ramki i zakupy (także z groszami). Bez formalnych reguł zaokrąglania.
+const fits = (id, n, answers, correct, explain) => q(id, `Które określenie pasuje do liczby <b>${n}</b>?`, answers, correct, explain);
+const phrase = (id, text, answers, correct, explain) => q(id, `Która liczba pasuje do określenia <b>${text}</b>?`, answers, correct, explain);
+const fill = (id, text, answers, correct, explain) => q(id, `Uzupełnij zdanie.<div class="task-statements">${text} ___.</div>`, answers, correct, explain);
+const result = (id, expr, answers, correct, explain) => q(id, `Jedna z liczb jest wynikiem działania <b>${expr}</b>. Oszacuj, która.`, answers, correct, explain);
+const frame = (id, expr, answers, correct, explain) => q(id, `Które szacowanie pasuje do działania <b>${expr}</b>?`, answers, correct, explain);
+const about = (id, expr, answers, correct, explain) => q(id, `Wynik działania <b>${expr}</b> to około:`, answers, correct, explain);
+const enough = (id, text, who, correct, explain) => q(id, `${text} Czy wystarczy ${who} pieniędzy?`,
+ [`Tak, i zostanie ${who} trochę pieniędzy`, 'Tak, ale wyda wszystko co do złotówki', `Nie, zabraknie ${who} kilku złotych`, `Nie, zabraknie ${who} ponad 10 zł`], correct, explain);
+const pricesTable = (caption, items) => `<div class="task-table-wrap"><table class="task-table receipt"><caption>${caption}</caption><tbody>${items.map(([name, price]) => `<tr><th scope="row">${name}</th><td>${price} zł</td></tr>`).join('')}</tbody></table></div>`;
+// Hasło z liter: działania w tabeli, litery pod spodem.
+const SKLEP = [['E', '5012 − 2087'], ['S', '412 + 189'], ['P', '3870 + 4095'], ['K', '2103 − 1198'], ['L', '896 + 1004']];
+const lettersTable = `<div class="task-table-wrap"><table class="task-table letters"><tbody><tr>${SKLEP.map(([, expr]) => `<td>${expr}</td>`).join('')}</tr><tr>${SKLEP.map(([letter]) => `<td><b>${letter}</b></td>`).join('')}</tr></tbody></table></div>`;
+const POLA = [['sok', 11], ['ser', 19], ['chleb', 9], ['owoce', 22]];
+const KASIA = [['piórnik', 28], ['książka', 26], ['farby', 19], ['gra', 34]];
+
+export const estimationQuestions4 = [
+ // Określenia przy liczbach
+ fits('s4-1a',697,['ponad 700','około 600','prawie 700','trochę mniej niż 600'],2,'Do 700 brakuje tylko 3, więc 697 to <b>prawie 700</b>. Nie jest to „ponad 700”, bo 697 jest mniejsze od 700.'),
+ fits('s4-1b',412,['prawie 400','trochę więcej niż 400','trochę mniej niż 400','około 500'],1,'412 to o 12 więcej niż 400 — <b>trochę więcej niż 400</b>. „Prawie 400” oznaczałoby liczbę trochę mniejszą od 400.'),
+ fits('s4-1c',589,['trochę mniej niż 600','ponad 600','około 500','trochę więcej niż 600'],0,'Do 600 brakuje 11, więc 589 to <b>trochę mniej niż 600</b>.'),
+ fits('s4-1d',1004,['trochę mniej niż 1000','około 1400','ponad 1100','około 1000'],3,'1004 to tylko o 4 więcej niż 1000 — <b>około 1000</b>. Nie jest to „trochę mniej niż 1000”, bo 1004 jest większe od 1000.'),
+ phrase('s4-2a','trochę mniej niż 500',['487','512','389','550'],0,'Do 500 brakuje 13, więc <b>487</b> to trochę mniej niż 500. 512 i 550 są większe od 500, a 389 jest dużo mniejsze.'),
+ phrase('s4-2b','około 300',['352','248','296','402'],2,'<b>296</b> różni się od 300 tylko o 4. Pozostałe liczby są dalej: 352 i 248 o ponad 50, a 402 aż o ponad 100.'),
+ phrase('s4-2c','trochę ponad 800',['793','718','907','812'],3,'<b>812</b> to o 12 więcej niż 800. 793 i 718 są mniejsze od 800, a 907 to już ponad 900.'),
+ fill('s4-3a','2893 to prawie',['2800','2880','2900','3900'],2,'Do 2900 brakuje tylko 7, więc 2893 to prawie <b>2900</b>. 2800 i 2880 są mniejsze od 2893, a „prawie” oznacza, że trochę brakuje.'),
+ fill('s4-3b','678 to niecałe',['600','650','670','700'],3,'„Niecałe” oznacza, że trochę brakuje. Do 700 brakuje 22, więc 678 to niecałe <b>700</b>. Pozostałe liczby są mniejsze od 678.'),
+ fill('s4-3c','4206 to trochę ponad',['4250','4200','4300','5000'],1,'4206 to o 6 więcej niż 4200 — trochę ponad <b>4200</b>. Pozostałe liczby są większe od 4206.'),
+ fill('s4-3d','1030 to około',['1000','1100','1200','1300'],0,'1030 różni się od 1000 tylko o 30, a od 1100 aż o 70. 1030 to około <b>1000</b>.'),
+ // Który wynik jest prawdziwy
+ result('s4-4a','2214 + 3561',['577','5775','57 775','9775'],1,'2214 to około 2200, a 3561 to około 3600. 2200 + 3600 = 5800, więc wynik to <b>5775</b>. Pozostałe liczby są dużo mniejsze albo dużo większe.'),
+ result('s4-4b','845 − 72',['73','917','773','7773'],2,'845 to około 850, a 72 to około 70. 850 − 70 = 780, więc wynik to <b>773</b>. 917 wychodzi, gdy dodamy zamiast odjąć.'),
+ result('s4-4c','4127 + 693',['482','3434','48 200','4820'],3,'4127 to około 4100, a 693 to około 700. 4100 + 700 = 4800, więc wynik to <b>4820</b>. 3434 wychodzi przy odejmowaniu.'),
+ q('s4-5',`Oszacuj wyniki działań i ułóż litery od najmniejszego wyniku do największego. Jakie słowo powstanie?${lettersTable}`,['PELKS','SKLEP','KSLEP','SKELP'],1,'S: około 400 + 200 = 600. K: około 2100 − 1200 = 900. L: około 900 + 1000 = 1900. E: około 5000 − 2100 = 2900. P: około 3900 + 4100 = 8000. Słowo: <b>SKLEP</b>. PELKS to kolejność od największego.'),
+ // Szacunki z ramki i „około”
+ frame('s4-6a','718 + 196',['800 + 100','700 + 200','700 + 100','800 + 200'],1,'718 to około 700, a 196 to prawie 200: <b>700 + 200</b>, czyli około 900. Szacunek 800 + 100 daje 900, ale 718 nie jest bliskie 800, a 196 — 100.'),
+ frame('s4-6b','395 + 508',['300 + 500','400 + 600','300 + 600','400 + 500'],3,'395 to prawie 400, a 508 to trochę ponad 500: <b>400 + 500</b>, czyli około 900.'),
+ frame('s4-6c','152 + 997',['150 + 1000','100 + 900','200 + 900','150 + 900'],0,'152 to około 150, a 997 to prawie 1000: <b>150 + 1000</b>, czyli około 1150.'),
+ about('s4-7a','612 + 289',['800','900','1000','1100'],1,'612 to około 600, a 289 to około 300: 600 + 300 = <b>900</b>. Dokładnie: 901.'),
+ about('s4-7b','2980 + 1030',['3000','40 000','5000','4000'],3,'2980 to prawie 3000, a 1030 to około 1000: 3000 + 1000 = <b>4000</b>. Dokładnie: 4010.'),
+ about('s4-7c','481 + 312',['700','800','900','1000'],1,'481 to około 500, a 312 to około 300: 500 + 300 = <b>800</b>. Dokładnie: 793.'),
+ about('s4-8a','812 − 397',['300','1200','400','500'],2,'812 to około 800, a 397 to prawie 400: 800 − 400 = <b>400</b>. Dokładnie: 415. 1200 to suma, a nie różnica.'),
+ about('s4-8b','1000 − 489',['400','500','600','1500'],1,'489 to około 500: 1000 − 500 = <b>500</b>. Dokładnie: 511.'),
+ q('s4-9a','Między którymi pełnymi setkami leży wynik działania <b>487 + 236</b>?',['między 500 a 600','między 600 a 700','między 800 a 900','między 700 a 800'],3,'487 to około 490, a 236 to około 240: 490 + 240 = 730. Dokładnie 723 — wynik leży <b>między 700 a 800</b>.'),
+ q('s4-9b','Między którymi pełnymi setkami leży wynik działania <b>645 − 278</b>?',['między 200 a 300','między 300 a 400','między 400 a 500','między 900 a 1000'],1,'645 to około 650, a 278 to około 280: 650 − 280 = 370. Dokładnie 367 — wynik leży <b>między 300 a 400</b>. 900–1000 to suma tych liczb.'),
+ // Sprawdzanie szacowaniem
+ q('s4-10a','Oszacuj i wskaż działanie, w którym wynik jest <b>na pewno błędny</b>.',['389 + 412 = 801','596 + 207 = 803','298 + 499 = 697','704 + 195 = 899'],2,'298 to prawie 300, a 499 to prawie 500, więc wynik powinien być bliski 800, a nie 700. Błędne jest <b>298 + 499 = 697</b> (dobrze: 797).'),
+ q('s4-10b','Oszacuj i wskaż działanie, w którym wynik jest <b>na pewno błędny</b>.',['620 − 315 = 205','903 − 498 = 405','751 − 249 = 502','1000 − 601 = 399'],0,'620 to około 600, a 315 to około 300, więc wynik powinien być bliski 300, a nie 200. Błędne jest <b>620 − 315 = 205</b> (dobrze: 305).'),
+ q('s4-11a','Wynik którego działania jest <b>większy</b> od 1000?',['412 + 497','612 + 375','398 + 657','501 + 288'],2,'Szacujemy: 410 + 500 = 910, 610 + 380 = 990, 400 + 660 = 1060, 500 + 290 = 790. Ponad 1000 daje tylko <b>398 + 657</b> = 1055.'),
+ q('s4-11b','Wynik którego działania jest <b>mniejszy</b> od 500?',['704 − 285','812 − 268','903 − 389','1000 − 437'],0,'Szacujemy: 700 − 300 = 400, 800 − 270 = 530, 900 − 390 = 510, 1000 − 440 = 560. Poniżej 500 jest tylko <b>704 − 285</b> = 419.'),
+ q('s4-12a','Kuba oszacował sumę <b>48 + 33</b>, zamieniając obie liczby na <b>większe</b> pełne dziesiątki: 50 + 40 = 90. Co wiadomo o dokładnym wyniku?',['jest mniejszy od 90','jest równy 90','jest większy od 90','nic nie wiadomo'],0,'Obie liczby Kuba zastąpił większymi, więc szacunek jest za duży. Dokładny wynik <b>jest mniejszy od 90</b>: 48 + 33 = 81.'),
+ q('s4-12b','Zosia oszacowała sumę <b>62 + 27</b>, zamieniając obie liczby na <b>mniejsze</b> pełne dziesiątki: 60 + 20 = 80. Co wiadomo o dokładnym wyniku?',['jest mniejszy od 80','jest równy 80','jest większy od 80','nic nie wiadomo'],2,'Obie liczby Zosia zastąpiła mniejszymi, więc szacunek jest za mały. Dokładny wynik <b>jest większy od 80</b>: 62 + 27 = 89.'),
+ q('s4-13a','Antek obliczył, że <b>38 + 47 = 55</b>. Oszacuj wynik i oceń jego obliczenie.',['Błąd — wynik powinien być bliski 90','Dobrze — wynik powinien być bliski 50','Błąd — wynik powinien być bliski 900','Dobrze — wynik powinien być bliski 60'],0,'38 to około 40, a 47 to około 50: 40 + 50 = 90. Wynik 55 jest za mały — <b>błąd</b>. Dobrze: 85.'),
+ q('s4-13b','Kasia obliczyła, że <b>512 + 389 = 801</b>. Oszacuj wynik i oceń jej obliczenie.',['Dobrze — wynik powinien być bliski 800','Błąd — wynik powinien być bliski 900','Błąd — wynik powinien być bliski 100','Dobrze — wynik powinien być bliski 9000'],1,'512 to około 500, a 389 to około 400: 500 + 400 = 900. Wynik 801 jest za mały — <b>błąd</b>. Dobrze: 901.'),
+ q('s4-14a','Ola wykonała na kalkulatorze jedno z działań i pokazała wynik <b>7429</b>. Które działanie wykonała?',['924 − 457','6215 + 1214','8531 − 7406','358 + 4947'],1,'Szacujemy: 900 − 500 = 400, 6200 + 1200 = 7400, 8500 − 7400 = 1100, 400 + 5000 = 5400. Wynik 7429 pasuje do <b>6215 + 1214</b>.'),
+ q('s4-14b','Ola wykonała na kalkulatorze jedno z działań i pokazała wynik <b>1125</b>. Które działanie wykonała?',['924 − 457','6215 + 1214','8531 − 7406','358 + 4947'],2,'Szacujemy: 900 − 500 = 400, 6200 + 1200 = 7400, 8500 − 7400 = 1100, 400 + 5000 = 5400. Wynik 1125 pasuje do <b>8531 − 7406</b>.'),
+ // Zakupy
+ enough('s4-15a','Mama ma 100 zł. Chce kupić buty za 59 zł i czapkę za 38 zł.','jej',0,'59 to prawie 60, a 38 to prawie 40: razem niecałe 100 zł. Dokładnie 97 zł, więc <b>wystarczy i zostaną jej 3 zł</b>.'),
+ enough('s4-15b','Tata ma 200 zł. Chce kupić kurtkę za 128 zł i spodnie za 79 zł.','mu',2,'128 to około 130, a 79 to około 80: razem około 210 zł — więcej niż 200 zł. Dokładnie 207 zł, więc <b>zabraknie mu 7 zł</b>.'),
+ enough('s4-15c','Ola ma 50 zł. Chce kupić książkę za 24 zł i grę za 26 zł.','jej',1,'24 to trochę mniej niż 25, a 26 to trochę więcej niż 25 — razem około 50 zł. Dokładnie 24 + 26 = 50 zł, więc <b>wyda wszystko co do złotówki</b>.'),
+ q('s4-16a',`${pricesTable('Paragon Poli', POLA)}Ile mniej więcej zapłaciła Pola za zakupy?`,['około 40 zł','około 60 zł','około 80 zł','około 100 zł'],1,'Szacujemy: 10 + 20 + 10 + 20 = 60. Pola zapłaciła <b>około 60 zł</b> (dokładnie 61 zł).'),
+ q('s4-16b',`${pricesTable('Paragon Poli', POLA)}Pola zapłaciła banknotem 100 zł. Ile mniej więcej reszty dostała?`,['około 20 zł','około 40 zł','około 60 zł','około 80 zł'],1,'Zakupy to około 10 + 20 + 10 + 20 = 60 zł. Reszta: 100 − 60 = <b>około 40 zł</b> (dokładnie 39 zł).'),
+ q('s4-17',`${pricesTable('Ceny w sklepie', KASIA)}Kasia ma 50 zł. Które dwie rzeczy może kupić, żeby wystarczyło jej pieniędzy?`,['piórnik i książkę','książkę i grę','piórnik i farby','farby i grę'],2,'Piórnik to prawie 30 zł, a farby prawie 20 zł — razem mniej niż 50 zł (dokładnie 47 zł). Inne pary kosztują ponad 50 zł: 54 zł, 60 zł i 53 zł. Odpowiedź: <b>piórnik i farby</b>.'),
+ q('s4-18','Julek ma 40 zł. Chce kupić 5 zeszytów po 3 zł 90 gr i 6 długopisów po 2 zł 10 gr. Oszacuj, czy wystarczy mu pieniędzy.',['Tak — wyda około 32 zł','Tak — wyda około 20 zł','Nie — potrzebuje około 45 zł','Nie — potrzebuje około 60 zł'],0,'Zeszyt to prawie 4 zł: 5 · 4 zł = 20 zł. Długopis to trochę ponad 2 zł: 6 · 2 zł = 12 zł. Razem około 32 zł — mniej niż 40 zł, więc <b>wystarczy</b>. Dokładnie: 32 zł 10 gr.'),
+ q('s4-19','Pani Ola kupiła bukiet z 8 tulipanów po 2 zł 90 gr i 4 słoneczników po 5 zł 10 gr. Ozdobny papier kosztował 6 zł. Oszacuj, czy wystarczyło jej 70 zł.',['Nie — potrzebowała około 80 zł','Tak — wydała około 30 zł','Tak — wydała około 50 zł','Nie — potrzebowała około 100 zł'],2,'Tulipan to prawie 3 zł: 8 · 3 zł = 24 zł. Słonecznik to trochę ponad 5 zł: 4 · 5 zł = 20 zł. Z papierem: 24 + 20 + 6 = 50 zł — <b>wystarczyło</b>. Dokładnie: 49 zł 60 gr.'),
+ q('s4-20','Bilet do kina kosztuje 19 zł. Ile mniej więcej zapłacą za bilety 4 osoby?',['około 40 zł','około 60 zł','około 80 zł','około 100 zł'],2,'19 zł to prawie 20 zł: 4 · 20 zł = <b>około 80 zł</b> (dokładnie 76 zł).'),
+ // Zadania z życia
+ q('s4-21','Na mecz przyszło 4870 kibiców. Gazeta napisała, że było ich około:',['4000','5000','6000','48 000'],1,'Do 5000 brakuje tylko 130, a od 4000 dzieli nas aż 870. Kibiców było <b>około 5000</b>.'),
+ q('s4-22','Rodzina jechała na wakacje dwa dni. Pierwszego dnia przejechała 312 km, a drugiego 289 km. Około ile kilometrów przejechała?',['około 500 km','około 600 km','około 700 km','około 6000 km'],1,'312 to około 300, a 289 to około 300: 300 + 300 = <b>około 600 km</b> (dokładnie 601 km).'),
+ q('s4-23','W sklepie było rano 503 jajka. Do wieczora sprzedano 198 jajek. Około ile jajek zostało?',['około 700','około 400','około 300','około 200'],2,'503 to około 500, a 198 to prawie 200: 500 − 200 = <b>około 300</b> (dokładnie 305). 700 to suma, a nie różnica.'),
+ q('s4-24','Piekarnia sprzedała w poniedziałek 1960 bułek, a we wtorek 2030 bułek. Około ile bułek sprzedała w te dwa dni?',['około 3000','około 4000','około 5000','około 40 000'],1,'1960 to prawie 2000, a 2030 to około 2000: 2000 + 2000 = <b>około 4000</b> (dokładnie 3990).'),
+ q('s4-25','Ola śpi każdej nocy prawie 9 godzin. Ile mniej więcej godzin przesypia w ciągu tygodnia?',['około 60 godzin — więcej niż dwie doby','około 60 godzin — mniej niż dwie doby','około 16 godzin — mniej niż doba','około 90 godzin — prawie cztery doby'],0,'7 · 9 = 63, a Ola śpi trochę mniej niż 9 godzin — <b>około 60 godzin</b>. Dwie doby to 2 · 24 = 48 godzin, więc to <b>więcej niż dwie doby</b>.'),
+];
