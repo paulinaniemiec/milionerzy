@@ -3,14 +3,14 @@ import {SCENARIOS, makeRound, restoreRound} from '../js/scenarios.js';
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.title), ['Zegary, kalendarz i jednostki długości', 'Oś liczbowa', 'Dodawanie i odejmowanie', 'Szacowanie']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności', 'Liczby pierwsze i złożone', 'Potęgowanie', 'Cyfry rzymskie', 'Kolejność wykonywania działań']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
- 'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Potęgi', 'Procenty — zadania egzaminacyjne',
+ 'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Potęgi', 'Potęgi o tych samych podstawach', 'Procenty — zadania egzaminacyjne',
 ]);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
  'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne',
 ]);
-assert.equal(SCENARIOS.length,19);
+assert.equal(SCENARIOS.length,20);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,566);
+assert.equal(new Set(all.map(q=>q.id)).size,636);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -405,4 +405,40 @@ near('s4-22',312+289);near('s4-23',503-198);
 {const d=ask('s4-24').answers.map(a=>Math.abs(num(a.replace('około ',''))-(1960+2030)));assert.equal(d.indexOf(Math.min(...d)),ask('s4-24').correct);}
 assert(7*9>2*24&&pick('s4-25').includes('więcej niż dwie doby'));near('s4-25',7*9);
 console.log('PASS: grade 4 estimation — all 49 answer keys computed independently');
+}
+
+// Klasa 7: potęgi o tych samych podstawach — każdy klucz liczony z treści zadania.
+{
+const sb=SCENARIOS.find(s=>s.id==='same-base-7');
+assert.equal(sb.grade,7);assert.equal(sb.questions.length,70);assert.equal(new Set(sb.questions.map(q=>q.sourceGroup)).size,17);
+assert.deepEqual(SCENARIOS.filter(s=>s.questions===sb.questions).map(s=>s.grade),[7]);
+assert.deepEqual(sb.award,{password:'MATEMATYKA TO WF DLA MÓZGU',pluses:2});
+// Wartość wyrażenia z HTML: ułamki, potęgi, liczby ujemne, przecinki; litery zastępujemy liczbą 1,3.
+const val=html=>Function(`return ${plain(html.replace(/<span class="frac"><span>(.*?)<\/span><span>(.*?)<\/span><\/span>/g,'(($1)/($2))'))
+ .replace(/\s/g,'').replace(/−/g,'-').replace(/,/g,'.').replace(/·/g,'*').replace(/:/g,'/').replace(/\^/g,'**')
+ .replace(/(\d)([a-z])/g,'$1*$2').replace(/[a-z]/g,'(1.3)')}`)();
+const same=(a,b)=>a===b||Math.abs(a-b)<=1e-9*Math.max(Math.abs(a),Math.abs(b));
+const task=q=>q.q.match(/<b>(.*?)<\/b>/)[1];
+const holds=html=>{const sides=html.split(' = ').map(val);return sides.every(v=>same(v,sides[0]));};
+const only=(q,ok)=>{assert.deepEqual(q.answers.filter(ok),[q.answers[q.correct]],q.id);};
+const valued=sb.questions.filter(q=>/^(Zapisz|Oblicz)/.test(q.q));
+assert.equal(valued.length,45);
+for(const q of valued){const v=val(task(q));only(q,a=>same(val(a),v));
+ if(q.q.startsWith('Zapisz')) q.answers.forEach(a=>assert.match(plain(a),/^[^·:+=]+\^\d+$/,q.id));}
+const boxes=sb.questions.filter(q=>q.q.includes('□'));assert.equal(boxes.length,5);
+for(const q of boxes) only(q,a=>holds(task(q).replace('□',a)));
+// Który wzór: dzielenie (też kreska ułamkowa), potęga potęgi, mnożenie, a suma i różnica — żaden.
+const kind=e=>/frac| : /.test(e)?1:/ [+−] /.test(e)?3:e.startsWith('(')?2:e.includes(' · ')?0:-1;
+const rules=sb.questions.filter(q=>q.q.startsWith('Z którego wzoru'));assert.equal(rules.length,6);
+for(const q of rules) assert.equal(q.correct,kind(task(q)),q.id);
+for(const id of ['ps7-12a','ps7-12b','ps7-12c','ps7-12d']){const [,a,b]=ask(id).q.match(/I\. (.*?)<br>II\. (.*?)<\/div>/);assert.equal(pick(id),truth(holds(a),holds(b)),id);}
+only(ask('ps7-15a'),holds);only(ask('ps7-15b'),a=>!holds(a));
+only(ask('ps7-11c'),a=>same(val(a),val(task(ask('ps7-11c')))/1e6));
+only(ask('ps7-11d'),a=>same(val(a),val(task(ask('ps7-11d')))/1e3));
+const unit=a=>val(a.replace(/ cm<sup>\d<\/sup>/,''));
+for(const [id,v] of [['ps7-16a',(2**5)**2],['ps7-16b',(3**4)**3],['ps7-16c',2**6*2**4],['ps7-16d',1e6/1e4]]) only(ask(id),a=>same(unit(a),v));
+const v17a=ask('ps7-17a').answers.map(val),v17b=ask('ps7-17b').answers.map(val);
+assert.equal(v17a.indexOf(Math.max(...v17a)),ask('ps7-17a').correct);assert.equal(v17a.filter(v=>v===Math.max(...v17a)).length,1);
+assert.equal(v17b.indexOf(Math.min(...v17b)),ask('ps7-17b').correct);assert.equal(v17b.filter(v=>v===Math.min(...v17b)).length,1);
+console.log('PASS: grade 7 same-base powers — all 70 answer keys computed independently');
 }

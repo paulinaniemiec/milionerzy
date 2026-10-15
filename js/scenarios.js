@@ -2,7 +2,7 @@ import { QUESTIONS as original } from './questions.js';
 import { diagramQuestions, probabilityQuestions } from './exam-sets.js';
 import { divisibilityQuestions, powerQuestions, romanQuestions, primeQuestions, orderQuestions } from './grade5-sets.js';
 import { percentExamQuestions } from './percent-exam-sets.js';
-import { powerQuestions7 } from './grade7-sets.js';
+import { powerQuestions7, samePowerQuestions7 } from './grade7-sets.js';
 import { axisQuestions } from './axis-sets.js';
 import { grade4Questions, axisQuestions4, additionQuestions4, estimationQuestions4 } from './grade4-sets.js';
 
@@ -104,6 +104,7 @@ export const SCENARIOS = [
  {id:'revision-1', grade:7, title:'Procenty w życiu, zestaw 1', description:'„Powtórzenie I”. Rabaty, frekwencja, proporcje i VAT.', questions:revision1},
  {id:'revision-2', grade:7, title:'Procenty w praktyce, zestaw 2', description:'„Powtórzenie I”. Diagramy, stężenia, skala i podział kosztów.', questions:revision2},
  {id:'powers-7', grade:7, title:'Potęgi', description:'Ułamki i liczby ujemne do potęgi, wykładnik 0 i 1, potęgi liczby 10, bakterie i zadania tekstowe.', questions:powerQuestions7},
+ {id:'same-base-7', grade:7, title:'Potęgi o tych samych podstawach', description:'Mnożenie i dzielenie potęg, potęga potęgi, brakujące wykładniki, potęgi liczby 10 i typowe pułapki.', questions:samePowerQuestions7, award:{password:'MATEMATYKA TO WF DLA MÓZGU', pluses:2}},
  {id:'percent-exam-7', grade:7, title:'Procenty — zadania egzaminacyjne', description:'Zadania z egzaminów 2011–2026 i materiałów CKE. Rabaty, podwyżki, VAT i podatki.', questions:percentExamQuestions},
 ];
 function shuffle(items, random) {
