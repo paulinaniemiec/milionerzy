@@ -274,3 +274,81 @@ export const estimationQuestions4 = [
  q('s4-24','Piekarnia sprzedała w poniedziałek 1960 bułek, a we wtorek 2030 bułek. Około ile bułek sprzedała w te dwa dni?',['około 3000','około 4000','około 5000','około 40 000'],1,'1960 to prawie 2000, a 2030 to około 2000: 2000 + 2000 = <b>około 4000</b> (dokładnie 3990).'),
  q('s4-25','Ola śpi każdej nocy prawie 9 godzin. Ile mniej więcej godzin przesypia w ciągu tygodnia?',['około 60 godzin — więcej niż dwie doby','około 60 godzin — mniej niż dwie doby','około 16 godzin — mniej niż doba','około 90 godzin — prawie cztery doby'],0,'7 · 9 = 63, a Ola śpi trochę mniej niż 9 godzin — <b>około 60 godzin</b>. Dwie doby to 2 · 24 = 48 godzin, więc to <b>więcej niż dwie doby</b>.'),
 ];
+
+// Klasa 4: sprytne dodawanie — pary składników do pełnych dziesiątek i setek, przekładanie („29 + 68 = 30 + 67”),
+// kolejne liczby, okienka, tabelka ○ + ■ i zadania tekstowe. Jesienne tło pasuje do hasła na koniec.
+const smart = (id, expr, answers, correct, explain) => q(id, `Oblicz sprytnie: <b>${expr}</b>`, answers, correct, explain);
+const first = (id, expr, answers, correct, explain) => q(id, `Które liczby warto dodać najpierw, żeby łatwo obliczyć <b>${expr}</b>?`, answers, correct, explain);
+const same = (id, expr, answers, correct, explain) => q(id, `Które działanie ma taki sam wynik jak <b>${expr}</b>, ale łatwiej je policzyć?`, answers, correct, explain);
+const box = (id, eq, answers, correct, explain) => q(id, `Jaką liczbę trzeba wpisać w okienko?<div class="task-statements">${eq.replace(/□/g, BOX)}</div>`, answers, correct, explain);
+// Tabelka ○ + ■: znak zapytania stoi w pytanej kratce, pozostałe puste kratki są puste jak w zeszycie.
+const SHAPES = [[76, 18, 94], [45, 47, 92], [58, 26, 84]];
+const HIDDEN = [2, 1, 0];
+const shapes = (row) => `<div class="task-table-wrap"><table class="task-table"><caption>Uzupełnij tabelę</caption><thead><tr><th scope="col">○</th><th scope="col">■</th><th scope="col">○ + ■</th></tr></thead><tbody>${SHAPES.map((r, i) => `<tr>${r.map((v, j) => `<td>${j !== HIDDEN[i] ? v : i === row ? '?' : ''}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+const DYNIA = [['N', '26 + 14 + 24'], ['A', '53 + 27 + 8'], ['D', '17 + 25 + 3'], ['I', '44 + 16 + 11'], ['Y', '38 + 12 + 9']];
+const dyniaTable = `<div class="task-table-wrap"><table class="task-table letters"><tbody><tr>${DYNIA.map(([, expr]) => `<td>${expr}</td>`).join('')}</tr><tr>${DYNIA.map(([letter]) => `<td><b>${letter}</b></td>`).join('')}</tr></tbody></table></div>`;
+
+export const smartAdditionQuestions4 = [
+ // Co dodać najpierw
+ first('sd4-1a','16 + 27 + 4 + 13',['16 i 4, a potem 27 i 13','16 i 27, a potem 4 i 13','16 i 13, a potem 27 i 4','27 i 4, a potem 16 i 13'],0,'16 + 4 = 20 i 27 + 13 = 40 — same pełne dziesiątki. Razem 20 + 40 = <b>60</b>.'),
+ first('sd4-1b','35 + 18 + 15 + 32',['35 i 18, a potem 15 i 32','35 i 32, a potem 18 i 15','35 i 15, a potem 18 i 32','18 i 15, a potem 35 i 32'],2,'35 + 15 = 50 i 18 + 32 = 50. Razem 50 + 50 = <b>100</b>.'),
+ first('sd4-1c','41 + 26 + 19 + 34',['41 i 26, a potem 19 i 34','41 i 34, a potem 26 i 19','26 i 19, a potem 41 i 34','41 i 19, a potem 26 i 34'],3,'41 + 19 = 60 i 26 + 34 = 60. Razem 60 + 60 = <b>120</b>.'),
+ // Trzy składniki
+ smart('sd4-2a','13 + 9 + 7',['19','28','29','39'],2,'Najpierw 13 + 7 = 20, potem 20 + 9 = <b>29</b>.'),
+ smart('sd4-2b','26 + 15 + 4',['45','35','44','55'],0,'Najpierw 26 + 4 = 30, potem 30 + 15 = <b>45</b>.'),
+ smart('sd4-2c','8 + 37 + 12',['47','56','67','57'],3,'Najpierw 8 + 12 = 20, potem 20 + 37 = <b>57</b>.'),
+ smart('sd4-2d','34 + 18 + 6',['48','58','52','68'],1,'Najpierw 34 + 6 = 40, potem 40 + 18 = <b>58</b>.'),
+ // Cztery i pięć składników
+ smart('sd4-3a','14 + 23 + 26 + 37',['90','99','100','110'],2,'14 + 26 = 40 i 23 + 37 = 60. Razem 40 + 60 = <b>100</b>.'),
+ smart('sd4-3b','45 + 28 + 55 + 12',['130','140','150','240'],1,'45 + 55 = 100 i 28 + 12 = 40. Razem 100 + 40 = <b>140</b>.'),
+ smart('sd4-4','163 + 31 + 48 + 37 + 52',['321','341','331','431'],2,'163 + 37 = 200 i 48 + 52 = 100. Zostaje 31: 200 + 100 + 31 = <b>331</b>.'),
+ // Do pełnej dziesiątki lub setki
+ smart('sd4-5a','69 + 47',['106','116','115','126'],1,'Przekładamy 1 z 47 do 69: 70 + 46 = <b>116</b>.'),
+ smart('sd4-5b','138 + 58',['196','186','194','206'],0,'Przekładamy 2 z 58 do 138: 140 + 56 = <b>196</b>.'),
+ smart('sd4-5c','29 + 245',['264','275','284','274'],3,'Przekładamy 1 z 245 do 29: 30 + 244 = <b>274</b>.'),
+ smart('sd4-5d','97 + 86',['173','184','183','193'],2,'Przekładamy 3 z 86 do 97: 100 + 83 = <b>183</b>.'),
+ // Przekładanie
+ q('sd4-6a','Basia liczy <b>49 + 36</b>. Przekłada 1 z liczby 36 do liczby 49. Jakie działanie otrzyma?',['50 + 37','50 + 35','40 + 36','49 + 40'],1,'49 + 1 = 50, a 36 − 1 = 35. Basia liczy <b>50 + 35</b> = 85. Jedynkę trzeba zabrać z drugiej liczby, więc nie 50 + 37.'),
+ same('sd4-6b','58 + 27',['60 + 25','60 + 29','50 + 37','58 + 30'],0,'Przekładamy 2 z 27 do 58: <b>60 + 25</b> = 85. Pozostałe działania dają 89, 87 i 88.'),
+ same('sd4-6c','198 + 64',['200 + 66','190 + 64','200 + 62','200 + 64'],2,'Przekładamy 2 z 64 do 198: <b>200 + 62</b> = 262. W 200 + 66 dwójkę dodano, ale nie zabrano.'),
+ q('sd4-7a','Marta ma w worku <b>39 kasztanów</b>, a w kieszeni <b>24</b>. Żeby łatwiej policzyć, przełożyła 1 kasztan z kieszeni do worka. Jakie działanie teraz liczy?',['40 + 25','38 + 25','39 + 25','40 + 23'],3,'W worku 39 + 1 = 40, w kieszeni 24 − 1 = 23. Marta liczy <b>40 + 23</b>.'),
+ q('sd4-7b','Marta ma w worku <b>39 kasztanów</b>, a w kieszeni <b>24</b>. Przełożyła 1 kasztan z kieszeni do worka. Ile ma kasztanów razem?',['53','63','64','73'],1,'Przełożenie nie zmienia liczby kasztanów: 40 + 23 = <b>63</b>, tak samo jak 39 + 24.'),
+ // Kolejne liczby
+ q('sd4-8a','Oblicz sumę trzech kolejnych liczb naturalnych, z których najmniejsza to 15.',['45','46','48','51'],2,'Te liczby to 15, 16 i 17. 15 + 16 + 17 = <b>48</b>.'),
+ q('sd4-8b','Suma trzech kolejnych liczb naturalnych wynosi 36. Jaka jest najmniejsza z nich?',['10','11','12','13'],1,'11 + 12 + 13 = 36, więc najmniejsza to <b>11</b>. 12 to liczba środkowa.'),
+ q('sd4-8c','Oblicz sumę czterech kolejnych liczb naturalnych, z których największa to 20.',['68','74','78','80'],1,'Te liczby to 17, 18, 19 i 20. 17 + 20 = 37 i 18 + 19 = 37. Razem <b>74</b>.'),
+ // Okienka
+ box('sd4-9a','73 = 38 + □',['25','35','45','111'],1,'Szukamy składnika: 73 − 38 = <b>35</b>. Sprawdzenie: 38 + 35 = 73.'),
+ box('sd4-9b','91 = □ + 27',['54','74','64','118'],2,'Szukamy składnika: 91 − 27 = <b>64</b>. Sprawdzenie: 64 + 27 = 91.'),
+ q('sd4-9c',`Jakie liczby można wpisać w okienka?<div class="task-statements">60 = ${BOX} + ${BOX}</div>`,['37 i 33','37 i 23','28 i 22','45 i 25'],1,'37 + 23 = <b>60</b>. Pozostałe pary dają 70, 50 i 70.'),
+ // Tabelka ○ + ■
+ q('sd4-10a',`${shapes(0)}Jaką liczbę trzeba wpisać w miejsce znaku zapytania?`,['84','94','58','96'],1,'Dodajemy: 76 + 18 = 76 + 4 + 14 = <b>94</b>.'),
+ q('sd4-10b',`${shapes(1)}Jaką liczbę trzeba wpisać w miejsce znaku zapytania?`,['57','137','47','53'],2,'Szukamy składnika: 92 − 45 = <b>47</b>. Sprawdzenie: 45 + 47 = 92.'),
+ q('sd4-10c',`${shapes(2)}Jaką liczbę trzeba wpisać w miejsce znaku zapytania?`,['68','62','110','58'],3,'Szukamy składnika: 84 − 26 = <b>58</b>. Sprawdzenie: 58 + 26 = 84.'),
+ // Zadania tekstowe
+ q('sd4-11','Kuba zbiera naklejki. Ma 198 naklejek ze zwierzętami, 205 z piłkarzami i 197 z bajek. Ile ma wszystkich naklejek?',['590','600','610','500'],1,'Przekładamy z 205: 2 do 198 i 3 do 197. Wychodzi 200 + 200 + 200 = <b>600</b>.'),
+ q('sd4-12','Na szkolny festyn kupiono balony za 37 zł, napoje za 85 zł i ciasteczka za 63 zł. Ile wydano?',['175 zł','195 zł','285 zł','185 zł'],3,'37 + 63 = 100, a 100 + 85 = <b>185 zł</b>.'),
+ q('sd4-13','Na jesiennym kiermaszu uczniowie zebrali 126 zł za przetwory, 245 zł za ciasta i 74 zł za ludziki z kasztanów. Ile pieniędzy zebrali?',['435 zł','445 zł','455 zł','345 zł'],1,'126 + 74 = 200, a 200 + 245 = <b>445 zł</b>.'),
+ q('sd4-14a','Ogrodnik posadził jesienią 68 cebulek tulipanów. Żonkili posadził o 17 więcej niż tulipanów, a krokusów o 25 więcej niż żonkili. Ile cebulek krokusów posadził?',['85','93','110','120'],2,'Żonkile: 68 + 17 = 85. Krokusy: 85 + 25 = <b>110</b>. 93 to 68 + 25 — krokusów jest o 25 więcej niż <i>żonkili</i>, nie tulipanów.'),
+ q('sd4-14b','Ogrodnik posadził jesienią 68 cebulek tulipanów. Żonkili posadził o 17 więcej niż tulipanów, a krokusów o 25 więcej niż żonkili. Ile wszystkich cebulek posadził?',['253','263','273','178'],1,'Żonkile: 85, krokusy: 110. 68 + 85 + 110 = 153 + 110 = <b>263</b>.'),
+ q('sd4-15','Ania zebrała w parku 36 liści klonu, 27 liści dębu i 14 liści kasztanowca. Ile liści zebrała?',['67','76','77','87'],2,'36 + 14 = 50, a 50 + 27 = <b>77</b>.'),
+ q('sd4-16','Pan Michał zebrał dwie skrzynki śliwek. Pierwsza waży 17 kg, a druga 38 kg. Ile ważą razem?',['45 kg','55 kg','56 kg','65 kg'],1,'Przekładamy 2 kg z 17 do 38: 40 + 15 = <b>55 kg</b>.'),
+ // Kolejność składników
+ q('sd4-17a','Które działanie ma <b>inny</b> wynik niż <b>25 + 38 + 75</b>?',['75 + 38 + 25','100 + 38','63 + 75','60 + 75'],3,'25 + 38 + 75 = 25 + 75 + 38 = 100 + 38 = 138. Także 63 + 75 = 138, bo 25 + 38 = 63. Inny wynik ma <b>60 + 75</b> = 135.'),
+ q('sd4-17b','Zosia mówi, że <b>18 + 45 + 2</b> można obliczyć jako 20 + 45. Czy ma rację?',['Nie, bo trzeba dodawać po kolei od lewej','Tak, bo kolejność składników nie zmienia sumy','Tak, ale wynik będzie inny','Nie, bo 18 + 2 = 22'],1,'Składniki wolno zamieniać miejscami: 18 + 2 = 20, a 20 + 45 = 65. <b>Zosia ma rację</b>, bo kolejność składników nie zmienia sumy.'),
+ // Dziesiątki i jedności osobno
+ q('sd4-18a','Michał liczy <b>46 + 38</b> tak: 40 + 30 = 70 i 6 + 8 = 14. Jaki wynik otrzyma?',['74','82','84','714'],2,'70 + 14 = <b>84</b>. 714 to dopisanie 14 za 70 zamiast dodania.'),
+ q('sd4-18b','Ewa liczy <b>57 + 35</b>. Najpierw obliczyła 57 + 30 = 87. Ile musi jeszcze dodać do 87?',['3','5','30','35'],1,'Z liczby 35 dodała już 30, zostaje <b>5</b>: 87 + 5 = 92.'),
+ // Pełne setki
+ q('sd4-19a','Jaką liczbę trzeba dodać do 46, żeby otrzymać 100?',['44','64','54','146'],2,'46 + 4 = 50, a 50 + 50 = 100. Trzeba dodać 4 + 50 = <b>54</b>.'),
+ q('sd4-19b','Która para liczb daje razem pełną setkę?',['63 i 47','58 i 42','71 i 39','84 i 26'],1,'58 + 42 = <b>100</b>. Pozostałe pary dają 110 — jedności dają 10, więc dziesiątek ma być razem 9, nie 10.'),
+ // Hasło z liter
+ q('sd4-20',`${dyniaTable}Oblicz sumy i ułóż litery od najmniejszej sumy do największej. Jakie słowo powstanie?`,['NADIY','AINYD','DYNIA','DYINA'],2,'D: 17 + 3 + 25 = 45, Y: 38 + 12 + 9 = 59, N: 26 + 14 + 24 = 64, I: 44 + 16 + 11 = 71, A: 53 + 27 + 8 = 88. Słowo to <b>DYNIA</b>.'),
+ q('sd4-21','Która suma jest <b>największa</b>?',['29 + 47','38 + 39','19 + 56','46 + 28'],1,'30 + 46 = 76, 40 + 37 = 77, 20 + 55 = 75, 50 + 24 = 74. Największa jest <b>38 + 39</b>.'),
+ smart('sd4-22a','250 + 170 + 750',['1070','1270','1117','1170'],3,'250 + 750 = 1000, a 1000 + 170 = <b>1170</b>.'),
+ smart('sd4-22b','125 + 340 + 75',['440','530','540','640'],2,'125 + 75 = 200, a 200 + 340 = <b>540</b>.'),
+ smart('sd4-23a','1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9',['40','45','50','55'],1,'Pary do dziesięciu: 1 + 9, 2 + 8, 3 + 7, 4 + 6. To 40 i zostaje 5: <b>45</b>.'),
+ smart('sd4-23b','10 + 20 + 30 + 40 + 50 + 60 + 70 + 80 + 90',['450','400','500','4500'],0,'Pary do stu: 10 + 90, 20 + 80, 30 + 70, 40 + 60. To 400 i zostaje 50: <b>450</b>.'),
+ q('sd4-24','W trzech koszach jest razem 100 jabłek. W pierwszym koszu jest 37 jabłek, a w drugim 28. Ile jabłek jest w trzecim koszu?',['25','35','45','65'],1,'W dwóch koszach: 37 + 28 = 65. W trzecim: 100 − 65 = <b>35</b>. 65 to jabłka z dwóch pierwszych koszy.'),
+ q('sd4-25','Mama kupiła na targu dynię za 19 zł, jabłka za 8 zł i gruszki za 11 zł. Ile zapłaciła?',['28 zł','37 zł','38 zł','48 zł'],2,'19 + 11 = 30, a 30 + 8 = <b>38 zł</b>.'),
+];

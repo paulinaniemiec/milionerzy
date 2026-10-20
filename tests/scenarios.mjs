@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {SCENARIOS, makeRound, restoreRound} from '../js/scenarios.js';
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.title), ['Zegary, kalendarz i jednostki długości', 'Oś liczbowa', 'Dodawanie i odejmowanie', 'Szacowanie']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.title), ['Zegary, kalendarz i jednostki długości', 'Oś liczbowa', 'Dodawanie i odejmowanie', 'Szacowanie', 'Sprytne dodawanie']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności', 'Liczby pierwsze i złożone', 'Potęgowanie', 'Cyfry rzymskie', 'Kolejność wykonywania działań']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
  'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Potęgi', 'Potęgi o tych samych podstawach', 'Procenty — zadania egzaminacyjne',
@@ -8,9 +8,9 @@ assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
  'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne',
 ]);
-assert.equal(SCENARIOS.length,20);
+assert.equal(SCENARIOS.length,21);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,636);
+assert.equal(new Set(all.map(q=>q.id)).size,685);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -441,4 +441,43 @@ const v17a=ask('ps7-17a').answers.map(val),v17b=ask('ps7-17b').answers.map(val);
 assert.equal(v17a.indexOf(Math.max(...v17a)),ask('ps7-17a').correct);assert.equal(v17a.filter(v=>v===Math.max(...v17a)).length,1);
 assert.equal(v17b.indexOf(Math.min(...v17b)),ask('ps7-17b').correct);assert.equal(v17b.filter(v=>v===Math.min(...v17b)).length,1);
 console.log('PASS: grade 7 same-base powers — all 70 answer keys computed independently');
+}
+
+// Klasa 4: sprytne dodawanie — każdy klucz liczony z treści zadania.
+{
+const sd=SCENARIOS.find(s=>s.id==='smart-addition-4');
+assert.equal(sd.grade,4);assert.equal(sd.questions.length,49);assert.equal(new Set(sd.questions.map(q=>q.sourceGroup)).size,25);
+assert.deepEqual(SCENARIOS.filter(s=>s.questions===sd.questions).map(s=>s.grade),[4]);
+assert.deepEqual(sd.award,{password:'Jesienne dodawanie – matematyczne wyzwanie!',pluses:1});
+const sum=s=>s.split(/\+| i /).reduce((t,x)=>t+Number(x.trim()),0);
+const only=(id,ok)=>assert.deepEqual(ask(id).answers.filter(ok),[selected(id)],id);
+const bold=id=>plain(ask(id).q.match(/<b>(.*?)<\/b>/)[1]);
+const nums=id=>[...plain(ask(id).q).matchAll(/\d+/g)].map(m=>+m[0]);
+// Co dodać najpierw: obie pary dają pełne dziesiątki.
+for(const id of ['sd4-1a','sd4-1b','sd4-1c']) only(id,a=>a.split(', a potem ').every(p=>sum(p)%10===0));
+for(const id of ['sd4-2a','sd4-2b','sd4-2c','sd4-2d','sd4-3a','sd4-3b','sd4-4','sd4-5a','sd4-5b','sd4-5c','sd4-5d','sd4-22a','sd4-22b','sd4-23a','sd4-23b']) only(id,a=>+a===sum(bold(id)));
+// Przekładanie: ta sama suma, a pierwszy składnik to pełna dziesiątka.
+for(const id of ['sd4-6a','sd4-6b','sd4-6c']) only(id,a=>sum(a)===sum(bold(id))&&+a.split('+')[0]%10===0);
+only('sd4-7a',a=>sum(a)===39+24&&+a.split('+')[0]%10===0);only('sd4-7b',a=>+a===39+24);
+{const [n]=nums('sd4-8a');only('sd4-8a',a=>+a===n+(n+1)+(n+2));}
+only('sd4-8b',a=>3*a+3===nums('sd4-8b')[0]);
+{const [n]=nums('sd4-8c');only('sd4-8c',a=>+a===n+(n-1)+(n-2)+(n-3));}
+// Okienka: wstawiamy odpowiedź i sprawdzamy obie strony równości.
+const eq=id=>ask(id).q.match(/<div class="task-statements">(.*?)<\/div>/)[1].replace(/<span class="answer-box"[^>]*><\/span>/g,'x');
+for(const id of ['sd4-9a','sd4-9b','sd4-9c']) only(id,a=>{const v=a.split(' i ');let i=0;const [l,r]=eq(id).replace(/x/g,()=>v[i++]).split('=');return sum(l)===sum(r);});
+// Tabelka: suma w trzeciej kolumnie, brakujący składnik to suma minus znany składnik.
+for(const id of ['sd4-10a','sd4-10b','sd4-10c']){const rows=[...ask(id).q.matchAll(/<tr>(<td>.*?)<\/tr>/g)].map(m=>[...m[1].matchAll(/<td>(.*?)<\/td>/g)].map(c=>c[1]));
+ const r=rows.find(r=>r.includes('?')),k=r.indexOf('?');only(id,a=>k===2?+a===+r[0]+ +r[1]:+a===+r[2]-r[1-k]);}
+for(const id of ['sd4-11','sd4-15']) only(id,a=>+a===nums(id).reduce((x,y)=>x+y));
+for(const id of ['sd4-12','sd4-13','sd4-16','sd4-25']) only(id,a=>parseInt(a)===nums(id).slice(-3).reduce((x,y)=>x+y));
+{const [t,z,k]=nums('sd4-14a');only('sd4-14a',a=>+a===t+z+k);only('sd4-14b',a=>+a===t+(t+z)+(t+z+k));}
+{const v=sum(plain(ask('sd4-17a').q).match(/niż (.*)\?/)[1]);assert.equal(v,138);only('sd4-17a',a=>sum(a)!==v);}
+assert(pick('sd4-17b').startsWith('Tak, bo kolejność'));assert.equal(18+45+2,20+45);
+only('sd4-18a',a=>+a===46+38);only('sd4-18b',a=>87+ +a===57+35);
+only('sd4-19a',a=>46+ +a===100);only('sd4-19b',a=>sum(a)===100);
+{const cells=[...ask('sd4-20').q.matchAll(/<td>(.*?)<\/td>/g)].map(m=>m[1]),k=cells.length/2;
+ assert.equal(pick('sd4-20'),range(0,k-1).sort((i,j)=>sum(cells[i])-sum(cells[j])).map(i=>plain(cells[k+i])).join(''));assert.equal(pick('sd4-20'),'DYNIA');}
+{const v=ask('sd4-21').answers.map(sum);only('sd4-21',a=>sum(a)===Math.max(...v));}
+{const [t,a1,a2]=nums('sd4-24');only('sd4-24',a=>+a===t-a1-a2);}
+console.log('PASS: grade 4 smart addition — all 49 answer keys computed independently');
 }
