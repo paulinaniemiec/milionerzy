@@ -448,7 +448,7 @@ console.log('PASS: grade 7 same-base powers — all 70 answer keys computed inde
 const sd=SCENARIOS.find(s=>s.id==='smart-addition-4');
 assert.equal(sd.grade,4);assert.equal(sd.questions.length,49);assert.equal(new Set(sd.questions.map(q=>q.sourceGroup)).size,25);
 assert.deepEqual(SCENARIOS.filter(s=>s.questions===sd.questions).map(s=>s.grade),[4]);
-assert.deepEqual(sd.award,{password:'Jesienne dodawanie – matematyczne wyzwanie!',pluses:1});
+assert.deepEqual(sd.award,{password:'Jesienne dodawanie – matematyczne wyzwanie!',pluses:2});
 const sum=s=>s.split(/\+| i /).reduce((t,x)=>t+Number(x.trim()),0);
 const only=(id,ok)=>assert.deepEqual(ask(id).answers.filter(ok),[selected(id)],id);
 const bold=id=>plain(ask(id).q.match(/<b>(.*?)<\/b>/)[1]);
