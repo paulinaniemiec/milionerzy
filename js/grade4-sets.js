@@ -352,3 +352,95 @@ export const smartAdditionQuestions4 = [
  q('sd4-24','W trzech koszach jest razem 100 jabłek. W pierwszym koszu jest 37 jabłek, a w drugim 28. Ile jabłek jest w trzecim koszu?',['25','35','45','65'],1,'W dwóch koszach: 37 + 28 = 65. W trzecim: 100 − 65 = <b>35</b>. 65 to jabłka z dwóch pierwszych koszy.'),
  q('sd4-25','Mama kupiła na targu dynię za 19 zł, jabłka za 8 zł i gruszki za 11 zł. Ile zapłaciła?',['28 zł','37 zł','38 zł','48 zł'],2,'19 + 11 = 30, a 30 + 8 = <b>38 zł</b>.'),
 ];
+
+// Klasa 4: sprytne odejmowanie — zmiana odjemnej i odjemnika, „po kawałku”, powiększanie obu liczb,
+// odejmowanie przez dodawanie (dopełnianie), okienka i zadania tekstowe. Zadania ułożone od najłatwiejszych
+// do najtrudniejszych: scenariusz ma `ordered`, więc pytanie 1 pochodzi z początku listy, a 12 z końca.
+const change = (id, text, answers, correct, explain) => q(id, `${text} Co dzieje się z różnicą?`, answers, correct, explain);
+const easier = (id, expr, answers, correct, explain) => q(id, `Które działanie ma taki sam wynik jak <b>${expr}</b>, ale łatwiej je policzyć?`, answers, correct, explain);
+const rest = (id, expr, answers, correct, explain) => q(id, `Ile reszty otrzyma klient, który płaci <b>${expr}</b>?`, answers, correct, explain);
+
+export const smartSubtractionQuestions4 = [
+ // Co zauważysz? Odjemna i odjemnik zmieniają się o 10 albo o tyle samo
+ q('so4-1a','Wiesz, że <b>86 − 34 = 52</b>. Ile wynosi <b>86 − 44</b>?',['62','52','42','32'],2,'Odjemnik jest o 10 większy, więc różnica jest o 10 mniejsza: 52 − 10 = <b>42</b>.'),
+ q('so4-1b','Wiesz, że <b>75 − 32 = 43</b>. Ile wynosi <b>65 − 32</b>?',['53','33','43','23'],1,'Odjemna jest o 10 mniejsza, więc różnica też jest o 10 mniejsza: 43 − 10 = <b>33</b>.'),
+ q('so4-1c','Wiesz, że <b>94 − 51 = 43</b>. Ile wynosi <b>95 − 52</b>?',['44','45','42','43'],3,'Obie liczby są o 1 większe, więc różnica się nie zmienia: <b>43</b>.'),
+ // Od pełnych dziesiątek i setek
+ calc('so4-2a','90 − 36',['66','56','64','54'],3,'90 − 30 = 60, a 60 − 6 = <b>54</b>.'),
+ calc('so4-2b','100 − 47',['63','53','57','43'],1,'100 − 40 = 60, a 60 − 7 = <b>53</b>. Sprawdzenie: 53 + 47 = 100.'),
+ // Jedności od jedności, dziesiątki od dziesiątek
+ q('so4-3a','Oblicz: jedności od jedności, dziesiątki od dziesiątek, setki od setek. <b>389 − 156</b>',['223','545','233','243'],2,'Jedności: 9 − 6 = 3, dziesiątki: 8 − 5 = 3, setki: 3 − 1 = 2. Wynik: <b>233</b>. 545 to suma, a nie różnica.'),
+ calc('so4-3b','678 − 245',['433','423','923','443'],0,'Jedności: 8 − 5 = 3, dziesiątki: 7 − 4 = 3, setki: 6 − 2 = 4. Wynik: <b>433</b>.'),
+ // Dwucyfrowe z przekroczeniem progu
+ smart('so4-4a','84 − 19',['75','64','65','63'],2,'Odejmujemy 20 i dodajemy 1: 84 − 20 = 64, 64 + 1 = <b>65</b>. 75 wychodzi, gdy od 9 odejmie się 4 zamiast od 4 odjąć 9.'),
+ smart('so4-4b','71 − 48',['37','21','33','23'],3,'Odejmujemy 50 i dodajemy 2: 71 − 50 = 21, 21 + 2 = <b>23</b>.'),
+ smart('so4-4c','93 − 27',['76','66','74','56'],1,'93 − 20 = 73, a 73 − 7 = <b>66</b>. Sprawdzenie: 66 + 27 = 93.'),
+ smart('so4-4d','62 − 35',['37','33','27','23'],2,'62 − 30 = 32, a 32 − 5 = <b>27</b>. Sprawdzenie: 27 + 35 = 62.'),
+ // Liczby różniące się o …
+ q('so4-5a','Która para liczb różni się o <b>17</b>?',['83 i 64','68 i 49','71 i 56','92 i 75'],3,'92 − 75 = <b>17</b>. Pozostałe różnice: 83 − 64 = 19, 71 − 56 = 15, 68 − 49 = 19.'),
+ q('so4-5b','Która para liczb różni się o <b>26</b>?',['93 i 69','74 i 52','60 i 36','81 i 55'],3,'81 − 55 = <b>26</b>. Pozostałe różnice: 93 − 69 = 24, 74 − 52 = 22, 60 − 36 = 24.'),
+ // Odejmowanie „po kawałku”
+ q('so4-6a','Kasia liczy <b>74 − 38</b> „po kawałku”. Najpierw obliczyła 74 − 30 = 44. Co musi zrobić dalej?',['44 − 8 = 36','44 − 3 = 41','44 + 8 = 52','44 − 38 = 6'],0,'Z liczby 38 odjęła już 30, zostało jeszcze 8: <b>44 − 8 = 36</b>.'),
+ box('so4-6b','65 − 27 = 65 − 20 − □',['2','7','20','27'],1,'27 to 20 i 7. Po odjęciu 20 trzeba jeszcze odjąć <b>7</b>: 45 − 7 = 38.'),
+ q('so4-6c','Oblicz „po kawałku”: <b>362 − 47</b>',['325','305','322','315'],3,'362 − 40 = 322, a 322 − 7 = <b>315</b>.'),
+ // Powiększanie obu liczb
+ easier('so4-7a','143 − 68',['145 − 70','150 − 70','143 − 70','148 − 70'],0,'Do obu liczb dodajemy 2: <b>145 − 70</b> = 75. Gdy obie liczby rosną o tyle samo, różnica się nie zmienia.'),
+ easier('so4-7b','251 − 97',['248 − 100','251 − 100','254 − 100','250 − 100'],2,'Do obu liczb dodajemy 3: <b>254 − 100</b> = 154. W 248 − 100 trójkę odjęto zamiast dodać.'),
+ q('so4-7c','Bartek liczy <b>436 − 194</b>. Do obu liczb dodał 6. Jaki wynik otrzymał?',['248','236','242','252'],2,'436 + 6 = 442 i 194 + 6 = 200. 442 − 200 = <b>242</b>.'),
+ // Odejmowanie przez dodawanie (dopełnianie)
+ q('so4-8a','Ola liczy <b>122 − 63</b> przez dodawanie: 63 + 7 = 70, 70 + 30 = 100, 100 + 22 = 122. Ile wynosi 122 − 63?',['69','59','61','49'],1,'Ola doliczyła razem 7 + 30 + 22 = <b>59</b>.'),
+ q('so4-8b','Tomek liczy <b>405 − 386</b> przez dodawanie: od 386 do 390, od 390 do 400 i od 400 do 405. Ile doliczył razem?',['29','119','21','19'],3,'4 + 10 + 5 = <b>19</b>. Sprawdzenie: 386 + 19 = 405.'),
+ q('so4-8c','Ile trzeba dodać do <b>275</b>, żeby otrzymać <b>413</b>?',['148','138','238','128'],1,'275 + 5 = 280, 280 + 20 = 300, 300 + 113 = 413. Razem 5 + 20 + 113 = <b>138</b>.'),
+ // Co dzieje się z różnicą?
+ change('so4-9a','Odjemną zwiększamy o 5, a odjemnik zostaje taki sam.',['Zwiększa się o 5','Zmniejsza się o 5','Nie zmienia się','Zwiększa się o 10'],0,'Odejmujemy tyle samo od większej liczby, więc różnica <b>zwiększa się o 5</b>. Na przykład 20 − 8 = 12, a 25 − 8 = 17.'),
+ change('so4-9b','Odjemnik zwiększamy o 10, a odjemna zostaje taka sama.',['Zwiększa się o 10','Zmniejsza się o 20','Nie zmienia się','Zmniejsza się o 10'],3,'Odejmujemy więcej, więc zostaje mniej: różnica <b>zmniejsza się o 10</b>. Na przykład 50 − 20 = 30, a 50 − 30 = 20.'),
+ change('so4-9c','Odjemną i odjemnik zwiększamy o 7.',['Zwiększa się o 7','Zwiększa się o 14','Nie zmienia się','Zmniejsza się o 7'],2,'Obie liczby rosną o tyle samo, więc różnica <b>nie zmienia się</b>. Na tym polega odejmowanie przez powiększanie obu liczb.'),
+ // Okienka
+ box('so4-10a','□ − 47 = 156',['109','193','203','213'],2,'Szukamy odjemnej: 156 + 47 = <b>203</b>. Sprawdzenie: 203 − 47 = 156.'),
+ box('so4-10b','184 − □ = 129',['65','55','313','45'],1,'Szukamy odjemnika: 184 − 129 = <b>55</b>. Sprawdzenie: 184 − 55 = 129.'),
+ q('so4-10c',`Które działanie można wpisać w okienka?<div class="task-statements">${BOX} − ${BOX} = 25</div>`,['70 − 35','64 − 49','91 − 76','83 − 58'],3,'83 − 58 = <b>25</b>. Pozostałe różnice: 35, 15 i 15.'),
+ // Trzycyfrowe: blisko pełnej setki
+ smart('so4-11a','264 − 98',['162','166','164','176'],1,'Odejmujemy 100 i dodajemy 2: 264 − 100 = 164, 164 + 2 = <b>166</b>. 162 wychodzi, gdy dwójkę się odejmie zamiast dodać.'),
+ smart('so4-11b','537 − 199',['336','438','337','338'],3,'Odejmujemy 200 i dodajemy 1: 537 − 200 = 337, 337 + 1 = <b>338</b>.'),
+ smart('so4-11c','746 − 31',['725','436','705','715'],3,'746 − 30 = 716, a 716 − 1 = <b>715</b>.'),
+ // Reszta z banknotu
+ rest('so4-12a','38 zł banknotem 100 zł',['72 zł','62 zł','52 zł','138 zł'],1,'38 + 2 = 40, 40 + 60 = 100. Reszta: 2 + 60 = <b>62 zł</b>.'),
+ rest('so4-12b','146 zł banknotem 200 zł',['54 zł','64 zł','46 zł','154 zł'],0,'146 + 4 = 150, 150 + 50 = 200. Reszta: 4 + 50 = <b>54 zł</b>.'),
+ rest('so4-12c','287 zł banknotem 500 zł',['223 zł','313 zł','213 zł','787 zł'],2,'287 + 13 = 300, 300 + 200 = 500. Reszta: 13 + 200 = <b>213 zł</b>.'),
+ // O ile więcej?
+ q('so4-13a','W pierwszym tygodniu zbiórki makulatury zebrano 186 kg, a w drugim 252 kg. O ile więcej kilogramów zebrano w drugim tygodniu?',['76 kg','134 kg','66 kg','438 kg'],2,'252 − 186: od 186 do 200 jest 14, od 200 do 252 jest 52. Razem 14 + 52 = <b>66 kg</b>. 438 to suma, a nie różnica.'),
+ q('so4-13b','W małej sali kina jest 168 miejsc, a w dużej 315. O ile więcej miejsc jest w dużej sali?',['157','483','253','147'],3,'315 − 168 = 317 − 170 = <b>147</b> (do obu liczb dodaliśmy 2).'),
+ // Ile ubyło, ile zostało?
+ q('so4-14a','Pewien niedźwiedź brunatny ważył jesienią 412 kg, a wiosną, po zimowym śnie, 338 kg. Ile kilogramów schudł przez zimę?',['74 kg','84 kg','126 kg','750 kg'],0,'Od 338 do 340 są 2, od 340 do 400 jest 60, od 400 do 412 jest 12. Razem 2 + 60 + 12 = <b>74 kg</b>.'),
+ q('so4-14b','Na wycieczkę klasa zebrała 1250 zł. Wycieczka kosztowała 1186 zł. Ile złotych zostało?',['74 zł','64 zł','136 zł','164 zł'],1,'Od 1186 do 1200 jest 14, od 1200 do 1250 jest 50. Zostało 14 + 50 = <b>64 zł</b>.'),
+ // Ile lat minęło?
+ q('so4-15a','Bracia Wright pierwszy raz polecieli samolotem w 1903 roku. Ile lat minęło od tego lotu do 2026 roku?',['123','113','223','133'],0,'Od 1903 do 2003 minęło 100 lat, a od 2003 do 2026 jeszcze 23. Razem <b>123</b> lata.'),
+ q('so4-15b','Człowiek pierwszy raz stanął na Księżycu w 1969 roku. Ile lat minęło od tego czasu do 2026 roku?',['67','47','43','57'],3,'Od 1969 do 1970 jest 1 rok, od 1970 do 2000 jest 30 lat, od 2000 do 2026 jest 26 lat. Razem 1 + 30 + 26 = <b>57</b> lat.'),
+ // Lata życia
+ q('so4-16a','Fryderyk Chopin urodził się w 1810 roku, a zmarł w 1849 roku. Ile lat żył?',['49','39','41','29'],1,'1849 − 1810 = <b>39</b>.'),
+ q('so4-16b','Maria Skłodowska-Curie urodziła się w 1867 roku. Pierwszą Nagrodę Nobla otrzymała w 1903 roku. Ile miała wtedy lat?',['46','34','36','26'],2,'Od 1867 do 1870 są 3 lata, od 1870 do 1900 jest 30, od 1900 do 1903 są 3. Razem 3 + 30 + 3 = <b>36</b>.'),
+ q('so4-16c','Mikołaj Kopernik zmarł w 1543 roku. Żył 70 lat. W którym roku się urodził?',['1463','1483','1613','1473'],3,'1543 − 70 = 1543 − 40 − 30 = 1503 − 30 = <b>1473</b>. 1613 to dodawanie zamiast odejmowania.'),
+ // Gra w dwie rundy
+ q('so4-17a','Ala i Bartek grali w grę z dwiema rundami. Ala zdobyła 57 i 68 punktów, a Bartek 73 i 49 punktów. Kto wygrał i o ile punktów?',['Ala o 3 punkty','Bartek o 3 punkty','Ala o 13 punktów','Bartek o 16 punktów'],0,'Ala: 57 + 68 = 125, Bartek: 73 + 49 = 122. Wygrała <b>Ala o 3 punkty</b> (125 − 122). Bartek prowadził tylko po pierwszej rundzie.'),
+ q('so4-17b','Ala i Bartek grali w grę z dwiema rundami. W pierwszej rundzie Ala zdobyła 57 punktów, a Bartek 73. Jaka była różnica punktów po pierwszej rundzie?',['24','16','26','3'],1,'73 − 57 = 73 − 60 + 3 = 13 + 3 = <b>16</b>.'),
+ // Która różnica jest największa / najmniejsza?
+ q('so4-18a','Która różnica jest <b>największa</b>?',['83 − 47','91 − 58','76 − 39','65 − 27'],3,'83 − 47 = 36, 91 − 58 = 33, 76 − 39 = 37, 65 − 27 = 38. Największa jest <b>65 − 27</b>.'),
+ q('so4-18b','Która różnica jest <b>najmniejsza</b>?',['240 − 189','152 − 98','203 − 147','181 − 129'],0,'240 − 189 = 51, 152 − 98 = 54, 203 − 147 = 56, 181 − 129 = 52. Najmniejsza jest <b>240 − 189</b>.'),
+ // Dopełnienie
+ q('so4-19a','Ile brakuje liczbie <b>627</b> do <b>1000</b>?',['473','383','373','427'],2,'627 + 3 = 630, 630 + 70 = 700, 700 + 300 = 1000. Brakuje 3 + 70 + 300 = <b>373</b>.'),
+ q('so4-19b','Ile wynosi różnica największej liczby trzycyfrowej i liczby <b>458</b>?',['541','551','441','542'],0,'Największa liczba trzycyfrowa to 999. 999 − 458 = <b>541</b> — tu nie trzeba nic pożyczać.'),
+ // Sprawdzanie wyniku
+ q('so4-20','Paweł obliczył, że <b>403 − 167 = 246</b>. Czy ma rację?',['Tak','Nie, wynik to 236','Nie, wynik to 336','Nie, wynik to 264'],1,'Sprawdzamy dodawaniem: 246 + 167 = 413, a nie 403. Poprawnie: 403 − 167 = 406 − 170 = <b>236</b>.'),
+ // Łańcuch działań
+ q('so4-21a','Zacznij od <b>250</b>. Dodaj 99, odejmij 48, dodaj 101, odejmij 52. Jaki wynik otrzymasz?',['348','350','450','352'],1,'250 + 99 = 349, 349 − 48 = 301, 301 + 101 = 402, 402 − 52 = <b>350</b>.'),
+ q('so4-21b','Zacznij od <b>500</b>. Odejmij 198, dodaj 45, odejmij 97. Jaki wynik otrzymasz?',['250','248','260','350'],0,'500 − 198 = 302, 302 + 45 = 347, 347 − 97 = <b>250</b>.'),
+ // Zadania wieloetapowe
+ q('so4-22a','W pociągu jechało 324 pasażerów. Na stacji wysiadło 98 osób, a wsiadło 45. Ilu pasażerów jest teraz w pociągu?',['226','181','271','281'],2,'324 − 98 = 324 − 100 + 2 = 226, a 226 + 45 = <b>271</b>. 181 wychodzi, gdy osoby, które wsiadły, też się odejmie.'),
+ q('so4-22b','Sklep miał 500 zeszytów. W poniedziałek sprzedał 128 zeszytów, a we wtorek 172. Ile zeszytów zostało?',['200','300','228','372'],0,'Sprytnie: 128 + 172 = 300, a 500 − 300 = <b>200</b>. 300 to liczba sprzedanych zeszytów.'),
+ // Liczby czterocyfrowe
+ q('so4-23a','Ewa zdobyła w grze 1042 punkty, a Kuba 987. O ile więcej punktów ma Ewa?',['55','65','145','45'],0,'Od 987 do 1000 jest 13, od 1000 do 1042 jest 42. Razem 13 + 42 = <b>55</b>.'),
+ q('so4-23b','Na koncercie było 1105 osób, a na spektaklu 968 osób. O ile więcej osób było na koncercie?',['147','263','137','237'],2,'Od 968 do 1000 są 32, od 1000 do 1105 jest 105. Razem 32 + 105 = <b>137</b>.'),
+ // Odjemna, odjemnik, różnica
+ q('so4-24a','Różnica dwóch liczb wynosi 154, a odjemna jest równa 320. Ile wynosi odjemnik?',['474','166','176','154'],1,'Odjemnik = odjemna − różnica: 320 − 154 = <b>166</b>. Sprawdzenie: 320 − 166 = 154. 474 to odjemna dodana do różnicy.'),
+ q('so4-24b','Różnica dwóch liczb wynosi 85. Odjemną zwiększamy o 20, a odjemnik zmniejszamy o 15. Ile wynosi nowa różnica?',['120','90','105','50'],0,'Większa odjemna zwiększa różnicę o 20, mniejszy odjemnik zwiększa ją jeszcze o 15: 85 + 20 + 15 = <b>120</b>.'),
+];

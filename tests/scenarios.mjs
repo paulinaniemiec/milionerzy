@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {SCENARIOS, makeRound, restoreRound} from '../js/scenarios.js';
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.title), ['Zegary, kalendarz i jednostki długości', 'Oś liczbowa', 'Dodawanie i odejmowanie', 'Szacowanie', 'Sprytne dodawanie']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.title), ['Zegary, kalendarz i jednostki długości', 'Oś liczbowa', 'Dodawanie i odejmowanie', 'Szacowanie', 'Sprytne dodawanie', 'Sprytne odejmowanie']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności', 'Liczby pierwsze i złożone', 'Potęgowanie', 'Cyfry rzymskie', 'Kolejność wykonywania działań']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
  'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Procenty — zadania egzaminacyjne', 'Potęgi', 'Potęgi o tych samych podstawach',
@@ -10,9 +10,9 @@ assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.section), ['Procenty'
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
  'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne',
 ]);
-assert.equal(SCENARIOS.length,21);
+assert.equal(SCENARIOS.length,22);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,685);
+assert.equal(new Set(all.map(q=>q.id)).size,743);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -482,4 +482,48 @@ only('sd4-19a',a=>46+ +a===100);only('sd4-19b',a=>sum(a)===100);
 {const v=ask('sd4-21').answers.map(sum);only('sd4-21',a=>sum(a)===Math.max(...v));}
 {const [t,a1,a2]=nums('sd4-24');only('sd4-24',a=>+a===t-a1-a2);}
 console.log('PASS: grade 4 smart addition — all 49 answer keys computed independently');
+}
+
+// Klasa 4: sprytne odejmowanie — każdy klucz liczony z treści, pytania od łatwych do trudnych.
+{
+const so=SCENARIOS.find(s=>s.id==='smart-subtraction-4');
+assert.equal(so.grade,4);assert.equal(so.questions.length,58);assert.equal(new Set(so.questions.map(q=>q.sourceGroup)).size,24);
+assert.deepEqual(SCENARIOS.filter(s=>s.questions===so.questions).map(s=>s.grade),[4]);
+assert.deepEqual(so.award,{password:'Minusy pokonane, punkty pozbierane!',pluses:2});
+// Kolejność: każde kolejne pytanie rundy pochodzi z dalszego zadania w pliku.
+{const order=[...new Set(so.questions.map(q=>q.sourceGroup))];let seed=7;const random=()=>{seed=(1664525*seed+1013904223)>>>0;return seed/4294967296;};
+ for(let i=0;i<500;i++){const idx=makeRound(so,random).map(q=>order.indexOf(q.sourceGroup));
+  idx.forEach((v,k)=>{assert(v>=Math.floor(k*24/12)&&v<Math.floor((k+1)*24/12),'question '+k+' from its difficulty band');});}}
+const ev=s=>{const t=plain(s).replace(/−/g,'-').replace(/\s/g,'');assert(/^\d+([+-]\d+)*$/.test(t),s);return t.match(/[+-]?\d+/g).reduce((a,b)=>a+ +b,0);};
+const only=(id,ok)=>assert.deepEqual(ask(id).answers.filter(ok),[selected(id)],id);
+const bold=id=>plain(ask(id).q.match(/<b>(.*?)<\/b>/)[1]);
+const nums=id=>[...plain(ask(id).q).matchAll(/\d+/g)].map(m=>+m[0]);
+const num=a=>parseInt(a);
+for(const id of ['so4-1a','so4-1b','so4-1c']){const [,y]=plain(ask(id).q).match(/Ile wynosi (.*)\?/);only(id,a=>+a===ev(y));}
+for(const id of ['so4-2a','so4-2b','so4-3a','so4-3b','so4-4a','so4-4b','so4-4c','so4-4d','so4-6c','so4-11a','so4-11b','so4-11c']) only(id,a=>+a===ev(bold(id)));
+for(const id of ['so4-5a','so4-5b']){const d=nums(id)[0];only(id,a=>{const [x,y]=a.split(' i ').map(Number);return x-y===d;});}
+only('so4-6a',a=>{const [l,r]=a.split('=');return l.trim().startsWith(`${74-30} −`)&&ev(l)===74-38&&+r===74-38;});
+const eq=id=>plain(ask(id).q.match(/<div class="task-statements">(.*?)<\/div>/)[1].replace(/<span class="answer-box"[^>]*><\/span>/g,'x'));
+const fits=(id,vals)=>{let i=0;const [l,r]=eq(id).replace(/x/g,()=>vals[i++]).split('=');return ev(l)===ev(r);};
+for(const id of ['so4-6b','so4-10a','so4-10b']) only(id,a=>fits(id,[a]));
+only('so4-10c',a=>fits('so4-10c',a.split(' − ')));
+for(const id of ['so4-7a','so4-7b']) only(id,a=>ev(a)===ev(bold(id))&&+a.split(' − ')[1]%10===0);
+{const [x,y,k]=nums('so4-7c');only('so4-7c',a=>+a===(x+k)-(y+k));}
+only('so4-8a',a=>+a===122-63);{const [x,y]=nums('so4-8b');only('so4-8b',a=>+a===x-y);}{const [x,y]=nums('so4-8c');only('so4-8c',a=>x+ +a===y);}
+// Co dzieje się z różnicą: liczymy na przykładzie 50 − 20.
+const delta=a=>/Nie zmienia/.test(a)?0:(/Zwiększa/.test(a)?1:-1)*num(a.match(/\d+/)[0]);
+for(const [id,da,db] of [['so4-9a',5,0],['so4-9b',0,10],['so4-9c',7,7]]){const t=plain(ask(id).q);for(const v of [da,db].filter(Boolean)) assert(t.includes('o '+v),id);
+ only(id,a=>delta(a)===((50+da)-(20+db))-(50-20));}
+for(const id of ['so4-12a','so4-12b','so4-12c']){const [p,b]=nums(id);only(id,a=>num(a)===b-p);}
+for(const id of ['so4-13a','so4-13b','so4-14a','so4-14b','so4-15a','so4-15b','so4-16a','so4-16b','so4-23a','so4-23b']){const [x,y]=nums(id);only(id,a=>num(a)===Math.abs(x-y));}
+{const [d,l]=nums('so4-16c');only('so4-16c',a=>+a+l===d);}
+{const [a1,a2,b1,b2]=nums('so4-17a'),A=a1+a2,B=b1+b2;only('so4-17a',a=>a===`${A>B?'Ala':'Bartek'} o ${Math.abs(A-B)} punkt${Math.abs(A-B)<5?'y':'ów'}`);
+ const [x,y]=nums('so4-17b');only('so4-17b',a=>+a===Math.abs(x-y));}
+{const v=ask('so4-18a').answers.map(ev);only('so4-18a',a=>ev(a)===Math.max(...v));const w=ask('so4-18b').answers.map(ev);only('so4-18b',a=>ev(a)===Math.min(...w));}
+{const [x,y]=nums('so4-19a');only('so4-19a',a=>x+ +a===y);only('so4-19b',a=>+a===999-nums('so4-19b')[0]);}
+{const [x,y,r]=nums('so4-20');assert.notEqual(x-y,r);only('so4-20',a=>a===`Nie, wynik to ${x-y}`);}
+for(const id of ['so4-21a','so4-21b']){const t=plain(ask(id).q);let v=+t.match(/Zacznij od (\d+)/)[1];for(const [,op,n] of t.matchAll(/(Dodaj|dodaj|Odejmij|odejmij) (\d+)/g)) v+=/dodaj/i.test(op)?+n:-n;only(id,a=>+a===v);}
+{const [p,o,w]=nums('so4-22a');only('so4-22a',a=>+a===p-o+w);const [z,x,y]=nums('so4-22b');only('so4-22b',a=>+a===z-x-y);}
+{const [r,o]=nums('so4-24a');only('so4-24a',a=>o-a===r);const [d,x,y]=nums('so4-24b');only('so4-24b',a=>+a===d+x+y);}
+console.log('PASS: grade 4 smart subtraction — all 58 answer keys computed independently, rounds go from easy to hard');
 }
