@@ -710,7 +710,9 @@ function showExplain(i = S.i) {
 
 function showReview() {
   const bank = $('#screen-title').classList.contains('active');
-  const reviewQuestions = bank ? activeScenario.questions : QUESTIONS;
+  // Po przegranej lub rezygnacji omawiamy tylko pytania, które padły w grze (do tego, na którym się skończyła).
+  const played = S.outcome && S.outcome !== 'won' ? S.i + 1 : QUESTIONS.length;
+  const reviewQuestions = bank ? activeScenario.questions : QUESTIONS.slice(0, played);
   openModal(`
     <h2>${bank ? 'Baza pytań' : 'Omówienie rozgrywki'} · ${activeScenario.title}</h2>
     ${reviewQuestions.map((q, i) => `
