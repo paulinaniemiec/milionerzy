@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import {SCENARIOS, makeRound, restoreRound} from '../js/scenarios.js';
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.title), ['Zegary, kalendarz i jednostki długości', 'Oś liczbowa', 'Dodawanie i odejmowanie', 'Szacowanie', 'Sprytne dodawanie', 'Sprytne odejmowanie', 'Powtórzenie: dodawanie i odejmowanie']);
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności', 'Liczby pierwsze i złożone', 'Potęgowanie', 'Cyfry rzymskie', 'Kolejność wykonywania działań', 'Płaszczyzna, proste, półproste, odcinki']);
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.section), ['Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Figury geometryczne']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności', 'Liczby pierwsze i złożone', 'Potęgowanie', 'Cyfry rzymskie', 'Kolejność wykonywania działań', 'Płaszczyzna, proste, półproste, odcinki', 'Kąty']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.section), ['Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Figury geometryczne', 'Figury geometryczne']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
  'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Procenty — zadania egzaminacyjne', 'Potęgi', 'Potęgi o tych samych podstawach',
 ]);
@@ -14,9 +14,9 @@ assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.section), ['Procenty'
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
  'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Wyrażenia algebraiczne', 'Mnożenie sum algebraicznych', 'Równania', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne',
 ]);
-assert.equal(SCENARIOS.length,27);
+assert.equal(SCENARIOS.length,28);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,937);
+assert.equal(new Set(all.map(q=>q.id)).size,978);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -775,4 +775,59 @@ for(const [id,kind] of [['pg5-4a','line'],['pg5-4b','ray'],['pg5-4c','seg']]){co
  const segs=new Set(F.flatMap(f=>{const o=Object.keys(P).filter(n=>onFig(f,P[n]));return o.flatMap((x,i)=>o.slice(i+1).map(y=>[x,y].sort().join('')));}));
  only('pg5-13b',a=>+a===segs.size);}
 console.log('PASS: grade 5 lines, rays and segments — all 36 answer keys checked on drawing coordinates');
+}
+
+// Klasa 5: kąty — każdy kąt mierzony na współrzędnych z rysunku.
+{
+const kt=SCENARIOS.find(s=>s.id==='angles-5');
+assert.equal(kt.grade,5);assert.equal(kt.section,'Figury geometryczne');assert.equal(kt.ordered,true);
+assert.deepEqual(kt.award,{password:'Quiz o kątach zakończony – każdy uczeń wyszkolony!',pluses:2});
+assert.equal(kt.questions.length,41);assert.equal(new Set(kt.questions.map(q=>q.sourceGroup)).size,13);
+const only=(id,ok)=>assert.deepEqual(ask(id).answers.filter(ok),[selected(id)],id);
+const html=id=>ask(id).q;
+const xy=s=>s.split(',').map(Number);
+const dirDeg=(v,p)=>Math.atan2(-(p[1]-v[1]),p[0]-v[0])*180/Math.PI;
+const ccw=(v,a,b)=>((dirDeg(v,b)-dirDeg(v,a))%360+360)%360;
+const small=(v,a,b)=>{const d=ccw(v,a,b);return Math.min(d,360-d);};
+const arcs=id=>Object.fromEntries([...html(id).matchAll(/data-arc="([^"]+)" data-v="([^"]+)" data-a="([^"]+)" data-b="([^"]+)"/g)].map(m=>[m[1],ccw(xy(m[2]),xy(m[3]),xy(m[4]))]));
+const pts=id=>Object.fromEntries([...html(id).matchAll(/data-pt="(\w)" cx="([\d.-]+)" cy="([\d.-]+)"/g)].map(m=>[m[1],[+m[2],+m[3]]]));
+const kind=d=>Math.abs(d-90)<0.5?'prosty':Math.abs(d-180)<0.5?'półpełny':d<90?'ostry':d<180?'rozwarty':'wklęsły';
+const deg=a=>parseFloat(a);
+// Pojęcia i rachunki.
+only('kt5-1a',a=>a===kind(35));only('kt5-1b',a=>a===kind(120));only('kt5-1c',a=>deg(a)===180);only('kt5-1d',a=>deg(a)===360);
+only('kt5-5a',a=>a===kind(15*6));only('kt5-5b',a=>a===kind(30*6));only('kt5-5c',a=>a===kind(4*30));only('kt5-5d',a=>a===kind(10*6));
+const hands=(h,m)=>{const d=Math.abs((h%12)*30+m/2-m*6);return Math.min(d,360-d);};
+only('kt5-7a',a=>a===kind(hands(9,0)));only('kt5-7b',a=>a===kind(hands(10,30)));only('kt5-7c',a=>a===kind(hands(2,15)));
+only('kt5-8a',a=>deg(a)===180-35);only('kt5-8b',a=>deg(a)===35);only('kt5-8c',a=>{const x=deg(a);return x+(x+40)===180;});
+assert.equal(pick('kt5-12a'),'I: P, II: F');assert.equal(pick('kt5-12b'),'I: P, II: P');
+// Rodzaj narysowanego kąta.
+for(const id of ['kt5-2a','kt5-2b','kt5-2c','kt5-2d']){const [d]=Object.values(arcs(id));only(id,a=>a===kind(d));}
+// Nazwa kąta: wierzchołek w środku, pozostałe litery to punkty na ramionach.
+for(const id of ['kt5-3a','kt5-3b']){const P=pts(id),v=xy(html(id).match(/data-v="([^"]+)"/)[1]);
+ only(id,a=>{const [x,y,z]=plain(a).replace('∢','');const on=n=>Object.values(arcs(id))&&[...html(id).matchAll(/<path d="M([\d.-]+) ([\d.-]+)L([\d.-]+) ([\d.-]+)"/g)].some(m=>{const e=[+m[3],+m[4]],p=P[n];return Math.abs((p[0]-v[0])*(e[1]-v[1])-(p[1]-v[1])*(e[0]-v[0]))<300&&(p[0]-v[0])*(e[0]-v[0])+(p[1]-v[1])*(e[1]-v[1])>0;});
+  return P[y][0]===v[0]&&P[y][1]===v[1]&&on(x)&&on(z)&&x!==z;});}
+// Porównywanie czterech kątów.
+{const A=arcs('kt5-4a'),max=Object.keys(A).reduce((x,y)=>A[x]>A[y]?x:y),min=Object.keys(A).reduce((x,y)=>A[x]<A[y]?x:y);only('kt5-4a',a=>a===max);only('kt5-4b',a=>a===min);}
+// Zegar: kąt między wskazówkami z rysunku.
+for(const id of ['kt5-6a','kt5-6b','kt5-6c','kt5-6d']){const H=Object.fromEntries([...html(id).matchAll(/data-hand="(\w)" x1="([\d.-]+)" y1="([\d.-]+)" x2="([\d.-]+)" y2="([\d.-]+)"/g)].map(m=>[m[1],[[+m[2],+m[3]],[+m[4],+m[5]]]]));
+ only(id,a=>a===kind(small(H.h[0],H.h[1],H.m[1])));}
+// Dwie proste przecinające się w O.
+{const id='kt5-9a',P=pts(id),O=P.O,ang=n=>small(O,P[n[1]==='O'?n[0]:n[0]],P[n[2]]);
+ assert(Math.abs(ang('AOB')-arcs(id).AOB)<0.5);
+ const opp=(x,y)=>Math.abs(small(O,P[x],P[y])-180)<0.5,arms=n=>[n[0],n[2]];
+ only('kt5-9a',a=>{const [x,y]=arms(plain(a).replace('∢',''));return (opp(x,'A')&&opp(y,'B'))||(opp(x,'B')&&opp(y,'A'));});
+ only('kt5-9b',a=>{const [x,y]=arms(plain(a).replace('∢',''));if(opp(x,y))return false;const s=[x,y].filter(n=>'AB'.includes(n)),o=[x,y].filter(n=>!'AB'.includes(n));return s.length===1&&o.length===1&&opp(o[0],s[0]==='A'?'B':'A');});
+ only('kt5-9c',a=>Math.abs(deg(a)-ang('BOC'))<0.5);only('kt5-9d',a=>Math.abs(deg(a)-ang('COD'))<0.5);}
+// Drogi: kąt wypukły między dwiema drogami.
+{const R=Object.fromEntries([...html('kt5-10a').matchAll(/data-road="([^"]+)" x1="([\d.-]+)" y1="([\d.-]+)" x2="([\d.-]+)" y2="([\d.-]+)"/g)].map(m=>[m[1],[[+m[2],+m[3]],[+m[4],+m[5]]]]));
+ for(const id of ['kt5-10a','kt5-10b','kt5-10c','kt5-10d']){const [x,y]=[...plain(html(id)).matchAll(/„([^”]+)”/g)].map(m=>m[1]);only(id,a=>a===kind(small(R[x][0],R[x][1],R[y][1])));}}
+// Kąty wielokąta (wypukłego).
+const polyKinds=id=>{const ps=html(id).match(/data-poly="[^"]+" points="([^"]+)"/)[1].split(' ').map(xy);
+ return ps.map((p,i)=>kind(small(p,ps[(i+ps.length-1)%ps.length],ps[(i+1)%ps.length])));};
+{const k=polyKinds('kt5-11a');only('kt5-11a',a=>+a===k.filter(x=>x==='rozwarty').length);only('kt5-11b',a=>+a===k.filter(x=>x==='prosty').length);}
+{const k=polyKinds('kt5-11c');only('kt5-11c',a=>+a===k.filter(x=>x==='ostry').length);}
+// Trzy proste.
+{const A=arcs('kt5-13a');assert(Math.abs(A['40']-40)<0.5&&Math.abs(A['65']-65)<0.5);assert(Math.abs(A['40']+A['α']+A['65']-180)<0.5);
+ only('kt5-13a',a=>Math.abs(deg(a)-A['α'])<0.5);only('kt5-13b',a=>Math.abs(deg(a)-(A['α']+A['β']))<0.5);}
+console.log('PASS: grade 5 angles — all 41 answer keys measured on drawing coordinates');
 }

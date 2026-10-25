@@ -110,3 +110,108 @@ export const geometryQuestions5 = [
  truth('pg5-14a','Odcinek ma dwa końce.','Półprosta ma dwa początki.','PF','I: odcinek ma dwa końce — <b>prawda</b>. II: półprosta ma jeden początek — <b>fałsz</b>.'),
  truth('pg5-14b',`Dwie proste prostopadłe do tej samej prostej są do siebie równoległe.`,'Dwie różne proste równoległe nie mają punktów wspólnych.','PP','I: obie biegną pod kątem prostym do tej samej prostej, więc mają ten sam kierunek — <b>prawda</b>. II: proste równoległe się nie przecinają — <b>prawda</b>.'),
 ];
+
+// Klasa 5, dział „Figury geometryczne”: kąty — rodzaje kątów, nazwy, porównywanie, zegar, kąty przyległe i wierzchołkowe,
+// kąty wielokąta, kąty między drogami. Od łatwych do trudnych (`ordered`). Kierunki w stopniach jak w matematyce:
+// 0° w prawo, 90° w górę. Ramiona, łuki i wskazówki mają współrzędne w atrybutach data-*, test mierzy na nich kąty.
+const rad = (d) => d * Math.PI / 180;
+const at = ([x, y], deg, len) => [r1(x + len * Math.cos(rad(deg))), r1(y - len * Math.sin(rad(deg)))];
+const arm = (v, deg, len) => { const e = at(v, deg, len); return `<path d="M${v[0]} ${v[1]}L${e[0]} ${e[1]}" stroke="#f3f5ff" stroke-width="2.5"/>`; };
+// Łuk kąta od ramienia `from` przeciwnie do ruchu wskazówek zegara o `span` stopni; przy 90° kwadracik.
+function arc(name, v, from, span, label = '', r = 26) {
+ const a = at(v, from, r), b = at(v, from + span, r), data = `data-arc="${name}" data-v="${v}" data-a="${at(v, from, 50)}" data-b="${at(v, from + span, 50)}"`;
+ const mark = span === 90
+  ? `<path ${data} d="M${at(v, from, 15)}L${at(at(v, from, 15), from + 90, 15)}L${at(v, from + 90, 15)}" fill="none" stroke="#63d6e8" stroke-width="2"/>`
+  : `<path ${data} d="M${a[0]} ${a[1]}A${r} ${r} 0 ${span > 180 ? 1 : 0} 0 ${b[0]} ${b[1]}" fill="none" stroke="#63d6e8" stroke-width="2"/>`;
+ const l = at(v, from + span / 2, r + (span > 180 ? 16 : 15));
+ return mark + (label ? txt(l[0], l[1] + 6, label, '#63d6e8') : '');
+}
+const angle = (name, v, from, span, label = name, len = 110) => arm(v, from, len) + arm(v, from + span, len) + arc(name, v, from, span, label);
+const TYPES = ['ostry', 'prosty', 'rozwarty', 'półpełny'];
+// Zegar: wskazówki z data-hand, mniejszy kąt między nimi liczy test.
+function clock(h, m, cx = 200, cy = 118) {
+ const v = [cx, cy], hand = (name, deg, len, w) => { const e = at(v, 90 - deg, len); return `<line data-hand="${name}" x1="${cx}" y1="${cy}" x2="${e[0]}" y2="${e[1]}" stroke="#f6c85c" stroke-width="${w}" stroke-linecap="round"/>`; };
+ const ticks = Array.from({length: 12}, (_, k) => { const a = at(v, 90 - k * 30, 92), b = at(v, 90 - k * 30, 102); return `<path d="M${a[0]} ${a[1]}L${b[0]} ${b[1]}" stroke="#f3f5ff" stroke-width="3"/>`; }).join('');
+ const nums = Array.from({length: 12}, (_, k) => { const p = at(v, 90 - (k + 1) * 30, 78); return `<text x="${p[0]}" y="${p[1] + 6}" text-anchor="middle" fill="#f3f5ff" font-family="Arial, sans-serif" font-size="16">${k + 1}</text>`; }).join('');
+ return fig(`<circle cx="${cx}" cy="${cy}" r="106" fill="#101b3b" stroke="#f3f5ff" stroke-width="3"/>` + ticks + nums + hand('h', (h % 12) * 30 + m / 2, 52, 6) + hand('m', m * 6, 82, 4) + `<circle cx="${cx}" cy="${cy}" r="5" fill="#f6c85c"/>`,
+  `Zegar wskazuje godzinę ${h}:${String(m).padStart(2, '0')}`);
+}
+const typeQ = (id, svg, correct, explain) => q(id, `${svg}Jakiego rodzaju jest zaznaczony kąt?`, ['ostry', 'prosty', 'rozwarty', 'wklęsły'], correct, explain);
+const clockQ = (id, h, m, explain) => q(id, `${clock(h, m)}Jaki kąt tworzą wskazówki tego zegara (mniejszy z dwóch kątów)?`, TYPES, TYPES.indexOf(explain.type), explain.text);
+const four = fig(angle('α', [40, 100], 0, 90, 'α', 70) + angle('β', [230, 95], 10, 25, 'β', 140) + angle('γ', [40, 220], 5, 70, 'γ', 80) + angle('δ', [260, 215], 15, 130, 'δ', 80), 'Cztery kąty: α, β, γ i δ');
+const named1 = fig(arm([150, 170], 0, 170) + arm([150, 170], 120, 150) + arc('EFG', [150, 170], 0, 120, '', 30) + pt('F', 150, 170, 0, 26) + pt('G', ...at([150, 170], 0, 120), 0, 26) + pt('E', ...at([150, 170], 120, 100), -14, 0), 'Kąt o wierzchołku F, ramiona przechodzą przez punkty E i G');
+const named2 = fig(arm([120, 150], 30, 200) + arm([120, 150], 160, 100) + arc('LKM', [120, 150], 30, 130, '', 30) + pt('K', 120, 150, 0, 28) + pt('M', ...at([120, 150], 30, 160), 0, -12) + pt('L', ...at([120, 150], 160, 80), 0, -12), 'Kąt o wierzchołku K, ramiona przechodzą przez punkty L i M');
+// Dwie proste przecinające się w punkcie O: ∢AOB = 50°.
+const O = [200, 118], X = {A: 160, B: 110, C: 340, D: 290};
+const crossing = fig(Object.values(X).map((d) => arm(O, d, 120)).join('') + arc('AOB', O, 110, 50, '50°', 30) + pt('O', ...O, 18, 4) + Object.entries(X).map(([n, d]) => pt(n, ...at(O, d, 95), 14, -6)).join(''),
+ 'Proste AC i BD przecinają się w punkcie O; kąt AOB ma 50°');
+// Trzy proste przez jeden punkt: kąty 40°, α, 65°, β (β wierzchołkowy do kąta 40°).
+const V3 = [200, 118];
+const three = fig([0, 40, 115].map((d) => arm(V3, d, 125) + arm(V3, d + 180, 125)).join('') + arc('40', V3, 0, 40, '40°', 40) + arc('α', V3, 40, 75, 'α', 30) + arc('65', V3, 115, 65, '65°', 40) + arc('β', V3, 180, 40, 'β', 30),
+ 'Trzy proste przecinające się w jednym punkcie; zaznaczone kąty 40°, α, 65° i β');
+// Drogi z rozwidlenia w lesie.
+const ROADS = {'do wsi': 90, 'do polany': 0, 'do rzeki': -30, 'do szosy': 270, 'do cegielni': 115};
+const RV = [200, 114];
+const roads = fig(Object.entries(ROADS).map(([n, d]) => { const e = at(RV, d, 82), l = at(RV, d, 98); return `<line data-road="${n}" x1="${RV[0]}" y1="${RV[1]}" x2="${e[0]}" y2="${e[1]}" stroke="#f3f5ff" stroke-width="2.5"/>` + `<text x="${l[0]}" y="${l[1] + 5}" text-anchor="${Math.abs(d % 180) === 90 ? 'middle' : Math.cos(rad(d)) > 0 ? 'start' : 'end'}" fill="#f6c85c" font-family="Arial, sans-serif" font-size="15">${n}</text>`; }).join(''),
+ 'Drogi rozchodzące się z jednego punktu: do wsi (w górę), do polany (w prawo), do rzeki (w prawo w dół), do szosy (w dół), do cegielni (w górę w lewo)');
+const polyFig = (points, desc) => fig(`<polygon data-poly="kąty" points="${points.map((p) => p.join(',')).join(' ')}" fill="#263051" stroke="#f3f5ff" stroke-width="2.5"/>`, desc);
+const house = polyFig([[80, 205], [320, 205], [320, 115], [200, 30], [80, 115]], 'Pięciokąt w kształcie domku');
+const trapez = polyFig([[60, 195], [340, 195], [260, 55], [140, 55]], 'Czworokąt z dwoma bokami poziomymi; dolny bok dłuższy od górnego');
+const ROADQ = (a, b) => `${roads}Jaki kąt (wypukły) tworzą drogi „${a}” i „${b}”?`;
+
+export const angleQuestions5 = [
+ // Rodzaje kątów według miary
+ q('kt5-1a','Kąt o mierze <b>35°</b> to kąt:',TYPES,0,'Kąt mniejszy od 90° to kąt <b>ostry</b>.'),
+ q('kt5-1b','Kąt o mierze <b>120°</b> to kąt:',TYPES,2,'Kąt większy od 90°, a mniejszy od 180° to kąt <b>rozwarty</b>.'),
+ q('kt5-1c','Ile stopni ma kąt <b>półpełny</b>?',['90°','100°','360°','180°'],3,'Kąt półpełny ma <b>180°</b> — jego ramiona tworzą prostą.'),
+ q('kt5-1d','Ile stopni ma kąt <b>pełny</b>?',['180°','360°','100°','90°'],1,'Kąt pełny to pełny obrót: <b>360°</b>.'),
+ // Rodzaj narysowanego kąta
+ typeQ('kt5-2a',fig(angle('a', [130, 190], 20, 55, '', 190), 'Kąt'),0,'Ramiona są blisko siebie, kąt jest mniejszy od prostego — <b>ostry</b>.'),
+ typeQ('kt5-2b',fig(angle('a', [200, 175], 15, 140, '', 160), 'Kąt'),2,'Kąt jest większy od prostego, ale ramiona nie tworzą prostej — <b>rozwarty</b>.'),
+ typeQ('kt5-2c',fig(angle('a', [150, 190], 30, 90, '', 150), 'Kąt'),1,'Kwadracik oznacza kąt <b>prosty</b> — 90°.'),
+ typeQ('kt5-2d',fig(angle('a', [210, 118], 60, 240, '', 110), 'Kąt'),3,'Zaznaczony kąt jest większy od półpełnego (180°) — to kąt <b>wklęsły</b>.'),
+ // Nazwy kątów
+ q('kt5-3a',`${named1}Jak nazwać zaznaczony kąt?`,['∢EFG','∢FEG','∢EGF','∢FGE'].map(I),0,`Wierzchołek zapisujemy w środku: <b>${I('∢EFG')}</b> (albo ${I('∢GFE')}). Wierzchołkiem jest ${I('F')}.`),
+ q('kt5-3b',`${named2}Jak nazwać zaznaczony kąt?`,['∢KML','∢MLK','∢KLM','∢LKM'].map(I),3,`Wierzchołkiem jest ${I('K')}, więc stoi w środku nazwy: <b>${I('∢LKM')}</b> (albo ${I('∢MKL')}).`),
+ // Porównywanie kątów
+ q('kt5-4a',`${four}Który kąt jest <b>największy</b>?`,['α','β','γ','δ'],3,'α jest prosty, β i γ są ostre, a <b>δ</b> jest rozwarty — największy.'),
+ q('kt5-4b',`${four}Który kąt jest <b>najmniejszy</b>?`,['α','β','γ','δ'],1,'Ramiona kąta <b>β</b> są najbliżej siebie. γ też jest ostry, ale szerszy.'),
+ // Wskazówki w ruchu
+ q('kt5-5a','Jaki kąt zakreśli wskazówka <b>minutowa</b> w ciągu 15 minut?',TYPES,1,'Cała tarcza to 60 minut i 360°. 15 minut to ćwierć obrotu: 90° — kąt <b>prosty</b>.'),
+ q('kt5-5b','Jaki kąt zakreśli wskazówka <b>minutowa</b> w ciągu 30 minut?',TYPES,3,'30 minut to pół obrotu: 180° — kąt <b>półpełny</b>.'),
+ q('kt5-5c','Jaki kąt zakreśli wskazówka <b>godzinowa</b> w ciągu 4 godzin?',TYPES,2,'Wskazówka godzinowa przesuwa się o 30° na godzinę: 4 · 30° = 120° — kąt <b>rozwarty</b>.'),
+ q('kt5-5d','Jaki kąt zakreśli wskazówka <b>minutowa</b> w ciągu 10 minut?',TYPES,0,'Minuta to 6°, więc 10 minut to 60° — kąt <b>ostry</b>.'),
+ // Zegar na rysunku
+ clockQ('kt5-6a',3,0,{type:'prosty',text:'Wskazówka minutowa na 12, godzinowa na 3 — ćwierć tarczy, 90°. Kąt <b>prosty</b>.'}),
+ clockQ('kt5-6b',5,0,{type:'rozwarty',text:'Od 12 do 5 jest 5 · 30° = 150°. Kąt <b>rozwarty</b>.'}),
+ clockQ('kt5-6c',1,0,{type:'ostry',text:'Od 12 do 1 jest 30°. Kąt <b>ostry</b>.'}),
+ clockQ('kt5-6d',6,0,{type:'półpełny',text:'Wskazówki są skierowane w przeciwne strony — 180°. Kąt <b>półpełny</b>.'}),
+ // Zegar bez rysunku
+ q('kt5-7a','Jaki kąt tworzą wskazówki zegara o godzinie <b>9.00</b>?',TYPES,1,'Od 9 do 12 są trzy godziny: 3 · 30° = 90°. Kąt <b>prosty</b>.'),
+ q('kt5-7b','Jaki kąt (mniejszy z dwóch) tworzą wskazówki zegara o godzinie <b>10.30</b>?',TYPES,2,'Wskazówka minutowa jest na 6, a godzinowa w połowie między 10 a 11. To 4 i pół godziny na tarczy: 4,5 · 30° = 135°. Kąt <b>rozwarty</b>.'),
+ q('kt5-7c','Jaki kąt tworzą wskazówki zegara o godzinie <b>2.15</b>?',TYPES,0,'Wskazówka minutowa jest na 3, a godzinowa trochę za 2 — tylko kawałek przed 3. Kąt jest mały: <b>ostry</b>.'),
+ // Kąty przyległe i wierzchołkowe — miary
+ q('kt5-8a','Kąt przyległy do kąta o mierze <b>35°</b> ma miarę:',['35°','55°','145°','325°'],2,'Kąty przyległe razem mają 180°: 180° − 35° = <b>145°</b>. 55° to dopełnienie do 90°.'),
+ q('kt5-8b','Kąt wierzchołkowy do kąta o mierze <b>35°</b> ma miarę:',['35°','55°','145°','325°'],0,'Kąty wierzchołkowe są równe: <b>35°</b>.'),
+ q('kt5-8c','Dwa kąty są przyległe. Jeden z nich jest o 40° większy od drugiego. Ile stopni ma <b>mniejszy</b> z nich?',['70°','40°','110°','140°'],0,'Razem mają 180°. Bez różnicy: 180° − 40° = 140°, połowa to <b>70°</b>. Większy ma 110°.'),
+ // Dwie proste przecinające się
+ q('kt5-9a',`${crossing}Który kąt jest <b>wierzchołkowy</b> z kątem ${I('AOB')}?`,['∢BOC','∢AOC','∢COD','∢AOD'].map(I),2,`Kąt wierzchołkowy leży naprzeciwko: ramiona ${I('OC')} i ${I('OD')} przedłużają ramiona ${I('OA')} i ${I('OB')}. To <b>${I('∢COD')}</b>.`),
+ q('kt5-9b',`${crossing}Który kąt jest <b>przyległy</b> do kąta ${I('AOB')}?`,['∢COD','∢BOC','∢AOC','∢BOD'].map(I),1,`Kąt przyległy ma wspólne ramię ${I('OB')}, a drugie ramiona tworzą prostą (${I('OA')} i ${I('OC')}). To <b>${I('∢BOC')}</b>. ${I('∢AOC')} i ${I('∢BOD')} są półpełne.`),
+ q('kt5-9c',`${crossing}Ile stopni ma kąt ${I('BOC')}?`,['50°','40°','140°','130°'],3,`${I('∢BOC')} jest przyległy do ${I('∢AOB')}: 180° − 50° = <b>130°</b>.`),
+ q('kt5-9d',`${crossing}Ile stopni ma kąt ${I('COD')}?`,['130°','50°','40°','310°'],1,`${I('∢COD')} jest wierzchołkowy do ${I('∢AOB')}, więc ma tyle samo: <b>50°</b>.`),
+ // Drogi w lesie
+ q('kt5-10a',ROADQ('do wsi','do polany'),TYPES,1,'Droga do wsi biegnie w górę, a do polany — w prawo. Kąt <b>prosty</b>.'),
+ q('kt5-10b',ROADQ('do rzeki','do cegielni'),TYPES,2,'Kąt między tymi drogami jest większy od prostego, ale nie tworzą one prostej — <b>rozwarty</b>.'),
+ q('kt5-10c',ROADQ('do wsi','do cegielni'),TYPES,0,'Drogi są blisko siebie — kąt <b>ostry</b>.'),
+ q('kt5-10d',ROADQ('do szosy','do wsi'),TYPES,3,'Drogi biegną w przeciwne strony i tworzą prostą — kąt <b>półpełny</b>.'),
+ // Kąty wielokąta
+ q('kt5-11a',`${house}Ile kątów <b>rozwartych</b> ma ten pięciokąt?`,['1','2','5','3'],3,'Na dole są dwa kąty proste, a trzy górne kąty (przy dachu i ścianach) są rozwarte — razem <b>3</b>.'),
+ q('kt5-11b',`${house}Ile kątów <b>prostych</b> ma ten pięciokąt?`,['0','1','2','3'],2,'Kąty proste są przy dolnych wierzchołkach — <b>2</b>.'),
+ q('kt5-11c',`${trapez}Ile kątów <b>ostrych</b> ma ten czworokąt?`,['0','1','2','4'],2,'Kąty przy dłuższym, dolnym boku są ostre, a przy górnym — rozwarte. Ostre są <b>2</b>.'),
+ // Prawda czy fałsz
+ truth('kt5-12a','Kąty wierzchołkowe mają równe miary.','Suma miar dwóch kątów przyległych wynosi 90°.','PF','I: kąty wierzchołkowe są równe — <b>prawda</b>. II: kąty przyległe mają razem 180°, a nie 90° — <b>fałsz</b>.'),
+ truth('kt5-12b','Każdy kąt rozwarty jest większy od kąta prostego.','Kąt półpełny jest dwa razy większy od kąta prostego.','PP','I: kąt rozwarty ma więcej niż 90° — <b>prawda</b>. II: 180° = 2 · 90° — <b>prawda</b>.'),
+ // Trzy proste
+ q('kt5-13a',`${three}Trzy proste przecinają się w jednym punkcie. Ile stopni ma kąt α?`,['75°','65°','40°','115°'],0,'Kąty 40°, α i 65° tworzą razem kąt półpełny: α = 180° − 40° − 65° = <b>75°</b>.'),
+ q('kt5-13b',`${three}Trzy proste przecinają się w jednym punkcie. Ile wynosi suma α + β?`,['180°','105°','140°','115°'],3,'α = 180° − 40° − 65° = 75°. β jest wierzchołkowy do kąta 40°, więc β = 40°. α + β = <b>115°</b>.'),
+];
