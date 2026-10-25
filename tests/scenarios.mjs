@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import {SCENARIOS, makeRound, restoreRound} from '../js/scenarios.js';
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.title), ['Zegary, kalendarz i jednostki długości', 'Oś liczbowa', 'Dodawanie i odejmowanie', 'Szacowanie', 'Sprytne dodawanie', 'Sprytne odejmowanie', 'Powtórzenie: dodawanie i odejmowanie']);
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności', 'Liczby pierwsze i złożone', 'Potęgowanie', 'Cyfry rzymskie', 'Kolejność wykonywania działań']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności', 'Liczby pierwsze i złożone', 'Potęgowanie', 'Cyfry rzymskie', 'Kolejność wykonywania działań', 'Płaszczyzna, proste, półproste, odcinki']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.section), ['Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Figury geometryczne']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
  'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Procenty — zadania egzaminacyjne', 'Potęgi', 'Potęgi o tych samych podstawach',
 ]);
@@ -11,9 +12,9 @@ assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.section), ['Procenty'
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
  'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Wyrażenia algebraiczne', 'Mnożenie sum algebraicznych', 'Równania', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne',
 ]);
-assert.equal(SCENARIOS.length,26);
+assert.equal(SCENARIOS.length,27);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,901);
+assert.equal(new Set(all.map(q=>q.id)).size,937);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -705,4 +706,70 @@ only('rw8-14b',a=>{const x=num(a);return (2*x+5)**2-(4*x+3)*(x+2)===55;});
 only('rw8-16',a=>{const n=num(a)-3;return (n+3)*(n+2)-n*(n-1)===66;});
 {const x=root('2(x+2)(x+2)+4x(x+2)-6x^2 = 40');only('rw8-17',a=>num(a)===(x+2)*(x+2)*x);}
 console.log('PASS: grade 8 equations — all 31 answer keys checked by substitution and direct computation');
+}
+
+// Klasa 5: płaszczyzna, proste, półproste, odcinki — odpowiedzi sprawdzane na współrzędnych z rysunków.
+{
+const pg=SCENARIOS.find(s=>s.id==='lines-5');
+assert.equal(pg.grade,5);assert.equal(pg.section,'Figury geometryczne');assert.equal(pg.ordered,true);
+assert.equal(pg.questions.length,36);assert.equal(new Set(pg.questions.map(q=>q.sourceGroup)).size,14);
+assert.deepEqual(SCENARIOS.filter(s=>s.questions===pg.questions).map(s=>s.grade),[5]);
+const only=(id,ok)=>assert.deepEqual(ask(id).answers.filter(ok),[selected(id)],id);
+const html=id=>ask(id).q;
+const pts=id=>Object.fromEntries([...html(id).matchAll(/data-pt="(\w)" cx="([\d.-]+)" cy="([\d.-]+)"/g)].map(m=>[m[1],[+m[2],+m[3]]]));
+const figs=id=>[...html(id).matchAll(/<line data-(?:kind="(\w+)" data-name|grid)="(\w+)" x1="([\d.-]+)" y1="([\d.-]+)" x2="([\d.-]+)" y2="([\d.-]+)"/g)].map(m=>({kind:m[1]||'seg',name:m[2],a:[+m[3],+m[4]],b:[+m[5],+m[6]]}));
+const dir=f=>[f.b[0]-f.a[0],f.b[1]-f.a[1]];
+const angle=(u,v)=>{const c=Math.abs(u[0]*v[0]+u[1]*v[1])/Math.hypot(...u)/Math.hypot(...v);return c;};
+const par=(u,v)=>angle(u,v)>0.9999, perp=(u,v)=>angle(u,v)<0.001;
+const byName=id=>Object.fromEntries(figs(id).map(f=>[f.name,dir(f)]));
+// Punkt na figurze: współliniowy i (dla półprostej/odcinka) we właściwym zakresie parametru.
+const param=(f,p)=>{const d=dir(f),L=d[0]*d[0]+d[1]*d[1];return ((p[0]-f.a[0])*d[0]+(p[1]-f.a[1])*d[1])/L;};
+const onFig=(f,p,kind=f.kind)=>{const d=dir(f),cr=Math.abs((p[0]-f.a[0])*d[1]-(p[1]-f.a[1])*d[0])/Math.hypot(...d);if(cr>0.5)return false;const t=param(f,p);return kind==='line'||(t>=-1e-6&&(kind==='ray'||t<=1+1e-6));};
+const word=a=>plain(a).replace(/^tylko /,'').split(/, | i /).map(s=>s.trim());
+// Pojęcia i fakty.
+assert.equal(pick('pg5-1a'),'jeden');assert.equal(pick('pg5-1b'),'dokładnie jedną');assert.equal(pick('pg5-1c'),'nieskończenie wiele');
+assert.equal(pick('pg5-2a'),'k ⊥ l');assert(pick('pg5-2b').includes('równoległa'));
+assert.equal(pick('pg5-3a'),'jeden');assert.equal(pick('pg5-3b'),'zero albo jeden');
+assert.equal(pick('pg5-14a'),'I: P, II: F');assert.equal(pick('pg5-14b'),'I: P, II: P');
+only('pg5-5a',a=>parseInt(a)===3+5);only('pg5-5b',a=>parseInt(a)===12-7);
+only('pg5-12a',a=>+a===3);only('pg5-12b',a=>+a===4*3/2);only('pg5-12c',a=>+a===1);
+// Rysunek 1: rodzaj figury.
+for(const [id,kind] of [['pg5-4a','line'],['pg5-4b','ray'],['pg5-4c','seg']]){const f=figs(id).find(f=>f.kind===kind),P=pts(id);
+ only(id,a=>{const [x,y]=plain(a);return f.name===x+y||(kind!=='line'&&false)||(kind==='line'&&onFig(f,P[x])&&onFig(f,P[y]));});
+ if(kind==='ray'){const P1=pts(id);assert.deepEqual(f.a,P1.L);assert(onFig(f,P1.N));}}
+// Rysunek 2: punkty na prostej p.
+{const id='pg5-6a',P=pts(id),p=figs(id)[0],on=Object.keys(P).filter(n=>onFig(p,P[n])),t=n=>param(p,P[n]);
+ assert.deepEqual(on,['R','S','T','U','W']);
+ only('pg5-6a',a=>{const n=plain(a);return on.includes(n)&&t(n)>t('S')&&t(n)<t('U');});
+ only('pg5-6b',a=>{const w=word(a);return w.length===Object.keys(P).length-on.length&&w.every(n=>!on.includes(n));});
+ const onRay=(n,from,to)=>on.includes(n)&&(t(n)-t(from))*(t(to)-t(from))>=0;
+ only('pg5-6c',a=>{const n=plain(a);return onRay(n,'T','U')&&!onRay(n,'U','T');});
+ only('pg5-6d',a=>+a===Object.keys(P).filter(n=>onRay(n,'S','R')).length);}
+// Rysunek 4: k, l, m, n, o.
+{const L=byName('pg5-7a');only('pg5-7a',a=>plain(a)!=='k'&&par(L.k,L[plain(a)]));only('pg5-7b',a=>perp(L.l,L[plain(a)]));
+ only('pg5-7c',a=>+a===Object.keys(L).filter(n=>n!=='k'&&!par(L.k,L[n])&&!perp(L.k,L[n])).length);}
+// Rysunek 8: kratka — kierunki całkowite, więc dokładnie.
+{const L=byName('pg5-8a');only('pg5-8a',a=>par(L.AB,L[plain(a)]));only('pg5-8b',a=>perp(L.AB,L[plain(a)]));
+ assert.equal(Object.keys(L).filter(n=>n!=='AB'&&par(L.AB,L[n])).length,1);assert.equal(Object.keys(L).filter(n=>perp(L.AB,L[n])).length,1);}
+// Rysunek 5: dokładnie jedna para równoległa i jedna prostopadła do a.
+{const L=byName('pg5-9a'),names=Object.keys(L);const pairs=names.flatMap((x,i)=>names.slice(i+1).filter(y=>par(L[x],L[y])).map(y=>x+' i '+y));
+ assert.equal(pairs.length,1);only('pg5-9a',a=>plain(a)===pairs[0]);only('pg5-9b',a=>perp(L.a,L[plain(a)]));}
+// Rysunek 3: odcinki, półproste, proste.
+{const id='pg5-10a',P=pts(id),F=figs(id),on=f=>Object.keys(P).filter(n=>onFig(f,P[n]));
+ const segs=new Set(F.flatMap(f=>{const o=on(f);return o.flatMap((x,i)=>o.slice(i+1).map(y=>[x,y].sort().join('')));}));
+ only('pg5-10a',a=>+a===segs.size);
+ const rays=F.reduce((n,f)=>!on(f).includes('B')?n:f.kind==='line'?n+2:f.kind==='ray'&&f.a.join()===P.B.join()?n+1:n+(f.kind==='ray'?1:0),0);
+ only('pg5-10b',a=>+a===rays);only('pg5-10c',a=>+a===F.filter(f=>f.kind==='line').length);}
+// Rysunek 6: boki wielokąta.
+{const ps=html('pg5-11a').match(/data-poly="(\w+)" points="([^"]+)"/),names=ps[1].split(''),xy=ps[2].split(' ').map(p=>p.split(',').map(Number));
+ const edges=names.map((n,i)=>({name:n+names[(i+1)%names.length],d:[xy[(i+1)%xy.length][0]-xy[i][0],xy[(i+1)%xy.length][1]-xy[i][1]]}));const AB=edges[0].d,rest=edges.slice(1);
+ only('pg5-11a',a=>+a===rest.filter(e=>par(AB,e.d)).length);only('pg5-11b',a=>+a===rest.filter(e=>perp(AB,e.d)).length);
+ only('pg5-11c',a=>{const e=rest.find(e=>e.name===plain(a));return e&&!par(AB,e.d)&&!perp(AB,e.d);});}
+// Rysunek 7: przekątne.
+{const id='pg5-13a',P=pts(id),F=figs(id),LN=F.find(f=>f.name==='LN');
+ only('pg5-13a',a=>{const w=word(a);const on=Object.keys(P).filter(n=>onFig(LN,P[n]));return w.length===on.length&&w.every(n=>on.includes(n));});
+ assert(onFig(F.find(f=>f.name==='KM'),P.S));
+ const segs=new Set(F.flatMap(f=>{const o=Object.keys(P).filter(n=>onFig(f,P[n]));return o.flatMap((x,i)=>o.slice(i+1).map(y=>[x,y].sort().join('')));}));
+ only('pg5-13b',a=>+a===segs.size);}
+console.log('PASS: grade 5 lines, rays and segments — all 36 answer keys checked on drawing coordinates');
 }

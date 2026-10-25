@@ -4,6 +4,7 @@ import { divisibilityQuestions, powerQuestions, romanQuestions, primeQuestions, 
 import { percentExamQuestions } from './percent-exam-sets.js';
 import { powerQuestions7, samePowerQuestions7 } from './grade7-sets.js';
 import { axisQuestions } from './axis-sets.js';
+import { geometryQuestions5 } from './geometry5-sets.js';
 import { algebraQuestions8, multiplicationQuestions8, equationQuestions8 } from './algebra-sets.js';
 import { grade4Questions, axisQuestions4, additionQuestions4, estimationQuestions4, smartAdditionQuestions4, smartSubtractionQuestions4, reviewQuestions4 } from './grade4-sets.js';
 
@@ -93,11 +94,13 @@ export const SCENARIOS = [
  {id:'smart-addition-4', grade:4, title:'Sprytne dodawanie', description:'Co dodać najpierw? Przekładanie do pełnych dziesiątek, kolejne liczby, okienka, tabelka ○ + ■ i jesienne zadania tekstowe.', questions:smartAdditionQuestions4, award:{password:'Jesienne dodawanie – matematyczne wyzwanie!', pluses:2}},
  {id:'smart-subtraction-4', grade:4, title:'Sprytne odejmowanie', description:'Od łatwych do trudnych: po kawałku, powiększanie obu liczb, odejmowanie przez dodawanie, reszta z banknotu, lata i zadania tekstowe.', questions:smartSubtractionQuestions4, ordered:true, award:{password:'Minusy pokonane, punkty pozbierane!', pluses:2}},
  {id:'review-2-4', grade:4, title:'Powtórzenie: dodawanie i odejmowanie', description:'Cały dział II, od łatwych do trudnych: zapis i porównywanie liczb, oś liczbowa, szacowanie, sposoby liczenia, tabelka ○ − ■, prawda czy fałsz i zadania tekstowe.', questions:reviewQuestions4, ordered:true, award:{password:'Powtórka zaliczona, wiedza utrwalona!', pluses:4}},
- {id:'divisibility', grade:5, title:'Podzielność i wielokrotności', description:'Cechy podzielności przez 2, 3, 4, 5, 9 i 10 oraz wielokrotności liczb.', questions:divisibilityQuestions},
- {id:'primes', grade:5, title:'Liczby pierwsze i złożone', description:'Dzielniki, liczby pierwsze i złożone, rozkład na czynniki pierwsze.', questions:primeQuestions},
- {id:'powers', grade:5, title:'Potęgowanie', description:'Iloczyn jako potęga, obliczanie i odczytywanie potęg: do kwadratu, do sześcianu.', questions:powerQuestions},
- {id:'roman', grade:5, title:'Cyfry rzymskie', description:'Odczytywanie i zapisywanie liczb, daty z obrazów i budowli, działania i zamazane liczby.', questions:romanQuestions},
- {id:'order', grade:5, title:'Kolejność wykonywania działań', description:'Co liczymy najpierw, wyniki działań, porównywanie wyrażeń i zadania tekstowe.', questions:orderQuestions},
+ // Klasa 5 ma działy jak w podręczniku: I. Liczby naturalne, II. Figury geometryczne.
+ {id:'divisibility', grade:5, section:'Liczby naturalne', title:'Podzielność i wielokrotności', description:'Cechy podzielności przez 2, 3, 4, 5, 9 i 10 oraz wielokrotności liczb.', questions:divisibilityQuestions},
+ {id:'primes', grade:5, section:'Liczby naturalne', title:'Liczby pierwsze i złożone', description:'Dzielniki, liczby pierwsze i złożone, rozkład na czynniki pierwsze.', questions:primeQuestions},
+ {id:'powers', grade:5, section:'Liczby naturalne', title:'Potęgowanie', description:'Iloczyn jako potęga, obliczanie i odczytywanie potęg: do kwadratu, do sześcianu.', questions:powerQuestions},
+ {id:'roman', grade:5, section:'Liczby naturalne', title:'Cyfry rzymskie', description:'Odczytywanie i zapisywanie liczb, daty z obrazów i budowli, działania i zamazane liczby.', questions:romanQuestions},
+ {id:'order', grade:5, section:'Liczby naturalne', title:'Kolejność wykonywania działań', description:'Co liczymy najpierw, wyniki działań, porównywanie wyrażeń i zadania tekstowe.', questions:orderQuestions},
+ {id:'lines-5', grade:5, section:'Figury geometryczne', title:'Płaszczyzna, proste, półproste, odcinki', description:'Od łatwych do trudnych: prosta, półprosta i odcinek, zapis ⊥ i ∥, punkty na prostej, proste równoległe i prostopadłe (także w kratce), liczenie odcinków i prostych.', questions:geometryQuestions5, ordered:true},
  // Klasa 8 też ma działy (jak w podręczniku), a zestawy egzaminacyjne mają dział „Przygotowanie do egzaminu”.
  {id:'diagrams', grade:8, section:'Statystyka i prawdopodobieństwo', title:'Diagramy i wykresy', description:'Nowe zadania w stylu egzaminu ósmoklasisty. Każde z innym wykresem.', questions:diagramQuestions},
  {id:'probability', grade:8, section:'Statystyka i prawdopodobieństwo', title:'Prawdopodobieństwo', description:'Nowe zadania w stylu egzaminu ósmoklasisty. Kostki, losy, monety i szanse.', questions:probabilityQuestions},
