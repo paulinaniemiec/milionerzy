@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {SCENARIOS, makeRound, restoreRound} from '../js/scenarios.js';
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.title), ['Zegary, kalendarz i jednostki długości', 'Oś liczbowa', 'Dodawanie i odejmowanie', 'Szacowanie', 'Sprytne dodawanie', 'Sprytne odejmowanie']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.title), ['Zegary, kalendarz i jednostki długości', 'Oś liczbowa', 'Dodawanie i odejmowanie', 'Szacowanie', 'Sprytne dodawanie', 'Sprytne odejmowanie', 'Powtórzenie: dodawanie i odejmowanie']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności', 'Liczby pierwsze i złożone', 'Potęgowanie', 'Cyfry rzymskie', 'Kolejność wykonywania działań']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
  'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Procenty — zadania egzaminacyjne', 'Potęgi', 'Potęgi o tych samych podstawach',
@@ -10,9 +10,9 @@ assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.section), ['Procenty'
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
  'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne',
 ]);
-assert.equal(SCENARIOS.length,22);
+assert.equal(SCENARIOS.length,23);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,743);
+assert.equal(new Set(all.map(q=>q.id)).size,797);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -526,4 +526,70 @@ for(const id of ['so4-21a','so4-21b']){const t=plain(ask(id).q);let v=+t.match(/
 {const [p,o,w]=nums('so4-22a');only('so4-22a',a=>+a===p-o+w);const [z,x,y]=nums('so4-22b');only('so4-22b',a=>+a===z-x-y);}
 {const [r,o]=nums('so4-24a');only('so4-24a',a=>o-a===r);const [d,x,y]=nums('so4-24b');only('so4-24b',a=>+a===d+x+y);}
 console.log('PASS: grade 4 smart subtraction — all 58 answer keys computed independently, rounds go from easy to hard');
+}
+
+// Klasa 4: powtórzenie działu II — każdy klucz liczony z treści, pytania od łatwych do trudnych.
+{
+const pw=SCENARIOS.find(s=>s.id==='review-2-4');
+assert.equal(pw.grade,4);assert.equal(pw.questions.length,54);assert.equal(new Set(pw.questions.map(q=>q.sourceGroup)).size,26);
+assert.deepEqual(SCENARIOS.filter(s=>s.questions===pw.questions).map(s=>s.grade),[4]);
+assert.deepEqual(pw.award,{password:'Powtórka zaliczona, wiedza utrwalona!',pluses:4});assert.equal(pw.ordered,true);
+{const order=[...new Set(pw.questions.map(q=>q.sourceGroup))];let seed=11;const random=()=>{seed=(1664525*seed+1013904223)>>>0;return seed/4294967296;};
+ for(let i=0;i<500;i++) makeRound(pw,random).forEach((q,k)=>{const v=order.indexOf(q.sourceGroup);assert(v>=Math.floor(k*26/12)&&v<Math.floor((k+1)*26/12),'question '+k+' from its difficulty band');});}
+const txt=h=>plain(h).replace(/&gt;/g,'>').replace(/&lt;/g,'<');
+const ev=s=>{const t=txt(s).replace(/−/g,'-').replace(/\s/g,'');assert(/^\d+([+-]\d+)*$/.test(t),s);return t.match(/[+-]?\d+/g).reduce((a,b)=>a+ +b,0);};
+const N=s=>+txt(s).replace(/\s|zł/g,'');
+const only=(id,ok)=>assert.deepEqual(ask(id).answers.filter(ok),[selected(id)],id);
+const bold=id=>txt(ask(id).q.match(/<b>(.*?)<\/b>/)[1]);
+const nums=id=>[...txt(ask(id).q).replace(/(\d) (\d{3})/g,'$1$2').matchAll(/\d+/g)].map(m=>+m[0]);
+// Liczby słownie: niezależny parser polskich liczebników.
+const W=Object.fromEntries(('jeden 1 dwa 2 trzy 3 cztery 4 pięć 5 sześć 6 siedem 7 osiem 8 dziewięć 9 dziesięć 10 jedenaście 11 dwanaście 12 trzynaście 13 czternaście 14 piętnaście 15 szesnaście 16 siedemnaście 17 osiemnaście 18 dziewiętnaście 19 '+
+ 'dwadzieścia 20 trzydzieści 30 czterdzieści 40 pięćdziesiąt 50 sześćdziesiąt 60 siedemdziesiąt 70 osiemdziesiąt 80 dziewięćdziesiąt 90 sto 100 dwieście 200 trzysta 300 czterysta 400 pięćset 500 sześćset 600 siedemset 700 osiemset 800 dziewięćset 900').split(' ').reduce((a,w,i,arr)=>i%2?a:[...a,[w,+arr[i+1]]],[]));
+const words=s=>{let acc=0,cur=0;for(const w of s.trim().split(/\s+/)){if(/^tysi/.test(w)){acc+=(cur||1)*1000;cur=0;}else{assert(w in W,w);cur+=W[w];}}return acc+cur;};
+assert.equal(words('trzysta czternaście tysięcy osiemset'),314800);assert.equal(words('dziewięć tysięcy pięćset'),9500);
+// Nazwy liczb w działaniu.
+const role=(eq,n)=>{const [,x,op,y,z]=txt(eq).match(/(\d+) ([+−]) (\d+) = (\d+)/).map(v=>/^\d+$/.test(v)?+v:v);
+ return op==='+'?(n===z?'suma':'składnik'):(n===x?'odjemna':n===y?'odjemnik':'różnica');};
+only('pw4-1a',a=>a===role(bold('pw4-1a'),71));only('pw4-1b',a=>a===role(bold('pw4-1b'),25));only('pw4-1c',a=>role(bold('pw4-1c'),+a)==='odjemna');
+for(const id of ['pw4-2a','pw4-2b','pw4-2c','pw4-18a','pw4-18b']) only(id,a=>+a===ev(bold(id)));
+for(const id of ['pw4-3a','pw4-3b','pw4-14b']) only(id,a=>N(a)===words(bold(id)));
+only('pw4-14a',a=>words(a)===+bold('pw4-14a'));
+only('pw4-4a',a=>Math.floor(a/10)%10===4);only('pw4-4b',a=>Math.floor(a/100)%10===7);
+only('pw4-5a',a=>+a===23-7);only('pw4-5b',a=>+a===56+9);
+for(const id of ['pw4-6a','pw4-6b']){const q=ask(id).q,[x,y,seg]=q.match(/data-axis="([^"]+)"/)[1].split(',').map(Number),k=+q.match(/data-points="\w:(\d+)"/)[1];only(id,a=>+a===x+k*(y-x)/seg);}
+{const v=ask('pw4-7').answers.map(ev);only('pw4-7',a=>ev(a)===Math.max(...v));}
+only('pw4-8a',a=>{const [,l,op,r]=txt(a).match(/^([\d ]+) ([<>]) ([\d ]+)$/);return op==='<'?N(l)<N(r):N(l)>N(r);});
+{const v=ask('pw4-8b').answers.map(N);only('pw4-8b',a=>N(a)===Math.max(...v));}
+for(const id of ['pw4-9a','pw4-9b']){const v=ask(id).answers.map(ev);only(id,a=>v.filter(x=>x===ev(a)).length===1);}
+only('pw4-10',a=>37+ +a===80);only('pw4-11a',a=>a-27===45);only('pw4-11b',a=>38+ +a===91);
+const eq=id=>txt(ask(id).q.match(/<div class="task-statements">(.*?)<\/div>/)[1].replace(/<span class="answer-box"[^>]*><\/span>/g,'x'));
+const fitsEq=(id,vals)=>{let i=0;const [l,r]=eq(id).replace(/x/g,()=>vals[i++]).split('=');return ev(l)===ev(r);};
+only('pw4-12a',a=>fitsEq('pw4-12a',[a]));only('pw4-12b',a=>fitsEq('pw4-12b',[a]));only('pw4-12c',a=>fitsEq('pw4-12c',a.split(' i ')));
+const money=s=>txt(s).split('+').reduce((t,p)=>{const [k,v]=p.replace(/zł/g,'').split('·').map(x=>+x.trim());return t+k*v;},0);
+only('pw4-13a',a=>money(a)===N(bold('pw4-13a')));only('pw4-13b',a=>N(a)===money(bold('pw4-13b')));
+only('pw4-15a',a=>N(a)===3816+492);
+const phrase=(a,n)=>{const [,w,v]=a.match(/^(.*) (\d+)$/);const d=n-v;return {'prawie':d<0&&d>=-10,'trochę mniej niż':d<0&&d>=-10,'trochę więcej niż':d>0&&d<=10,'ponad':d>0,'około':Math.abs(d)<=50}[w];};
+only('pw4-15b',a=>phrase(a,596));only('pw4-15c',a=>phrase(a,803));
+only('pw4-16a',a=>+a===9+4);only('pw4-16b',a=>+a===41-3);
+{const [c,s,b]=nums('pw4-17a');only('pw4-17a',a=>N(a)===b-(c+s));const [k,z,b2]=nums('pw4-17b');only('pw4-17b',a=>N(a)===b2-(k+z));}
+only('pw4-19a',a=>+a===57-29);only('pw4-19b',a=>ev(a)===47+36&&+a.split('+')[0]%10===0);
+// Książki: Ola ma O, Bartek O − 3, Igor O + 3.
+{const v={Ola:10,Bartek:7,Igor:13},max=Math.max(...Object.values(v)),min=Math.min(...Object.values(v));
+ const stmt=a=>{let m=a.match(/^(\w+) przeczytał[a]? (najmniej|najwięcej) książek$/);if(m)return v[m[1]]===(m[2]==='najmniej'?min:max);
+  m=a.match(/^(\w+) przeczytał[a]? więcej książek niż (\w+)$/);return v[m[1]]>v[m[2]];};
+ only('pw4-20a',a=>!stmt(a));only('pw4-20b',a=>+a===v.Igor-v.Bartek);}
+for(const id of ['pw4-21a','pw4-21b','pw4-21c']){const rows=[...ask(id).q.matchAll(/<tr>(<td>.*?)<\/tr>/g)].map(m=>[...m[1].matchAll(/<td>(.*?)<\/td>/g)].map(c=>c[1]));
+ const r=rows.find(r=>r.includes('?')),k=r.indexOf('?');only(id,a=>k===2?+a===r[0]-r[1]:k===0?+a===+r[2]+ +r[1]:+a===r[0]-r[2]);}
+const PF=(i,ii)=>`I: ${i?'P':'F'}, II: ${ii?'P':'F'}`;
+{const [i,ii]=txt(ask('pw4-22a').q).match(/I\. (.*)II\. (.*)$/).slice(1);
+ const cmp=s=>{const [,l,w,r]=s.match(/^\S+ (.*?) jest (większa|mniejsza) od \S+ (.*?)\.$/);return w==='większa'?ev(l)>ev(r):ev(l)<ev(r);};
+ only('pw4-22a',a=>a===PF(cmp(i.trim()),cmp(ii.trim())));}
+{const t=txt(ask('pw4-22b').q);const [,d,n,w]=t.match(/o 1 (większa|mniejsza) od ([\d ]+) to ([a-ząćęłńóśźż ]+)\./);const one=words(w)===N(n)+(d==='większa'?1:-1);
+ const [,w2,d2,n2]=t.match(/Liczba ([a-ząćęłńóśźż ]+) jest (większa|mniejsza) od ([\d ]+)\./);const two=d2==='większa'?words(w2)>N(n2):words(w2)<N(n2);
+ only('pw4-22b',a=>a===PF(one,two));}
+{const [r1,b1,r2,b2]=nums('pw4-23a');only('pw4-23a',a=>+a===r1+b1-r2-b2);const [b,m,p]=nums('pw4-23b');only('pw4-23b',a=>+a===b-m-p);}
+{const [c,d]=nums('pw4-24');only('pw4-24',a=>+a===c+(c+d));}
+{const [i,m]=nums('pw4-25a');only('pw4-25a',a=>N(a)===i-m);only('pw4-25b',a=>N(a)===i+m+(i-m));}
+{const [e,z,l]=nums('pw4-26a');only('pw4-26a',a=>+a===e+z);only('pw4-26b',a=>+a===(e+z)-(e-l));}
+console.log('PASS: grade 4 chapter II review — all 54 answer keys computed independently, rounds go from easy to hard');
 }

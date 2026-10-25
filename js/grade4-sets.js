@@ -444,3 +444,101 @@ export const smartSubtractionQuestions4 = [
  q('so4-24a','Różnica dwóch liczb wynosi 154, a odjemna jest równa 320. Ile wynosi odjemnik?',['474','166','176','154'],1,'Odjemnik = odjemna − różnica: 320 − 154 = <b>166</b>. Sprawdzenie: 320 − 166 = 154. 474 to odjemna dodana do różnicy.'),
  q('so4-24b','Różnica dwóch liczb wynosi 85. Odjemną zwiększamy o 20, a odjemnik zmniejszamy o 15. Ile wynosi nowa różnica?',['120','90','105','50'],0,'Większa odjemna zwiększa różnicę o 20, mniejszy odjemnik zwiększa ją jeszcze o 15: 85 + 20 + 15 = <b>120</b>.'),
 ];
+
+// Klasa 4: powtórzenie działu II „Dodawanie i odejmowanie” — zapis liczb, porównywanie, oś liczbowa, nazwy w działaniach,
+// szacowanie, sposoby dodawania i odejmowania, tabelka ○ − ■, zdania P/F i zadania tekstowe. Od najłatwiejszych do najtrudniejszych (`ordered`).
+const digits = (id, words, answers, correct, explain) => q(id, `Jak zapisać cyframi liczbę <b>${words}</b>?`, answers, correct, explain);
+const odd = (id, answers, correct, explain) => q(id, 'Które działanie ma <b>inny</b> wynik niż trzy pozostałe?', answers, correct, explain);
+const truth = (id, a, b, t, explain) => q(id, `Oceń zdania (P — prawda, F — fałsz).<div class="task-statements">I. ${a}<br>II. ${b}</div>`, ['I: P, II: P', 'I: P, II: F', 'I: F, II: P', 'I: F, II: F'], ['PP', 'PF', 'FP', 'FF'].indexOf(t), explain);
+const k6 = ax(line(0, 40, 10, {labels: [0, 1], points: {K: 6}}));
+const p4 = ax(line(50, 80, 10, {labels: [0, 1, 10], points: {P: 4}}));
+// Tabelka ○ − ■: w każdym wierszu brakuje innej liczby, znak zapytania stoi tylko w pytanej kratce.
+const MINUS = [[91, 36, 55], [75, 48, 27], [64, 35, 29]];
+const MINUS_HIDDEN = [2, 0, 1];
+const minusTable = (row) => `<div class="task-table-wrap"><table class="task-table"><caption>Uzupełnij tabelę</caption><thead><tr><th scope="col">○</th><th scope="col">■</th><th scope="col">○ − ■</th></tr></thead><tbody>${MINUS.map((r, i) => `<tr>${r.map((v, j) => `<td>${j !== MINUS_HIDDEN[i] ? v : i === row ? '?' : ''}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+const BOOKS = 'Bartek przeczytał w wakacje o 3 książki mniej niż Ola, a Igor o 3 książki więcej niż Ola.';
+const HEIGHT = 'Ewa ma 132 cm wzrostu. Jest niższa od Zosi o 15 cm, a wyższa od Leny o 6 cm.';
+const PIGGY = 'Igor ma 83 zł oszczędności, a jego siostra Maja 47 zł. Ich młodszy brat ma w skarbonce tyle złotych, ile wynosi różnica oszczędności Igora i Mai.';
+
+export const reviewQuestions4 = [
+ // Nazwy liczb w działaniach
+ q('pw4-1a','W działaniu <b>48 + 23 = 71</b> liczba 71 to:',['składnik','suma','różnica','odjemna'],1,'Liczby, które dodajemy, to składniki (48 i 23), a wynik dodawania to <b>suma</b>.'),
+ q('pw4-1b','W działaniu <b>63 − 25 = 38</b> liczba 25 to:',['odjemna','różnica','odjemnik','składnik'],2,'63 to odjemna, 25 to <b>odjemnik</b> (liczba, którą odejmujemy), a 38 to różnica.'),
+ q('pw4-1c','W działaniu <b>90 − 34 = 56</b> odjemną jest liczba:',['34','56','124','90'],3,'Odjemna to liczba, od której odejmujemy: <b>90</b>. 34 to odjemnik, a 56 to różnica.'),
+ // Rachunki w pamięci
+ calc('pw4-2a','38 + 7',['45','35','44','55'],0,'38 + 2 = 40, zostaje jeszcze 5: 40 + 5 = <b>45</b>.'),
+ calc('pw4-2b','43 − 15',['32','28','38','22'],1,'43 − 10 = 33, a 33 − 5 = <b>28</b>. Sprawdzenie: 28 + 15 = 43.'),
+ calc('pw4-2c','27 − 27',['27','54','0','1'],2,'Gdy od liczby odejmiemy tę samą liczbę, zostaje <b>0</b>.'),
+ // Zapis cyframi
+ digits('pw4-3a','siedemset dziewięć',['79','790','7009','709'],3,'Siedem setek, zero dziesiątek i dziewięć jedności: <b>709</b>.'),
+ digits('pw4-3b','dwa tysiące czterdzieści',['2040','2400','2004','20 040'],0,'2 tysiące, 0 setek, 4 dziesiątki, 0 jedności: <b>2040</b>.'),
+ // Cyfry jedności, dziesiątek, setek
+ q('pw4-4a','W której liczbie cyfrą dziesiątek jest <b>4</b>?',['415','154','4510','541'],3,'Cyfra dziesiątek stoi druga od prawej. W liczbie <b>541</b> to 4. W 415 i 4510 jest tam 1, a w 154 jest 5.'),
+ q('pw4-4b','W której liczbie cyfrą setek jest <b>7</b>?',['7253','5372','3527','2735'],3,'Cyfra setek stoi trzecia od prawej. W liczbie <b>2735</b> to 7. W 7253 siódemka oznacza tysiące.'),
+ // O tyle mniejsza, o tyle większa
+ q('pw4-5a','Jaka liczba jest <b>o 7 mniejsza</b> od 23?',['30','16','17','15'],1,'„O 7 mniejsza” to odejmowanie: 23 − 7 = <b>16</b>. 30 to liczba o 7 większa.'),
+ q('pw4-5b','Jaka liczba jest <b>o 9 większa</b> od 56?',['65','47','64','66'],0,'„O 9 większa” to dodawanie: 56 + 9 = <b>65</b>. 47 to liczba o 9 mniejsza.'),
+ // Oś liczbowa
+ q('pw4-6a',`${k6}Jaką liczbę oznaczono na osi literą <i>K</i>?`,['6','20','24','28'],2,'Z kreski na kreskę liczby rosną o 4 (od 0 do 4). K leży na szóstej kresce: 6 · 4 = <b>24</b>. 6 to tylko numer kreski.'),
+ q('pw4-6b',`${p4}Jaką liczbę oznaczono na osi literą <i>P</i>?`,['62','54','58','66'],0,'Od 50 do 53 jest jedna kreska, więc liczby rosną o 3. P leży cztery kreski za 50: 50 + 4 · 3 = <b>62</b>.'),
+ // Największa suma
+ q('pw4-7','Które dodawanie ma <b>największy</b> wynik?',['23 + 45','16 + 51','32 + 37','44 + 24'],2,'23 + 45 = 68, 16 + 51 = 67, 32 + 37 = 69, 44 + 24 = 68. Największy wynik ma <b>32 + 37</b>.'),
+ // Porównywanie liczb
+ q('pw4-8a','Które zdanie jest <b>prawdziwe</b>?',['406 &gt; 460','1099 &lt; 999','8080 &gt; 8800','30 017 &lt; 30 071'],3,'30 017 i 30 071 różnią się dziesiątkami: 1 &lt; 7, więc <b>30 017 &lt; 30 071</b>. 406 &lt; 460, 1099 &gt; 999 i 8080 &lt; 8800.'),
+ q('pw4-8b','Która liczba jest <b>największa</b>?',['98 765','100 001','99 999','10 999'],1,'Tylko <b>100 001</b> ma sześć cyfr, więc jest największa — mimo że ma same zera i jedynki.'),
+ // Inny wynik
+ odd('pw4-9a',['18 + 57','26 + 49','47 + 38','34 + 41'],2,'18 + 57 = 75, 26 + 49 = 75, 34 + 41 = 75, a <b>47 + 38</b> = 85.'),
+ odd('pw4-9b',['64 − 19','92 − 37','81 − 26','73 − 18'],0,'92 − 37 = 55, 81 − 26 = 55, 73 − 18 = 55, a <b>64 − 19</b> = 45.'),
+ // Ile brakuje?
+ q('pw4-10','Hania ma 37 naklejek. Ile naklejek musi jeszcze zdobyć, żeby mieć ich 80?',['53','117','43','47'],2,'Od 37 do 40 są 3, od 40 do 80 jest 40. Razem <b>43</b>. 117 to 37 + 80.'),
+ // Szukanie liczby
+ q('pw4-11a','Od której liczby trzeba odjąć 27, aby otrzymać 45?',['18','62','82','72'],3,'Szukamy odjemnej: 45 + 27 = <b>72</b>. Sprawdzenie: 72 − 27 = 45.'),
+ q('pw4-11b','Jaką liczbę trzeba dodać do 38, aby otrzymać 91?',['53','63','129','43'],0,'91 − 38 = <b>53</b>. Sprawdzenie: 38 + 53 = 91.'),
+ // Okienka
+ box('pw4-12a','□ + 24 = 70',['56','46','94','36'],1,'Szukamy składnika: 70 − 24 = <b>46</b>. Sprawdzenie: 46 + 24 = 70.'),
+ box('pw4-12b','61 = 35 + □',['36','96','24','26'],3,'Szukamy składnika: 61 − 35 = <b>26</b>. Sprawdzenie: 35 + 26 = 61.'),
+ q('pw4-12c',`Jakie liczby można wpisać w okienka?<div class="task-statements">75 = ${BOX} + ${BOX}</div>`,['38 i 47','39 i 36','45 i 20','48 i 37'],1,'39 + 36 = <b>75</b>. Pozostałe pary dają 85, 65 i 85.'),
+ // Kwota według wzoru
+ q('pw4-13a','Która suma opisuje kwotę <b>4705 zł</b>?',['4 · 1000 zł + 7 · 10 zł + 5 · 1 zł','47 · 1000 zł + 5 · 1 zł','4 · 1000 zł + 7 · 100 zł + 5 · 1 zł','4 · 1000 zł + 5 · 100 zł + 7 · 1 zł'],2,'4705 zł to 4 tysiące, 7 setek, 0 dziesiątek i 5 jedności: <b>4 · 1000 zł + 7 · 100 zł + 5 · 1 zł</b>.'),
+ q('pw4-13b','Jaką kwotę opisuje zapis <b>3 · 1000 zł + 6 · 10 zł + 2 · 1 zł</b>?',['3062 zł','3620 zł','3602 zł','362 zł'],0,'3 tysiące, 0 setek, 6 dziesiątek i 2 jedności: <b>3062 zł</b>.'),
+ // Zapis słowny i cyfrowy
+ q('pw4-14a','Jak zapisać słownie liczbę <b>7080</b>?',['siedem tysięcy osiemset','siedemset osiemdziesiąt','siedem tysięcy osiemdziesiąt','siedemdziesiąt tysięcy osiemdziesiąt'],2,'7080 to 7 tysięcy i 80: <b>siedem tysięcy osiemdziesiąt</b>.'),
+ digits('pw4-14b','czterysta dwa tysiące sześćdziesiąt',['402 060','420 060','402 600','42 060'],0,'Czterysta dwa tysiące to 402 000, do tego 60: <b>402 060</b>.'),
+ // Szacowanie
+ result('pw4-15a','3816 + 492',['3324','4308','9308','43 080'],1,'3816 to około 3800, a 492 to około 500. 3800 + 500 = 4300, więc wynik to <b>4308</b>. 3324 to wynik odejmowania.'),
+ fits('pw4-15b','596',['trochę więcej niż 500','ponad 600','około 700','prawie 600'],3,'Do 600 brakuje tylko 4, więc 596 to <b>prawie 600</b>.'),
+ fits('pw4-15c','803',['trochę mniej niż 800','prawie 900','około 700','trochę więcej niż 800'],3,'803 jest o 3 większe od 800: <b>trochę więcej niż 800</b>.'),
+ // Młodszy, starszy
+ q('pw4-16a','Kuba ma 9 lat i jest o 4 lata młodszy od brata. Ile lat ma brat?',['5','13','12','14'],1,'Brat jest starszy o 4 lata: 9 + 4 = <b>13</b>. 5 wychodzi, gdy się odejmie.'),
+ q('pw4-16b','Mama ma 41 lat i jest o 3 lata starsza od taty. Ile lat ma tata?',['44','34','39','38'],3,'Tata jest młodszy o 3 lata: 41 − 3 = <b>38</b>. 44 wychodzi, gdy się doda.'),
+ // Reszta
+ q('pw4-17a','Pan Adam kupił chleb za 7 zł i ser za 26 zł. Zapłacił banknotem 50 zł. Ile reszty otrzymał?',['23 zł','27 zł','17 zł','33 zł'],2,'Zakupy: 7 + 26 = 33 zł. Reszta: 50 − 33 = <b>17 zł</b>. 33 zł to cena zakupów.'),
+ q('pw4-17b','Kasia kupiła książkę za 38 zł i zeszyt za 9 zł. Zapłaciła banknotem 100 zł. Ile reszty otrzymała?',['53 zł','63 zł','47 zł','62 zł'],0,'Zakupy: 38 + 9 = 47 zł. Reszta: 100 − 47 = <b>53 zł</b>.'),
+ // Najwygodniejszym sposobem
+ q('pw4-18a','Oblicz najwygodniejszym sposobem: <b>29 + 68</b>',['97','87','98','96'],0,'Przekładamy 1 z 68 do 29: 30 + 67 = <b>97</b>.'),
+ q('pw4-18b','Oblicz najwygodniejszym sposobem: <b>143 − 59</b>',['94','116','84','82'],2,'Odejmujemy 60 i dodajemy 1: 143 − 60 = 83, 83 + 1 = <b>84</b>.'),
+ // Różne sposoby
+ q('pw4-19a','Ola liczy <b>57 − 29</b> przez dodawanie: od 29 do 30, od 30 do 50 i od 50 do 57. Jaki wynik otrzyma?',['38','27','86','28'],3,'1 + 20 + 7 = <b>28</b>. Sprawdzenie: 29 + 28 = 57.'),
+ q('pw4-19b','Tomek liczy <b>47 + 36</b> przez przekładanie. Jakie działanie otrzyma?',['50 + 39','50 + 33','50 + 36','40 + 36'],1,'Przekłada 3 z 36 do 47: <b>50 + 33</b> = 83. W 50 + 39 trójkę dodano, a nie zabrano.'),
+ // Kto ma więcej?
+ q('pw4-20a',`${BOOKS} Które zdanie <b>nie jest</b> prawdziwe?`,['Ola przeczytała najmniej książek','Igor przeczytał więcej książek niż Bartek','Igor przeczytał najwięcej książek','Ola przeczytała więcej książek niż Bartek'],0,'Bartek ma najmniej, Ola jest w środku, Igor ma najwięcej. Nieprawdą jest, że <b>Ola przeczytała najmniej</b> — najmniej przeczytał Bartek.'),
+ q('pw4-20b',`${BOOKS} O ile więcej książek przeczytał Igor niż Bartek?`,['3','9','0','6'],3,'Igor ma o 3 więcej niż Ola, a Ola o 3 więcej niż Bartek. Razem 3 + 3 = <b>6</b>.'),
+ // Tabelka ○ − ■
+ q('pw4-21a',`${minusTable(0)}Jaką liczbę trzeba wpisać w miejsce znaku zapytania?`,['55','127','65','45'],0,'Odejmujemy: 91 − 36 = 91 − 40 + 4 = <b>55</b>. 127 to suma.'),
+ q('pw4-21b',`${minusTable(1)}Jaką liczbę trzeba wpisać w miejsce znaku zapytania?`,['21','65','85','75'],3,'Szukamy odjemnej: 27 + 48 = <b>75</b>. Sprawdzenie: 75 − 48 = 27.'),
+ q('pw4-21c',`${minusTable(2)}Jaką liczbę trzeba wpisać w miejsce znaku zapytania?`,['93','35','45','25'],1,'Szukamy odjemnika: 64 − 29 = <b>35</b>. Sprawdzenie: 64 − 35 = 29.'),
+ // Prawda czy fałsz
+ truth('pw4-22a','Różnica 71 − 26 jest większa od sumy 19 + 24.','Suma 37 + 18 jest mniejsza od różnicy 90 − 38.','PF','I: 71 − 26 = 45, a 19 + 24 = 43, więc 45 &gt; 43 — <b>prawda</b>. II: 37 + 18 = 55, a 90 − 38 = 52. 55 nie jest mniejsze od 52 — <b>fałsz</b>.'),
+ truth('pw4-22b','Liczba o 1 większa od 60 300 to sześćdziesiąt tysięcy dwieście dziewięćdziesiąt dziewięć.','Liczba czterysta pięć tysięcy siedemdziesiąt jest mniejsza od 405 700.','FP','I: o 1 większa od 60 300 jest liczba 60 301. Sześćdziesiąt tysięcy dwieście dziewięćdziesiąt dziewięć to 60 299 — liczba o 1 <i>mniejsza</i>. <b>Fałsz</b>. II: 405 070 &lt; 405 700 — <b>prawda</b>.'),
+ // Ile zostało?
+ q('pw4-23a','W kwiaciarni były 47 róże czerwone i 58 białych. Sprzedano 19 czerwonych i 26 białych róż. Ile róż zostało?',['45','70','60','105'],2,'Było 47 + 58 = 105 róż. Sprzedano 19 + 26 = 45. Zostało 105 − 45 = <b>60</b>.'),
+ q('pw4-23b','W piekarni były 72 bułki. Rano sprzedano 25 bułek, a po południu 18. Ile bułek zostało?',['29','47','39','43'],0,'Sprzedano 25 + 18 = 43 bułki. Zostało 72 − 43 = <b>29</b>.'),
+ // Ilu razem?
+ q('pw4-24','Na szkolnym koncercie było 48 uczniów z klas czwartych i o 29 uczniów więcej z klas piątych. Ilu uczniów z klas czwartych i piątych było razem na koncercie?',['77','125','106','115'],1,'Z klas piątych: 48 + 29 = 77. Razem: 48 + 77 = <b>125</b>. 77 to tylko uczniowie z klas piątych.'),
+ // Skarbonka
+ q('pw4-25a',`${PIGGY} Ile złotych ma w skarbonce brat?`,['46 zł','130 zł','36 zł','44 zł'],2,'Różnica: 83 − 47 = 83 − 50 + 3 = <b>36 zł</b>. 130 zł to suma.'),
+ q('pw4-25b',`${PIGGY} Ile złotych mają razem wszyscy troje?`,['130 zł','166 zł','176 zł','156 zł'],1,'Brat ma 83 − 47 = 36 zł. Razem: 83 + 47 + 36 = 130 + 36 = <b>166 zł</b>.'),
+ // Wzrost
+ q('pw4-26a',`${HEIGHT} Ile centymetrów wzrostu ma Zosia?`,['117','138','126','147'],3,'Ewa jest niższa od Zosi, więc Zosia jest wyższa o 15 cm: 132 + 15 = <b>147 cm</b>.'),
+ q('pw4-26b',`${HEIGHT} O ile centymetrów Zosia jest wyższa od Leny?`,['9','15','21','6'],2,'Zosia ma 147 cm, Lena 132 − 6 = 126 cm. 147 − 126 = <b>21 cm</b> (czyli 15 + 6).'),
+];
