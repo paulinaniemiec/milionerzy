@@ -1,7 +1,7 @@
 # Milionerzy – matematyka, klasy 5, 7 i 8
 
 Teleturniej w stylu *Milionerów* z wyborem klasy, a następnie zestawu pytań.
-Klasa 5 ma pięć zestawów: podzielność i wielokrotności, liczby pierwsze i złożone, potęgowanie, cyfry rzymskie oraz kolejność wykonywania działań, klasa 7 cztery zestawy o procentach, a klasa 8 cztery zestawy: diagramy, prawdopodobieństwo, przygotowanie do egzaminu i procenty.
+Klasa 5 ma pięć zestawów: podzielność i wielokrotności, liczby pierwsze i złożone, potęgowanie, cyfry rzymskie oraz kolejność wykonywania działań, klasa 7 zestawy podzielone na działy (Procenty, Potęgi), a klasa 8 cztery zestawy: diagramy, prawdopodobieństwo, przygotowanie do egzaminu i procenty.
 Zestaw „Procenty — zadania egzaminacyjne” jest wspólny dla klas 7 i 8. Łącznie jest 13 scenariuszy (302 unikalne pytania), 12 pytań w jednej rozgrywce, drabinka 500 zł → 1 000 000 zł,
 progi gwarantowane (1000 zł i 40 000 zł), trzy koła ratunkowe i pełna oprawa dźwiękowa.
 
@@ -61,6 +61,7 @@ Po zmianie `Code.gs` trzeba zrobić **Wdróż → Zarządzaj wdrożeniami → Ed
 Dotychczasowe 12 pytań znajduje się w [`js/questions.js`](js/questions.js).
 Nowe zestawy i katalog scenariuszy są w [`js/scenarios.js`](js/scenarios.js). Każdy scenariusz ma pole
 `grade` z wartością `4`, `5`, `7` albo `8` (lista dozwolonych klas: `GRADES` w `js/app.js`). Przed dodaniem następnego zestawu zapytaj właścicielkę projektu, do której klasy go przypisać.
+W klasie 7 zestawy są pogrupowane w działy: pole `section` (np. `'Procenty'`, `'Potęgi'`). Na ekranie wyboru każdy dział ma własny nagłówek, a w menu na telefonie osobną grupę. Jeśli w klasie choć jeden zestaw ma dział, muszą go mieć wszystkie.
 
 - Klasa 4: Zegary, kalendarz i jednostki długości — 56 pytań z 30 zadań (losowanie 12), na wzór testu „Zegary, kalendarz, cyfry rzymskie, wzdłuż i wszerz”: jednostki czasu, obliczenia na godzinach, tarcza zegara (rysowana w SVG), dni miesięcy i daty w 2026 r., wieki, cyfry rzymskie do XXXIX, mm/cm/m/km. Plik `js/grade4-sets.js`.
 - Klasa 4: Oś liczbowa — 33 pytania z 19 zadań (losowanie 12): odczytywanie liczb oznaczonych literami (podpisy przy zerze, w środku osi, co kilka kresek), masy zwierząt z osi, zadania bez rysunku. Osie rysuje ta sama funkcja co w klasie 8 (`line` z `js/axis-sets.js`).

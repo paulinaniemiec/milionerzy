@@ -402,6 +402,8 @@ kbd { display: inline-block; min-width: 1.8em; padding: 1px 6px; border-radius: 
 .scenario-card:focus-within { outline: 2px solid white; outline-offset: 3px; }
 .scenario-card input { accent-color: #f6c85c; margin-top: 4px; flex-shrink: 0; }
 .scenario-card strong, .scenario-card small { display: block; }
+.scenario-section { grid-column: 1 / -1; margin: 10px 0 0; font: 700 15px var(--font-cond); letter-spacing: .1em; text-transform: uppercase; color: var(--gold, #f6c85c); border-bottom: 1px solid #465482; padding-bottom: 6px; }
+.scenario-section:first-child { margin-top: 0; }
 .scenario-card strong { color: white; font-size: 16px; line-height: 1.3; }
 .scenario-card small { color: #c2cbe4; font-size: 13px; line-height: 1.4; margin-top: 5px; }
 .task-table-wrap { max-width: 100%; overflow-x: auto; margin: 14px auto; }

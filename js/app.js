@@ -11,6 +11,9 @@ const GRADES = [4, 5, 7, 8];
 if (SCENARIOS.some(s => !GRADES.includes(s.grade))) {
   throw new Error(`Każdy scenariusz musi mieć przypisaną klasę: ${GRADES.join(', ')}.`);
 }
+if (GRADES.some(g => { const own = SCENARIOS.filter(s => s.grade === g); return own.some(s => s.section) && !own.every(s => s.section); })) {
+  throw new Error('W klasie z działami każdy scenariusz musi mieć przypisany dział (section).');
+}
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -829,8 +832,12 @@ function chooseGrade(grade) {
   selectedGrade = grade;
   $('#scenario-legend').textContent = `Wybierz zestaw · klasa ${grade}`;
   const scenarios = SCENARIOS.filter(s => s.grade === grade);
-  $('#scenario-select').innerHTML = scenarios.map(s => `<option value="${s.id}">${s.title}</option>`).join('');
-  $('#scenario-options').innerHTML = scenarios.map(s => `<button type="button" class="scenario-card" data-scenario="${s.id}" aria-pressed="false"><span><strong>${s.title}</strong><small>${s.description}</small></span></button>`).join('');
+  // Działy (np. Procenty, Potęgi) w kolejności pierwszego wystąpienia; klasy bez działów mają jedną grupę bez nagłówka.
+  const sections = [...new Set(scenarios.map(s => s.section))].map(name => ({ name, items: scenarios.filter(s => s.section === name) }));
+  const option = s => `<option value="${s.id}">${s.title}</option>`;
+  const card = s => `<button type="button" class="scenario-card" data-scenario="${s.id}" aria-pressed="false"><span><strong>${s.title}</strong><small>${s.description}</small></span></button>`;
+  $('#scenario-select').innerHTML = sections.map(g => g.name ? `<optgroup label="${g.name}">${g.items.map(option).join('')}</optgroup>` : g.items.map(option).join('')).join('');
+  $('#scenario-options').innerHTML = sections.map(g => g.name ? `<h3 class="scenario-section">${g.name}</h3>${g.items.map(card).join('')}` : g.items.map(card).join('')).join('');
   selectScenario(activeScenario.grade === grade ? activeScenario.id : scenarios[0].id);
   renderResume();
   showScreen('screen-title');

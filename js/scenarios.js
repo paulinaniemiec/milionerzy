@@ -101,12 +101,13 @@ export const SCENARIOS = [
  {id:'original', grade:8, title:'Przygotowanie do egzaminu', description:'Liczby, algebra i geometria. Dotychczasowy zestaw.', questions:original.map((v,i)=>({...v,id:`original-${i+1}`,sourceGroup:`original-${i+1}`}))},
  // Ten sam zestaw w klasie 7 i 8: osobne wpisy, żeby wynik zapisywał się z właściwą klasą.
  {id:'percent-exam-8', grade:8, title:'Procenty — zadania egzaminacyjne', description:'Zadania z egzaminów 2011–2026 i materiałów CKE. Rabaty, podwyżki, VAT i podatki.', questions:percentExamQuestions},
- {id:'check', grade:7, title:'Procenty na rozgrzewkę', description:'„Sprawdź, czy potrafisz”. Ułamki, podziały i ceny.', questions:[...check, revision1.find(q=>q.id==='z1-1'), revision1.find(q=>q.id==='z1-7'), revision1.find(q=>q.id==='z1-14'), revision2.find(q=>q.id==='z2-11')]},
- {id:'revision-1', grade:7, title:'Procenty w życiu, zestaw 1', description:'„Powtórzenie I”. Rabaty, frekwencja, proporcje i VAT.', questions:revision1},
- {id:'revision-2', grade:7, title:'Procenty w praktyce, zestaw 2', description:'„Powtórzenie I”. Diagramy, stężenia, skala i podział kosztów.', questions:revision2},
- {id:'powers-7', grade:7, title:'Potęgi', description:'Ułamki i liczby ujemne do potęgi, wykładnik 0 i 1, potęgi liczby 10, bakterie i zadania tekstowe.', questions:powerQuestions7},
- {id:'same-base-7', grade:7, title:'Potęgi o tych samych podstawach', description:'Mnożenie i dzielenie potęg, potęga potęgi, brakujące wykładniki, potęgi liczby 10 i typowe pułapki.', questions:samePowerQuestions7, award:{password:'MATEMATYKA TO WF DLA MÓZGU', pluses:2}},
- {id:'percent-exam-7', grade:7, title:'Procenty — zadania egzaminacyjne', description:'Zadania z egzaminów 2011–2026 i materiałów CKE. Rabaty, podwyżki, VAT i podatki.', questions:percentExamQuestions},
+ // Klasa 7 jest podzielona na działy (section). Przy nowym zestawie zapytaj właścicielkę, do którego działu go wrzucić.
+ {id:'check', grade:7, section:'Procenty', title:'Procenty na rozgrzewkę', description:'„Sprawdź, czy potrafisz”. Ułamki, podziały i ceny.', questions:[...check, revision1.find(q=>q.id==='z1-1'), revision1.find(q=>q.id==='z1-7'), revision1.find(q=>q.id==='z1-14'), revision2.find(q=>q.id==='z2-11')]},
+ {id:'revision-1', grade:7, section:'Procenty', title:'Procenty w życiu, zestaw 1', description:'„Powtórzenie I”. Rabaty, frekwencja, proporcje i VAT.', questions:revision1},
+ {id:'revision-2', grade:7, section:'Procenty', title:'Procenty w praktyce, zestaw 2', description:'„Powtórzenie I”. Diagramy, stężenia, skala i podział kosztów.', questions:revision2},
+ {id:'percent-exam-7', grade:7, section:'Procenty', title:'Procenty — zadania egzaminacyjne', description:'Zadania z egzaminów 2011–2026 i materiałów CKE. Rabaty, podwyżki, VAT i podatki.', questions:percentExamQuestions},
+ {id:'powers-7', grade:7, section:'Potęgi', title:'Potęgi', description:'Ułamki i liczby ujemne do potęgi, wykładnik 0 i 1, potęgi liczby 10, bakterie i zadania tekstowe.', questions:powerQuestions7},
+ {id:'same-base-7', grade:7, section:'Potęgi', title:'Potęgi o tych samych podstawach', description:'Mnożenie i dzielenie potęg, potęga potęgi, brakujące wykładniki, potęgi liczby 10 i typowe pułapki.', questions:samePowerQuestions7, award:{password:'MATEMATYKA TO WF DLA MÓZGU', pluses:2}},
 ];
 function shuffle(items, random) {
  const result = [...items];
