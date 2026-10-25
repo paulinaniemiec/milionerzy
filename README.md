@@ -61,7 +61,7 @@ Po zmianie `Code.gs` trzeba zrobić **Wdróż → Zarządzaj wdrożeniami → Ed
 Dotychczasowe 12 pytań znajduje się w [`js/questions.js`](js/questions.js).
 Nowe zestawy i katalog scenariuszy są w [`js/scenarios.js`](js/scenarios.js). Każdy scenariusz ma pole
 `grade` z wartością `4`, `5`, `7` albo `8` (lista dozwolonych klas: `GRADES` w `js/app.js`). Przed dodaniem następnego zestawu zapytaj właścicielkę projektu, do której klasy go przypisać.
-W klasie 7 zestawy są pogrupowane w działy: pole `section` (np. `'Procenty'`, `'Potęgi'`). Na ekranie wyboru każdy dział ma własny nagłówek, a na telefonie i tablicy dotykowej najpierw wybiera się dział, potem zestaw. Jeśli w klasie choć jeden zestaw ma dział, muszą go mieć wszystkie.
+W klasach 7 i 8 zestawy są pogrupowane w działy: pole `section` (np. `'Procenty'`, `'Potęgi'`, `'Statystyka i prawdopodobieństwo'`). W klasie 8 zestawy egzaminacyjne mają dział `'Przygotowanie do egzaminu'`. Na ekranie wyboru każdy dział ma własny nagłówek, a na telefonie i tablicy dotykowej najpierw wybiera się dział, potem zestaw. Jeśli w klasie choć jeden zestaw ma dział, muszą go mieć wszystkie.
 
 - Klasa 4: Zegary, kalendarz i jednostki długości — 56 pytań z 30 zadań (losowanie 12), na wzór testu „Zegary, kalendarz, cyfry rzymskie, wzdłuż i wszerz”: jednostki czasu, obliczenia na godzinach, tarcza zegara (rysowana w SVG), dni miesięcy i daty w 2026 r., wieki, cyfry rzymskie do XXXIX, mm/cm/m/km. Plik `js/grade4-sets.js`.
 - Klasa 4: Oś liczbowa — 33 pytania z 19 zadań (losowanie 12): odczytywanie liczb oznaczonych literami (podpisy przy zerze, w środku osi, co kilka kresek), masy zwierząt z osi, zadania bez rysunku. Osie rysuje ta sama funkcja co w klasie 8 (`line` z `js/axis-sets.js`).

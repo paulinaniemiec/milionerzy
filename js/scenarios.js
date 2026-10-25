@@ -97,12 +97,13 @@ export const SCENARIOS = [
  {id:'powers', grade:5, title:'Potęgowanie', description:'Iloczyn jako potęga, obliczanie i odczytywanie potęg: do kwadratu, do sześcianu.', questions:powerQuestions},
  {id:'roman', grade:5, title:'Cyfry rzymskie', description:'Odczytywanie i zapisywanie liczb, daty z obrazów i budowli, działania i zamazane liczby.', questions:romanQuestions},
  {id:'order', grade:5, title:'Kolejność wykonywania działań', description:'Co liczymy najpierw, wyniki działań, porównywanie wyrażeń i zadania tekstowe.', questions:orderQuestions},
- {id:'diagrams', grade:8, title:'Diagramy i wykresy', description:'Nowe zadania w stylu egzaminu ósmoklasisty. Każde z innym wykresem.', questions:diagramQuestions},
- {id:'probability', grade:8, title:'Prawdopodobieństwo', description:'Nowe zadania w stylu egzaminu ósmoklasisty. Kostki, losy, monety i szanse.', questions:probabilityQuestions},
- {id:'axis', grade:8, title:'Liczby na osi liczbowej', description:'Współrzędne punktów, zbiory liczb spełniających warunek (x > a, x ≤ a), odległość i środek odcinka.', questions:axisQuestions},
- {id:'original', grade:8, title:'Przygotowanie do egzaminu', description:'Liczby, algebra i geometria. Dotychczasowy zestaw.', questions:original.map((v,i)=>({...v,id:`original-${i+1}`,sourceGroup:`original-${i+1}`}))},
+ // Klasa 8 też ma działy (jak w podręczniku), a zestawy egzaminacyjne mają dział „Przygotowanie do egzaminu”.
+ {id:'diagrams', grade:8, section:'Statystyka i prawdopodobieństwo', title:'Diagramy i wykresy', description:'Nowe zadania w stylu egzaminu ósmoklasisty. Każde z innym wykresem.', questions:diagramQuestions},
+ {id:'probability', grade:8, section:'Statystyka i prawdopodobieństwo', title:'Prawdopodobieństwo', description:'Nowe zadania w stylu egzaminu ósmoklasisty. Kostki, losy, monety i szanse.', questions:probabilityQuestions},
+ {id:'axis', grade:8, section:'Wyrażenia algebraiczne i równania', title:'Liczby na osi liczbowej', description:'Współrzędne punktów, zbiory liczb spełniających warunek (x > a, x ≤ a), odległość i środek odcinka.', questions:axisQuestions},
+ {id:'original', grade:8, section:'Przygotowanie do egzaminu', title:'Przygotowanie do egzaminu', description:'Liczby, algebra i geometria. Dotychczasowy zestaw.', questions:original.map((v,i)=>({...v,id:`original-${i+1}`,sourceGroup:`original-${i+1}`}))},
  // Ten sam zestaw w klasie 7 i 8: osobne wpisy, żeby wynik zapisywał się z właściwą klasą.
- {id:'percent-exam-8', grade:8, title:'Procenty — zadania egzaminacyjne', description:'Zadania z egzaminów 2011–2026 i materiałów CKE. Rabaty, podwyżki, VAT i podatki.', questions:percentExamQuestions},
+ {id:'percent-exam-8', grade:8, section:'Przygotowanie do egzaminu', title:'Procenty — zadania egzaminacyjne', description:'Zadania z egzaminów 2011–2026 i materiałów CKE. Rabaty, podwyżki, VAT i podatki.', questions:percentExamQuestions},
  // Klasa 7 jest podzielona na działy (section). Przy nowym zestawie zapytaj właścicielkę, do którego działu go wrzucić.
  {id:'check', grade:7, section:'Procenty', title:'Procenty na rozgrzewkę', description:'„Sprawdź, czy potrafisz”. Ułamki, podziały i ceny.', questions:[...check, revision1.find(q=>q.id==='z1-1'), revision1.find(q=>q.id==='z1-7'), revision1.find(q=>q.id==='z1-14'), revision2.find(q=>q.id==='z2-11')]},
  {id:'revision-1', grade:7, section:'Procenty', title:'Procenty w życiu, zestaw 1', description:'„Powtórzenie I”. Rabaty, frekwencja, proporcje i VAT.', questions:revision1},
