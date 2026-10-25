@@ -1,5 +1,5 @@
 // Offline: gra działa nawet przy słabym szkolnym Wi-Fi po pierwszym wczytaniu.
-const CACHE = 'milionerzy-v26';
+const CACHE = 'milionerzy-v27';
 const CORE = [
   './', 'index.html', 'css/style.css', 'js/app.js', 'js/audio.js', 'js/fx.js', 'js/questions.js', 'js/scenarios.js', 'js/exam-sets.js', 'js/grade5-sets.js', 'js/percent-exam-sets.js', 'js/grade7-sets.js', 'js/axis-sets.js', 'js/grade4-sets.js', 'js/algebra-sets.js', 'js/geometry5-sets.js', 'js/results.js',
   'images/final-hubert.jpg', 'images/hubert-face.jpg',
@@ -17,10 +17,12 @@ self.addEventListener('activate', (e) => {
 });
 
 // Najpierw sieć (świeża wersja po deployu), w razie braku – kopia z cache.
+// `no-cache`: przeglądarka zawsze pyta serwer o zmiany. GitHub Pages pozwala trzymać pliki 10 minut,
+// przez co po deployu gra potrafiła działać na starym kodzie.
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
   e.respondWith(
-    fetch(e.request)
+    fetch(e.request, { cache: 'no-cache' })
       .then((res) => {
         if (res.ok || res.type === 'opaque') {
           const copy = res.clone();
