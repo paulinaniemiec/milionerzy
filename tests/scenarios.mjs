@@ -6,14 +6,14 @@ assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
  'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Procenty — zadania egzaminacyjne', 'Potęgi', 'Potęgi o tych samych podstawach',
 ]);
 // Klasy 7 i 8 są podzielone na działy.
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.section), ['Statystyka i prawdopodobieństwo', 'Statystyka i prawdopodobieństwo', 'Wyrażenia algebraiczne i równania', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.section), ['Statystyka i prawdopodobieństwo', 'Statystyka i prawdopodobieństwo', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.section), ['Procenty', 'Procenty', 'Procenty', 'Procenty', 'Potęgi', 'Potęgi']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
- 'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne',
+ 'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Wyrażenia algebraiczne', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne',
 ]);
-assert.equal(SCENARIOS.length,23);
+assert.equal(SCENARIOS.length,24);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,797);
+assert.equal(new Set(all.map(q=>q.id)).size,838);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -593,4 +593,58 @@ const PF=(i,ii)=>`I: ${i?'P':'F'}, II: ${ii?'P':'F'}`;
 {const [i,m]=nums('pw4-25a');only('pw4-25a',a=>N(a)===i-m);only('pw4-25b',a=>N(a)===i+m+(i-m));}
 {const [e,z,l]=nums('pw4-26a');only('pw4-26a',a=>+a===e+z);only('pw4-26b',a=>+a===(e+z)-(e-l));}
 console.log('PASS: grade 4 chapter II review — all 54 answer keys computed independently, rounds go from easy to hard');
+}
+
+// Kalkulator wyrażeń algebraicznych do testów klasy 8: zapis z gry (kursywa, potęgi, ułamki, √) → funkcja zmiennych.
+const algTxt=h=>h.replace(/<span class="frac"><span>(.*?)<\/span><span>(.*?)<\/span><\/span>/g,'(($1)/($2))').replace(/<sup>(\d+)<\/sup>/g,'^$1').replace(/<[^>]+>/g,'')
+ .replace(/−/g,'-').replace(/·/g,'*').replace(/:/g,'/').replace(/(\d),(\d)/g,'$1.$2').replace(/\s/g,'');
+function alg(h){
+ const t=algTxt(h).match(/\d+(\.\d+)?|[a-z]|√|[-+*/^()]/g);assert.equal(t.join(''),algTxt(h),'unparsed: '+h);let i=0;
+ const starts=()=>i<t.length&&/^(\d|[a-z]|\(|√)/.test(t[i]);
+ const atom=()=>{const k=t[i++];if(k==='('){const e=expr();assert.equal(t[i++],')');return e;}if(k==='√'){const a=atom();return v=>Math.sqrt(a(v));}
+  if(/^[a-z]$/.test(k))return v=>{assert(k in v,'no value for '+k);return v[k];};assert(/^\d/.test(k),'token '+k);const n=+k;return ()=>n;};
+ const power=()=>{const a=atom();if(t[i]==='^'){i++;const b=unary();return v=>a(v)**b(v);}return a;};
+ const unary=()=>{if(t[i]==='-'){i++;const a=unary();return v=>-a(v);}if(t[i]==='+'){i++;return unary();}return power();};
+ const term=()=>{let a=unary();for(;;){if(t[i]==='*'||t[i]==='/'){const op=t[i++],b=unary(),x=a;a=op==='*'?v=>x(v)*b(v):v=>x(v)/b(v);}else if(starts()){const b=power(),x=a;a=v=>x(v)*b(v);}else return a;}};
+ const expr=()=>{let a=term();while(t[i]==='+'||t[i]==='-'){const op=t[i++],b=term(),x=a;a=op==='+'?v=>x(v)+b(v):v=>x(v)-b(v);}return a;};
+ const e=expr();assert.equal(i,t.length,'trailing: '+h);return e;
+}
+const POINTS=[1.3,-0.7,2.9,-2.2,0.45].map((s,k)=>Object.fromEntries('abcdkmnprstwxyz'.split('').map((c,j)=>[c,s+((j*7+k*3)%11)/5-1])));
+const same=(a,b)=>{const f=alg(a),g=alg(b);return POINTS.every(v=>Math.abs(f(v)-g(v))<1e-9*(1+Math.abs(f(v))));};
+const at=(h,vals)=>alg(h)(vals);
+assert(same('2(x+3)','2x+6'));assert(!same('2(x+3)','2x+3'));assert(same('<i>x</i><sup>2</sup> − 9','(x − 3)(x + 3)'));const close=(a,b)=>Math.abs(a-b)<1e-9*(1+Math.abs(b));assert(close(at('2√2·√2',{}),4));
+
+// Klasa 8: wyrażenia algebraiczne — każdy klucz sprawdzony kalkulatorem wyrażeń.
+{
+const wa=SCENARIOS.find(s=>s.id==='algebra-8');
+assert.equal(wa.grade,8);assert.equal(wa.section,'Wyrażenia algebraiczne i równania');assert.equal(wa.ordered,true);
+assert.equal(wa.questions.length,41);assert.equal(new Set(wa.questions.map(q=>q.sourceGroup)).size,18);
+assert.deepEqual(SCENARIOS.filter(s=>s.questions===wa.questions).map(s=>s.grade),[8]);
+const only=(id,ok)=>assert.deepEqual(ask(id).answers.filter(ok),[selected(id)],id);
+const bold=(id,k=0)=>[...ask(id).q.matchAll(/<b>(.*?)<\/b>/g)][k][1];
+const num=a=>at(a.replace(/ km\/h/,''),{});
+only('wa8-1a',a=>same(a,'x + 2x + 15'));only('wa8-1b',a=>same(a,'3n - 5'));
+// Jednomian podobny: stały stosunek do x²y.
+only('wa8-2a',a=>{const r=POINTS.map(v=>at(a,v)/(v.x**2*v.y));return r.every(x=>Math.abs(x-r[0])<1e-9);});
+only('wa8-2b',a=>num(a)===at(bold('wa8-2b'),{a:1,b:1}));
+{const t=algTxt(bold('wa8-3'));only('wa8-3',a=>+a===t.slice(1).split(/[+-]/).length);}
+for(const [id,v] of [['wa8-4a',{a:3,b:-2}],['wa8-4b',{x:-2}],['wa8-4c',{x:-1,y:3}]]) only(id,a=>num(a)===at(bold(id),v));
+for(const id of ['wa8-5a','wa8-5b','wa8-5c','wa8-5d','wa8-6a','wa8-6b','wa8-6c','wa8-6d','wa8-7a','wa8-7b','wa8-9','wa8-13a','wa8-13b','wa8-17a','wa8-17b']) only(id,a=>same(a,bold(id)));
+// Wyrazy podobne: odpowiedź nie może mieć dwóch wyrazów z tą samą częścią literową.
+for(const id of ['wa8-5a','wa8-5b','wa8-5c','wa8-5d']){const parts=algTxt(selected(id)).split(/(?=[+-])/).map(w=>w.replace(/^[+-]?[\d.]*/,''));assert.equal(new Set(parts).size,parts.length,id);}
+{const [A,B,C]=[0,1,2].map(k=>bold('wa8-8a',k).split('=')[1]);
+ only('wa8-8a',a=>same(a,`(${A})+(${B})`));only('wa8-8b',a=>same(a,`(${A})-(${B})`));only('wa8-8c',a=>same(a,`(${B})(${C})`));}
+const labels=id=>[...ask(id).q.matchAll(/<text[^>]*>(.*?)<\/text>/g)].map(m=>plain(m[1]));
+for(const id of ['wa8-10a','wa8-10b']) only(id,a=>same(a,labels(id).map(l=>`(${l})`).join('+')));
+{const [w,h]=labels('wa8-11a');only('wa8-11a',a=>same(a,`(${w})(${h})`));}
+{const [top,h,bottom]=labels('wa8-11b');only('wa8-11b',a=>same(a,`((${top})+(${bottom}))(${h})/2`));}
+{const [w1,h1,h2,w2]=labels('wa8-11c');only('wa8-11c',a=>same(a,`(${w1})(${h1})+(${w2})(${h2})`));}
+only('wa8-12a',a=>num(a)===at(bold('wa8-12a'),{x:-6}));only('wa8-12b',a=>num(a)===at(bold('wa8-12b'),{x:-3,y:6}));
+const PF=(i,ii)=>`I: ${i?'P':'F'}, II: ${ii?'P':'F'}`;
+only('wa8-14a',a=>a===PF(at(bold('wa8-14a',0),{x:-3,y:2})===at(bold('wa8-14a',1),{}),at(bold('wa8-14a',2),{a:2,b:-4})===at(bold('wa8-14a',3),{a:2,b:-4})));
+only('wa8-14b',a=>a===PF(same(bold('wa8-14b',0),bold('wa8-14b',1)),at(bold('wa8-14b',2),{x:5})===at(bold('wa8-14b',3),{})));
+only('wa8-15',a=>same(a,'0.75(0.8x)'));
+for(const [id,v] of [['wa8-16a',{x:4,y:-0.5}],['wa8-16b',{x:Math.SQRT2,y:Math.sqrt(8)}],['wa8-16c',{x:3,y:-2}]]) only(id,a=>Math.abs(num(a)-at(bold(id),v))<1e-9);
+only('wa8-18a',a=>same(a,'0.4t·20+0.25t·16+0.35t·12'));only('wa8-18b',a=>num(a)===16.2);
+console.log('PASS: grade 8 algebraic expressions — all 41 answer keys checked with an expression evaluator');
 }
