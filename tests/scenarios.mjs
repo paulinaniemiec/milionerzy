@@ -714,6 +714,7 @@ console.log('PASS: grade 8 equations — all 31 answer keys checked by substitut
 {
 const pg=SCENARIOS.find(s=>s.id==='lines-5');
 assert.equal(pg.grade,5);assert.equal(pg.section,'Figury geometryczne');assert.equal(pg.ordered,true);
+assert.deepEqual(pg.award,{password:'Geometria powtórzona, wiedza świetnie utrwalona!',pluses:2});
 assert.equal(pg.questions.length,36);assert.equal(new Set(pg.questions.map(q=>q.sourceGroup)).size,14);
 assert.deepEqual(SCENARIOS.filter(s=>s.questions===pg.questions).map(s=>s.grade),[5]);
 const only=(id,ok)=>assert.deepEqual(ask(id).answers.filter(ok),[selected(id)],id);
