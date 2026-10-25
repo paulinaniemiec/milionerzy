@@ -4,7 +4,7 @@ import { divisibilityQuestions, powerQuestions, romanQuestions, primeQuestions, 
 import { percentExamQuestions } from './percent-exam-sets.js';
 import { powerQuestions7, samePowerQuestions7 } from './grade7-sets.js';
 import { axisQuestions } from './axis-sets.js';
-import { algebraQuestions8 } from './algebra-sets.js';
+import { algebraQuestions8, multiplicationQuestions8 } from './algebra-sets.js';
 import { grade4Questions, axisQuestions4, additionQuestions4, estimationQuestions4, smartAdditionQuestions4, smartSubtractionQuestions4, reviewQuestions4 } from './grade4-sets.js';
 
 // Każdy wpis ma trwałe ID: zapis gry odtwarza dokładnie te same pytania.
@@ -103,6 +103,7 @@ export const SCENARIOS = [
  {id:'probability', grade:8, section:'Statystyka i prawdopodobieństwo', title:'Prawdopodobieństwo', description:'Nowe zadania w stylu egzaminu ósmoklasisty. Kostki, losy, monety i szanse.', questions:probabilityQuestions},
  {id:'axis', grade:8, section:'Wyrażenia algebraiczne i równania', title:'Liczby na osi liczbowej', description:'Współrzędne punktów, zbiory liczb spełniających warunek (x > a, x ≤ a), odległość i środek odcinka.', questions:axisQuestions},
  {id:'algebra-8', grade:8, section:'Wyrażenia algebraiczne i równania', title:'Wyrażenia algebraiczne', description:'Od łatwych do trudnych: zapisywanie wyrażeń, jednomiany, wartość wyrażenia, wyrazy podobne, nawiasy, obwody i pola figur, upraszczanie i obliczanie.', questions:algebraQuestions8, ordered:true},
+ {id:'multiplication-8', grade:8, section:'Wyrażenia algebraiczne i równania', title:'Mnożenie sum algebraicznych', description:'Od łatwych do trudnych: dwumian razy dwumian, prostokąty, pierwiastki, najprostsza postać, uprość i oblicz, trzy czynniki, figura z wycięciem i prostopadłościan.', questions:multiplicationQuestions8, ordered:true},
  {id:'original', grade:8, section:'Przygotowanie do egzaminu', title:'Przygotowanie do egzaminu', description:'Liczby, algebra i geometria. Dotychczasowy zestaw.', questions:original.map((v,i)=>({...v,id:`original-${i+1}`,sourceGroup:`original-${i+1}`}))},
  // Ten sam zestaw w klasie 7 i 8: osobne wpisy, żeby wynik zapisywał się z właściwą klasą.
  {id:'percent-exam-8', grade:8, section:'Przygotowanie do egzaminu', title:'Procenty — zadania egzaminacyjne', description:'Zadania z egzaminów 2011–2026 i materiałów CKE. Rabaty, podwyżki, VAT i podatki.', questions:percentExamQuestions},

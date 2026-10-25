@@ -6,14 +6,14 @@ assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
  'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Procenty — zadania egzaminacyjne', 'Potęgi', 'Potęgi o tych samych podstawach',
 ]);
 // Klasy 7 i 8 są podzielone na działy.
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.section), ['Statystyka i prawdopodobieństwo', 'Statystyka i prawdopodobieństwo', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.section), ['Statystyka i prawdopodobieństwo', 'Statystyka i prawdopodobieństwo', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.section), ['Procenty', 'Procenty', 'Procenty', 'Procenty', 'Potęgi', 'Potęgi']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
- 'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Wyrażenia algebraiczne', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne',
+ 'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Wyrażenia algebraiczne', 'Mnożenie sum algebraicznych', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne',
 ]);
-assert.equal(SCENARIOS.length,24);
+assert.equal(SCENARIOS.length,25);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,838);
+assert.equal(new Set(all.map(q=>q.id)).size,870);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -647,4 +647,28 @@ only('wa8-15',a=>same(a,'0.75(0.8x)'));
 for(const [id,v] of [['wa8-16a',{x:4,y:-0.5}],['wa8-16b',{x:Math.SQRT2,y:Math.sqrt(8)}],['wa8-16c',{x:3,y:-2}]]) only(id,a=>Math.abs(num(a)-at(bold(id),v))<1e-9);
 only('wa8-18a',a=>same(a,'0.4t·20+0.25t·16+0.35t·12'));only('wa8-18b',a=>num(a)===16.2);
 console.log('PASS: grade 8 algebraic expressions — all 41 answer keys checked with an expression evaluator');
+}
+
+// Klasa 8: mnożenie sum algebraicznych — każdy klucz sprawdzony kalkulatorem wyrażeń.
+{
+const ms=SCENARIOS.find(s=>s.id==='multiplication-8');
+assert.equal(ms.grade,8);assert.equal(ms.section,'Wyrażenia algebraiczne i równania');assert.equal(ms.ordered,true);
+assert.equal(ms.questions.length,32);assert.equal(new Set(ms.questions.map(q=>q.sourceGroup)).size,15);
+const only=(id,ok)=>assert.deepEqual(ask(id).answers.filter(ok),[selected(id)],id);
+const bold=(id,k=0)=>[...ask(id).q.matchAll(/<b>(.*?)<\/b>/g)][k][1];
+const labels=id=>[...ask(id).q.matchAll(/<text[^>]*>(.*?)<\/text>/g)].map(m=>plain(m[1]));
+const PF=(i,ii)=>`I: ${i?'P':'F'}, II: ${ii?'P':'F'}`;
+for(const id of ['ms8-1a','ms8-1b','ms8-1c','ms8-2','ms8-3a','ms8-3b','ms8-3c','ms8-7a','ms8-7b','ms8-8a','ms8-8b','ms8-8c','ms8-10a','ms8-10b','ms8-11a','ms8-11b','ms8-12a','ms8-12b']) only(id,a=>same(a,bold(id)));
+// Iloczyn ma być rozpisany: poprawna odpowiedź bez nawiasów.
+for(const id of ['ms8-1a','ms8-1b','ms8-1c','ms8-2','ms8-3a','ms8-3b','ms8-3c','ms8-7a','ms8-7b','ms8-8a','ms8-8b','ms8-8c','ms8-11a','ms8-11b','ms8-12a','ms8-12b']) assert(!/[()]/.test(plain(selected(id))),id);
+{const [w,h]=labels('ms8-4a');only('ms8-4a',a=>same(a,`(${w})(${h})`));}
+{const [s1,s2]=[bold('ms8-4b',0),bold('ms8-4b',1)];only('ms8-4b',a=>same(a,`(${s1})(${s2})`));only('ms8-4c',a=>same(a,`2(${s1})+2(${s2})`));}
+{const b=k=>bold('ms8-5a',k);only('ms8-5a',a=>a===PF(same(`2((${b(0)})+(${b(1)}))`,b(2)),same(`(${b(0)})(${b(1)})`,b(3))));}
+{const eq=k=>bold('ms8-5b',k).split('=');only('ms8-5b',a=>a===PF(same(...eq(0)),same(...eq(1))));}
+for(const id of ['ms8-6a','ms8-6b','ms8-6c']) only(id,a=>close(at(a,{}),at(bold(id),{})));
+for(const [id,v] of [['ms8-9a',{x:-0.5}],['ms8-9b',{x:-0.5}],['ms8-9c',{x:-3,y:4}]]) only(id,a=>close(at(a,{}),at(bold(id),v)));
+{const [na,nb,w,h]=labels('ms8-13');only('ms8-13',a=>same(a,`(${w})(${h})-(${na})(${nb})`));}
+{const [d1,d2,d3]=plain(bold('ms8-14')).split('×').map(d=>d.replace('cm',''));only('ms8-14',a=>same(a,`2((${d1})(${d2})+(${d2})(${d3})+(${d1})(${d3}))`));}
+only('ms8-15',a=>same(a,'(a+2)(a+2)-a(a+4)'));
+console.log('PASS: grade 8 multiplying sums — all 32 answer keys checked with an expression evaluator');
 }

@@ -90,3 +90,62 @@ export const algebraQuestions8 = [
  q('wa8-18a',`${BIKE} Które wyrażenie opisuje drogę, jaką przejechał (w km)?`,A('48t','16t','16,2t','15,4t'),2,`${E('0,4t · 20 + 0,25t · 16 + 0,35t · 12 = 8t + 4t + 4,2t')} = <b>${E('16,2t')}</b>. Pozostały czas to 100% − 40% − 25% = 35%.`),
  q('wa8-18b',`${BIKE} Jaka była jego średnia prędkość na całej trasie?`,['16 km/h','16,2 km/h','48 km/h','15,4 km/h'],1,`Droga to ${E('16,2t')} km, a czas <i>t</i> godzin. Średnia prędkość: ${E('16,2t : t')} = <b>16,2 km/h</b>. 16 km/h to średnia z trzech prędkości, która nie uwzględnia czasu jazdy.`),
 ];
+
+// Klasa 8, dział II: mnożenie sum algebraicznych — dwumian razy dwumian, dwie zmienne, prostokąty, pierwiastki,
+// trójmiany, najprostsza postać, uprość i oblicz, wartość niezależna od zmiennej, trzy czynniki, figury i bryły.
+// Od najłatwiejszych do najtrudniejszych (`ordered`).
+const rect2 = figure('Prostokąt', shape('110,40 300,40 300,180 110,180') + label(205, 205, '3x - 2') + label(100, 115, '2y + 5', 'end'),
+ 'Prostokąt o bokach 3x − 2 i 2y + 5');
+const RECT = `Prostokąt ma boki <b>${E('2a + 3')}</b> i <b>${E('a - 1')}</b> (dla <i>a</i> &gt; 1).`;
+const notch = figure('Prostokąt z wycięciem', shape('50,30 170,30 170,110 250,110 250,30 350,30 350,190 50,190') + label(210, 100, 'a') + label(178, 72, 'b', 'start') + label(200, 214, '3a + 2') + label(42, 115, 'b + 3', 'end'),
+ 'Prostokąt o bokach 3a + 2 i b + 3, z którego od góry wycięto prostokąt o szerokości a i głębokości b');
+
+export const multiplicationQuestions8 = [
+ // Dwumian razy dwumian
+ q('ms8-1a',`Wykonaj mnożenie i zredukuj wyrazy podobne: <b>${E('(x - 3)(x - 5)')}</b>`,A('x^2 + 15','x^2 - 8x - 15','x^2 - 8x + 15','x^2 - 2x + 15'),2,`Każdy wyraz pierwszego nawiasu mnożymy przez każdy wyraz drugiego: ${E('x^2 - 5x - 3x + 15')} = <b>${E('x^2 - 8x + 15')}</b>. ${E('x^2 + 15')} to pominięte iloczyny „na krzyż”.`),
+ q('ms8-1b',`Wykonaj mnożenie i zredukuj wyrazy podobne: <b>${E('(2m + 1)(m - 3)')}</b>`,A('2m^2 - 5m - 3','2m^2 - 3','2m^2 - 7m - 3','2m^2 + 5m - 3'),0,`${E('2m^2 - 6m + m - 3')} = <b>${E('2m^2 - 5m - 3')}</b>.`),
+ q('ms8-1c',`Wykonaj mnożenie i zredukuj wyrazy podobne: <b>${E('(5 - n)(n + 2)')}</b>`,A('n^2 + 3n + 10','-n^2 - 3n + 10','-n^2 + 7n + 10','-n^2 + 3n + 10'),3,`${E('5n + 10 - n^2 - 2n')} = <b>${E('-n^2 + 3n + 10')}</b>. Uwaga: ${E('-n · n = -n^2')}.`),
+ // Które wyrażenie otrzymamy?
+ q('ms8-2',`Które wyrażenie otrzymamy po wykonaniu mnożenia: <b>${E('(6 - a)(2 - 3a)')}</b>`,A('3a^2 + 12','3a^2 - 20a + 12','3a^2 - 16a + 12','-3a^2 - 20a + 12'),1,`${E('12 - 18a - 2a + 3a^2')} = <b>${E('3a^2 - 20a + 12')}</b>. ${E('(-a) · (-3a) = +3a^2')} — minus razy minus daje plus.`),
+ // Dwie zmienne
+ q('ms8-3a',`Wykonaj mnożenie i zredukuj wyrazy podobne: <b>${E('(3b + a)(2 - b)')}</b>`,A('6b - 3b^2 + 2a + ab','6b + 2a - ab','6b - b^2 + 2a - ab','6b - 3b^2 + 2a - ab'),3,`${E('3b · 2 = 6b')}, ${E('3b · (-b) = -3b^2')}, ${E('a · 2 = 2a')}, ${E('a · (-b) = -ab')}. Wynik: <b>${E('6b - 3b^2 + 2a - ab')}</b>.`),
+ q('ms8-3b',`Wykonaj mnożenie i zredukuj wyrazy podobne: <b>${E('(2a - b)(a - 3b)')}</b>`,A('2a^2 - 7ab + 3b^2','2a^2 - 5ab + 3b^2','2a^2 + 3b^2','2a^2 - 7ab - 3b^2'),0,`${E('2a^2 - 6ab - ab + 3b^2')} = <b>${E('2a^2 - 7ab + 3b^2')}</b>.`),
+ q('ms8-3c',`Wykonaj mnożenie i zredukuj wyrazy podobne: <b>${E('(m - n)(n - m)')}</b>`,A('m^2 - 2mn + n^2','-m^2 - n^2','-m^2 + 2mn - n^2','-m^2 + n^2'),2,`${E('mn - m^2 - n^2 + mn')} = <b>${E('-m^2 + 2mn - n^2')}</b>.`),
+ // Prostokąt: pole i obwód
+ q('ms8-4a',`${rect2}Które wyrażenie opisuje pole tego prostokąta?`,A('6xy - 10','6xy + 15x - 4y - 10','6xy + 15x + 4y - 10','10x + 4y + 6'),1,`${E('(3x - 2)(2y + 5) = 6xy + 15x - 4y - 10')}. Pole: <b>${E('6xy + 15x - 4y - 10')}</b>. ${E('6xy - 10')} to pominięte iloczyny „na krzyż”, a ${E('10x + 4y + 6')} to obwód.`),
+ q('ms8-4b',`${RECT} Które wyrażenie opisuje jego <b>pole</b>?`,A('2a^2 - 3','2a^2 + 5a - 3','6a + 4','2a^2 + a - 3'),3,`${E('(2a + 3)(a - 1) = 2a^2 - 2a + 3a - 3')} = <b>${E('2a^2 + a - 3')}</b>. ${E('6a + 4')} to obwód.`),
+ q('ms8-4c',`${RECT} Które wyrażenie opisuje jego <b>obwód</b>?`,A('6a + 4','3a + 2','6a + 2','2a^2 + a - 3'),0,`${E('2(2a + 3) + 2(a - 1) = 4a + 6 + 2a - 2')} = <b>${E('6a + 4')}</b>. ${E('3a + 2')} to suma tylko dwóch boków.`),
+ // Prawda czy fałsz
+ truth('ms8-5a',`Prostokąt ma boki <b>${E('5 - a')}</b> i <b>${E('2a + 3')}</b> (dla 0 &lt; <i>a</i> &lt; 5). Jego obwód jest równy <b>${E('2a + 16')}</b>.`,`Pole tego prostokąta jest równe <b>${E('13a')}</b>.`,'PF',`I: ${E('2(5 - a + 2a + 3) = 2(a + 8) = 2a + 16')} — <b>prawda</b>. II: ${E('(5 - a)(2a + 3) = 10a + 15 - 2a^2 - 3a = -2a^2 + 7a + 15')}, a nie ${E('13a')} — <b>fałsz</b>.`),
+ truth('ms8-5b',`<b>${E('(x - 2)(x + 5)')} = ${E('x^2 + 3x - 3')}</b> dla każdej liczby <i>x</i>.`,`<b>${E('(a + 1)(a - 3)')} = ${E('a^2 - 2a - 3')}</b> dla każdej liczby <i>a</i>.`,'FP',`I: ${E('x^2 + 5x - 2x - 10 = x^2 + 3x - 10')}, a nie −3 — <b>fałsz</b>. II: ${E('a^2 - 3a + a - 3 = a^2 - 2a - 3')} — <b>prawda</b>.`),
+ // Pierwiastki
+ q('ms8-6a',`Oblicz: <b>(√5 + 2)(√5 − 2)</b>`,['9','3','1','√5'],2,`√5 · √5 − 2√5 + 2√5 − 4 = 5 − 4 = <b>1</b>.`),
+ q('ms8-6b',`Oblicz: <b>(3 − √2)(√2 − 1)</b>`,['4√2 − 5','2√2 − 5','4√2 − 1','5 − 4√2'],0,`3√2 − 3 − 2 + √2 = <b>4√2 − 5</b>. Pamiętaj: √2 · √2 = 2.`),
+ q('ms8-6c',`Oblicz: <b>(√7 + 3)(√7 − 1)</b>`,['10 + 2√7','4 + 2√7','4 + 4√7','4 − 2√7'],1,`7 − √7 + 3√7 − 3 = <b>4 + 2√7</b>.`),
+ // Mnożenie przez sumę trzech wyrazów
+ q('ms8-7a',`Wykonaj mnożenie i zredukuj wyrazy podobne: <b>${E('(x + 3)(2x^2 - x + 4)')}</b>`,A('2x^3 + 5x^2 + 7x + 12','2x^3 - x^2 + 4x + 12','2x^3 + 6x^2 + x + 12','2x^3 + 5x^2 + x + 12'),3,`${E('2x^3 - x^2 + 4x + 6x^2 - 3x + 12')} = <b>${E('2x^3 + 5x^2 + x + 12')}</b>.`),
+ q('ms8-7b',`Wykonaj mnożenie i zredukuj wyrazy podobne: <b>${E('(a - b + c)(a + b - c)')}</b>`,A('a^2 - b^2 - c^2','a^2 + b^2 - 2bc + c^2','a^2 - b^2 + 2bc - c^2','a^2 - b^2 - 2bc - c^2'),2,`${E('a^2 + ab - ac - ab - b^2 + bc + ac + bc - c^2')} = <b>${E('a^2 - b^2 + 2bc - c^2')}</b>.`),
+ // Najprostsza postać
+ q('ms8-8a',`Doprowadź do najprostszej postaci: <b>${E('6xy - (3x - 2)(2y - 1)')}</b>`,A('3x + 4y - 2','12xy - 3x - 4y + 2','3x + 4y + 2','-3x - 4y + 2'),0,`${E('(3x - 2)(2y - 1) = 6xy - 3x - 4y + 2')}. Po odjęciu: ${E('6xy - 6xy + 3x + 4y - 2')} = <b>${E('3x + 4y - 2')}</b>.`),
+ q('ms8-8b',`Doprowadź do najprostszej postaci: <b>${E('(x - 4y)(3 + x) + 12(y + x)')}</b>`,A('x^2 - 4xy - 9x','x^2 - 4xy + 15x - 24y','x^2 + 15x','x^2 - 4xy + 15x'),3,`${E('3x + x^2 - 12y - 4xy + 12y + 12x')} = <b>${E('x^2 - 4xy + 15x')}</b>.`),
+ q('ms8-8c',`Doprowadź do najprostszej postaci: <b>${E('3x^2 - (x - 1)(5 + x)')}</b>`,A('2x^2 - 4x - 5','2x^2 - 4x + 5','4x^2 + 4x - 5','2x^2 + 6x + 5'),1,`${E('(x - 1)(5 + x) = x^2 + 4x - 5')}. ${E('3x^2 - x^2 - 4x + 5')} = <b>${E('2x^2 - 4x + 5')}</b>. Minus przed nawiasem zmienia wszystkie znaki.`),
+ // Uprość i oblicz
+ q('ms8-9a',`Uprość wyrażenie <b>${E('x^2 - (x + 3)(x - 2)')}</b> i oblicz jego wartość dla <i>x</i> = −0,5.`,['5,5','−6,5','6,5','7'],2,`${E('x^2 - (x^2 + x - 6) = -x + 6')}. Dla <i>x</i> = −0,5: 0,5 + 6 = <b>6,5</b>.`),
+ q('ms8-9b',`Uprość wyrażenie <b>${E('(x + 1)(4(x + 2) - 3(x + 3))')}</b> i oblicz jego wartość dla <i>x</i> = −0,5.`,['−0,75','0,75','−1,25','1,25'],0,`${E('4(x + 2) - 3(x + 3) = 4x + 8 - 3x - 9 = x - 1')}. ${E('(x + 1)(x - 1) = x^2 - 1')}. Dla <i>x</i> = −0,5: 0,25 − 1 = <b>−0,75</b>.`),
+ q('ms8-9c',`Uprość wyrażenie <b>${E('xy - (x - 2)(y + 1)')}</b> i oblicz jego wartość dla <i>x</i> = −3 i <i>y</i> = 4.`,['1','−13','25','13'],3,`${E('xy - (xy + x - 2y - 2) = -x + 2y + 2')}. Dla <i>x</i> = −3, <i>y</i> = 4: 3 + 8 + 2 = <b>13</b>.`),
+ // Wartość niezależna od zmiennej
+ q('ms8-10a',`Wartość wyrażenia <b>${E('x^2 - (x - 4)(x + 4)')}</b> nie zależy od <i>x</i>. Jest równa:`,A('-16','16','2x^2 + 16','8'),1,`${E('(x - 4)(x + 4) = x^2 - 16')}. ${E('x^2 - x^2 + 16')} = <b>16</b>.`),
+ q('ms8-10b',`Wartość wyrażenia <b>${E('(2x - 1)(x + 3) - (2x + 3)(x + 1)')}</b> nie zależy od <i>x</i>. Jest równa:`,A('0','10x - 6','-6','6'),2,`${E('(2x^2 + 5x - 3) - (2x^2 + 5x + 3)')} = <b>−6</b>.`),
+ // Minus lub liczba przed iloczynem
+ q('ms8-11a',`Doprowadź do najprostszej postaci: <b>${E('x - 2(x - y)(3 + x)')}</b>`,A('-2x^2 + 2xy - 5x + 6y','-2x^2 - 2xy - 5x + 6y','2x^2 + 2xy - 5x + 6y','-2x^2 + 2xy + 7x - 6y'),0,`${E('(x - y)(3 + x) = 3x + x^2 - 3y - xy')}. ${E('x - 6x - 2x^2 + 6y + 2xy')} = <b>${E('-2x^2 + 2xy - 5x + 6y')}</b>.`),
+ q('ms8-11b',`Doprowadź do najprostszej postaci: <b>${E('4 - 3(x + 2)(a - 1)')}</b>`,A('-3ax - 3x - 6a + 10','-3ax + 3x - 6a - 2','3ax - 3x + 6a - 2','-3ax + 3x - 6a + 10'),3,`${E('(x + 2)(a - 1) = ax - x + 2a - 2')}. ${E('4 - 3ax + 3x - 6a + 6')} = <b>${E('-3ax + 3x - 6a + 10')}</b>.`),
+ // Trzy czynniki
+ q('ms8-12a',`Wykonaj mnożenie i zredukuj wyrazy podobne: <b>${E('3(x + 2y)(2x - y)')}</b>`,A('6x^2 + 3xy - 6y^2','6x^2 + 9xy - 6y^2','2x^2 + 3xy - 2y^2','6x^2 + 9xy - 2y^2'),1,`${E('(x + 2y)(2x - y) = 2x^2 - xy + 4xy - 2y^2 = 2x^2 + 3xy - 2y^2')}. Razy 3: <b>${E('6x^2 + 9xy - 6y^2')}</b>. Liczbę 3 mnożymy przez <i>cały</i> wynik.`),
+ q('ms8-12b',`Wykonaj mnożenie i zredukuj wyrazy podobne: <b>${E('(m + 1)(2m - 1)(m - 3)')}</b>`,A('2m^3 - 7m^2 - 4m + 3','2m^3 - 5m^2 - 2m + 3','2m^3 - 5m^2 - 4m + 3','2m^3 - 5m^2 - 4m - 3'),2,`${E('(m + 1)(2m - 1) = 2m^2 + m - 1')}. ${E('(2m^2 + m - 1)(m - 3) = 2m^3 - 6m^2 + m^2 - 3m - m + 3')} = <b>${E('2m^3 - 5m^2 - 4m + 3')}</b>.`),
+ // Figura z wycięciem
+ q('ms8-13',`${notch}Które wyrażenie opisuje pole tej figury?`,A('2ab + 9a + 2b + 6','3ab + 9a + 2b + 6','2ab + 9a + 2b + 5','2ab + 3a + 2b + 6'),0,`Cały prostokąt: ${E('(3a + 2)(b + 3) = 3ab + 9a + 2b + 6')}. Wycięcie: ${E('a · b = ab')}. Pole: <b>${E('2ab + 9a + 2b + 6')}</b>.`),
+ // Prostopadłościan
+ q('ms8-14',`Prostopadłościan ma wymiary <b>${E('(x + 1)')} cm × ${E('(x + 2)')} cm × <i>x</i> cm</b>. Które wyrażenie opisuje jego pole powierzchni (w cm²)?`,A('3x^2 + 6x + 2','x^3 + 3x^2 + 2x','6x^2 + 12x + 2','6x^2 + 12x + 4'),3,`Ściany: ${E('(x + 1)(x + 2) = x^2 + 3x + 2')}, ${E('(x + 1)x = x^2 + x')}, ${E('(x + 2)x = x^2 + 2x')}. Każda jest dwa razy: ${E('2(3x^2 + 6x + 2)')} = <b>${E('6x^2 + 12x + 4')}</b>. ${E('x^3 + 3x^2 + 2x')} to objętość.`),
+ // Z prostokąta kwadrat
+ q('ms8-15',`Prostokąt ma boki <i>a</i> i <b>${E('a + 4')}</b>. Krótszy bok przedłużono o 2, a dłuższy skrócono o 2. Powstał kwadrat. O ile pole kwadratu jest większe od pola prostokąta?`,['2','4','4a + 4','0'],1,`Bok kwadratu: ${E('a + 2')}. ${E('(a + 2)(a + 2) - a(a + 4) = a^2 + 4a + 4 - a^2 - 4a')} = <b>4</b>. Pole jest zawsze o 4 większe, niezależnie od <i>a</i>.`),
+];
