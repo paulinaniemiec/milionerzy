@@ -149,3 +149,57 @@ export const multiplicationQuestions8 = [
  // Z prostokąta kwadrat
  q('ms8-15',`Prostokąt ma boki <i>a</i> i <b>${E('a + 4')}</b>. Krótszy bok przedłużono o 2, a dłuższy skrócono o 2. Powstał kwadrat. O ile pole kwadratu jest większe od pola prostokąta?`,['2','4','4a + 4','0'],1,`Bok kwadratu: ${E('a + 2')}. ${E('(a + 2)(a + 2) - a(a + 4) = a^2 + 4a + 4 - a^2 - 4a')} = <b>4</b>. Pole jest zawsze o 4 większe, niezależnie od <i>a</i>.`),
 ];
+
+// Klasa 8, dział II: równania — z nawiasami, z ułamkami, z mnożeniem sum, P/F (także tożsamościowe i sprzeczne)
+// oraz zadania tekstowe (tomy, zakupy, kino, procenty, pola figur, kartki, prostopadłościan).
+// Od najłatwiejszych do najtrudniejszych (`ordered`).
+export const equationQuestions8 = [
+ // Równania z nawiasami
+ q('rw8-1a',`Rozwiąż równanie: <b>${E('4(x - 2) = 7 + x')}</b>`,['3','−5','5','15'],2,`${E('4x - 8 = 7 + x')}, więc ${E('3x = 15')} i <b><i>x</i> = 5</b>. Sprawdzenie: 4 · 3 = 12 i 7 + 5 = 12.`),
+ q('rw8-1b',`Rozwiąż równanie: <b>${E('2(x + 3) - (5 - x) = 4(x - 1) + 2')}</b>`,['3','−3','1','−1'],0,`${E('2x + 6 - 5 + x = 4x - 4 + 2')}, czyli ${E('3x + 1 = 4x - 2')}. Stąd <b><i>x</i> = 3</b>. Minus przed nawiasem zmienia znaki: ${E('-(5 - x) = -5 + x')}.`),
+ q('rw8-1c',`Rozwiąż równanie: <b>${E('-(4x - 1) = 3(2 - x) - 2x')}</b>`,['−5','1','7','5'],3,`${E('-4x + 1 = 6 - 3x - 2x = 6 - 5x')}. Stąd <b><i>x</i> = 5</b>.`),
+ // Wskaż rozwiązanie
+ q('rw8-2',`Wskaż rozwiązanie równania <b>${E('2(x + 4) - (3 - x) = -3(x - 1) + 4x - 1')}</b>.`,['<i>x</i> = 1,5','<i>x</i> = −1,5','<i>x</i> = −3','<i>x</i> = 0,5'],1,`Lewa strona: ${E('2x + 8 - 3 + x = 3x + 5')}. Prawa: ${E('-3x + 3 + 4x - 1 = x + 2')}. ${E('3x + 5 = x + 2')}, ${E('2x = -3')}, <b><i>x</i> = −1,5</b>.`),
+ // Dwa tomy
+ q('rw8-3a',`Dwutomowa powieść ma razem 960 stron. Pierwszy tom ma o 124 strony mniej niż drugi. Ile stron ma <b>pierwszy</b> tom?`,['542','836','418','480'],2,`Pierwszy tom: <i>x</i>, drugi: ${E('x + 124')}. ${E('2x + 124 = 960')}, ${E('2x = 836')}, <b><i>x</i> = 418</b>. 480 to połowa wszystkich stron.`),
+ q('rw8-3b',`Dwutomowa powieść ma razem 960 stron. Pierwszy tom ma o 124 strony mniej niż drugi. Ile stron ma <b>drugi</b> tom?`,['418','542','480','1084'],1,`Pierwszy tom ma 418 stron (${E('2x + 124 = 960')}). Drugi: 418 + 124 = <b>542</b>. Sprawdzenie: 418 + 542 = 960.`),
+ // Równania z ułamkami
+ q('rw8-4a',`Rozwiąż równanie: <b>${f(E('x - 7'),2)} = ${f(E('x - 1'),4)}</b>`,['−13','6','15','13'],3,`Mnożymy obie strony przez 4: ${E('2(x - 7) = x - 1')}, ${E('2x - 14 = x - 1')}, <b><i>x</i> = 13</b>.`),
+ q('rw8-4b',`Rozwiąż równanie: <b>${f(E('x + 1'),3)} + <i>x</i> = ${f(E('x + 9'),2)}</b>`,['5','25','7','3'],0,`Mnożymy przez 6: ${E('2(x + 1) + 6x = 3(x + 9)')}, ${E('8x + 2 = 3x + 27')}, ${E('5x = 25')}, <b><i>x</i> = 5</b>.`),
+ q('rw8-4c',`Rozwiąż równanie: <b>${f(3,4)}<i>x</i> − ${f(E('x + 2'),8)} = ${f(1,2)}</b>`,['0,4','6','1,2','1,6'],2,`Mnożymy przez 8: ${E('6x - (x + 2) = 4')}, ${E('5x - 2 = 4')}, ${E('5x = 6')}, <b><i>x</i> = 1,2</b>. Wynik 0,4 to błąd: ${E('-(x + 2)')} daje −2, a nie +2.`),
+ q('rw8-4d',`Rozwiąż równanie: <b>2 − ${f(E('x - 1'),3)} = ${f(E('x + 3'),2)}</b>`,['−1','1','5','3'],1,`Mnożymy przez 6: ${E('12 - 2(x - 1) = 3(x + 3)')}, ${E('14 - 2x = 3x + 9')}, ${E('5 = 5x')}, <b><i>x</i> = 1</b>.`),
+ // Sadzonki
+ q('rw8-5',`Ola kupiła 30 sadzonek kwiatów: tulipany po 3 zł i lilie po 5,50 zł. Zapłaciła 115 zł. Ile lilii kupiła?`,['20','12','15','10'],3,`Lilie: <i>x</i>, tulipany: ${E('30 - x')}. ${E('5,5x + 3(30 - x) = 115')}, ${E('2,5x + 90 = 115')}, <b><i>x</i> = 10</b>. 20 to liczba tulipanów.`),
+ // Zakupy na kilogramy
+ q('rw8-6a',`Śliwki były o 2,50 zł za kilogram tańsze od moreli. Za 3 kg śliwek i 2 kg moreli zapłacono 30 zł. Ile kosztował 1 kg <b>moreli</b>?`,['7,50 zł','5 zł','6 zł','8,50 zł'],0,`Morele: <i>x</i>, śliwki: ${E('x - 2,5')}. ${E('2x + 3(x - 2,5) = 30')}, ${E('5x - 7,5 = 30')}, <b><i>x</i> = 7,50 zł</b>.`),
+ q('rw8-6b',`Śliwki były o 2,50 zł za kilogram tańsze od moreli. Za 3 kg śliwek i 2 kg moreli zapłacono 30 zł. Ile kosztował 1 kg <b>śliwek</b>?`,['7,50 zł','2,50 zł','5 zł','6 zł'],2,`Morele kosztowały 7,50 zł (${E('5x - 7,5 = 30')}), więc śliwki: 7,50 − 2,50 = <b>5 zł</b>. Sprawdzenie: 3 · 5 + 2 · 7,5 = 30.`),
+ // Rzędy w kinie
+ q('rw8-7',`W sali kinowej jest 6 rzędów na balkonie i 14 na parterze. W każdym rzędzie na parterze jest o 5 miejsc więcej niż w rzędzie na balkonie. Razem jest 330 miejsc. Ile miejsc jest w jednym rzędzie na parterze?`,['13','18','16','23'],1,`Balkon: <i>x</i> miejsc w rzędzie. ${E('6x + 14(x + 5) = 330')}, ${E('20x + 70 = 330')}, ${E('x = 13')}. Na parterze: 13 + 5 = <b>18</b>. 13 to rząd na balkonie.`),
+ // Równania z mnożeniem sum
+ q('rw8-8a',`Rozwiąż równanie: <b>${E('(x + 2)(x - 5) = x^2 - 1')}</b>`,['3','−9','9','−3'],3,`${E('x^2 - 3x - 10 = x^2 - 1')}. Wyrazy ${E('x^2')} się redukują: ${E('-3x = 9')}, <b><i>x</i> = −3</b>.`),
+ q('rw8-8b',`Rozwiąż równanie: <b>${E('(x - 3)(2x + 1) - 2x^2 = 7')}</b>`,['−2','2','−0,8','10'],0,`${E('2x^2 - 5x - 3 - 2x^2 = 7')}, ${E('-5x = 10')}, <b><i>x</i> = −2</b>.`),
+ q('rw8-8c',`Rozwiąż równanie: <b>${E('x^2 - (x + 4)(x - 4) = 4x')}</b>`,['−4','0','4','16'],2,`${E('(x + 4)(x - 4) = x^2 - 16')}. ${E('x^2 - x^2 + 16 = 4x')}, <b><i>x</i> = 4</b>.`),
+ q('rw8-8d',`Rozwiąż równanie: <b>${E('(2x + 1)(x - 3) = (x + 2)(2x - 1)')}</b>`,[`${f(1,8)}`,`−${f(1,8)}`,'−8','8'],1,`${E('2x^2 - 5x - 3 = 2x^2 + 3x - 2')}, ${E('-8x = 1')}, <b><i>x</i> = −${f(1,8)}</b>.`),
+ // Prawda czy fałsz
+ truth('rw8-9a',`Rozwiązanie równania <b>2 − ${f(E('x + 4'),'3')} = ${f(E('x - 1'),'2')}</b> jest liczbą dodatnią.`,`Rozwiązanie równania <b>${E('(x - 2)(3 + x) = x^2 + 4')}</b> jest liczbą ujemną.`,'PF',`I: razy 6: ${E('12 - 2x - 8 = 3x - 3')}, ${E('7 = 5x')}, <i>x</i> = 1,4 &gt; 0 — <b>prawda</b>. II: ${E('x^2 + x - 6 = x^2 + 4')}, <i>x</i> = 10 — <b>fałsz</b>.`),
+ truth('rw8-9b',`Równanie <b>${E('3(x - 2) = 3x - 6')}</b> ma nieskończenie wiele rozwiązań.`,`Równanie <b>${E('2(x + 1) = 2x + 5')}</b> nie ma rozwiązań.`,'PP',`I: obie strony to ${E('3x - 6')}, więc każda liczba jest rozwiązaniem — <b>prawda</b>. II: ${E('2x + 2 = 2x + 5')} daje 2 = 5, sprzeczność — <b>prawda</b>.`),
+ // Park
+ q('rw8-10',`Lasy zajmują 60% powierzchni parku, łąki — ${f(1,4)} powierzchni, a pozostałe 12 ha to stawy. Ile hektarów ma cały park?`,['80 ha','48 ha','120 ha','30 ha'],0,`Stawy to 100% − 60% − 25% = 15% parku. ${E('0,15x = 12')}, <b><i>x</i> = 80 ha</b>.`),
+ // Chłopcy i dziewczęta
+ q('rw8-11a',`W klubie szachowym liczba chłopców stanowi 75% liczby dziewcząt. Chłopców jest o 7 mniej niż dziewcząt. Ile osób należy do klubu?`,['28','21','49','35'],2,`Dziewczęta: <i>x</i>, chłopcy: ${E('0,75x')}. ${E('x - 0,75x = 7')}, ${E('0,25x = 7')}, ${E('x = 28')}. Chłopców 21, razem <b>49</b>.`),
+ q('rw8-11b',`W klubie szachowym liczba chłopców stanowi 75% liczby dziewcząt. Chłopców jest o 7 mniej niż dziewcząt. Ilu chłopców należy do klubu?`,['28','7','14','21'],3,`${E('0,25x = 7')}, więc dziewcząt jest 28, a chłopców 28 − 7 = <b>21</b> (to 75% z 28).`),
+ // Doniczki
+ q('rw8-12a',`Średnia doniczka jest o 20% tańsza od dużej, a mała — o 6 zł tańsza od średniej. Za dużą, średnią i małą doniczkę zapłacono razem 124 zł. Ile kosztuje <b>duża</b> doniczka?`,['40 zł','50 zł','34 zł','48 zł'],1,`Duża: <i>x</i>, średnia: ${E('0,8x')}, mała: ${E('0,8x - 6')}. ${E('2,6x - 6 = 124')}, ${E('2,6x = 130')}, <b><i>x</i> = 50 zł</b>.`),
+ q('rw8-12b',`Średnia doniczka jest o 20% tańsza od dużej, a mała — o 6 zł tańsza od średniej. Za dużą, średnią i małą doniczkę zapłacono razem 124 zł. Ile kosztuje <b>mała</b> doniczka?`,['34 zł','40 zł','28 zł','44 zł'],0,`Duża kosztuje 50 zł (${E('2,6x - 6 = 124')}), średnia 0,8 · 50 = 40 zł, mała 40 − 6 = <b>34 zł</b>.`),
+ // Zmiana cen
+ q('rw8-13',`W kawiarni herbata kosztowała tyle samo co sok. Cenę herbaty podniesiono o 20%, a cenę soku obniżono o 10%. Teraz herbata jest droższa od soku o 1,80 zł. Ile kosztuje herbata po podwyżce?`,['6 zł','5,40 zł','1,80 zł','7,20 zł'],3,`Dawna cena: <i>x</i>. ${E('1,2x - 0,9x = 1,8')}, ${E('0,3x = 1,8')}, ${E('x = 6')}. Herbata teraz: 1,2 · 6 = <b>7,20 zł</b>. 6 zł to cena przed zmianą.`),
+ // Pola prostokątów
+ q('rw8-14a',`Pole prostokąta o bokach ${E('(x + 6)')} cm i ${E('(2x + 4)')} cm jest o 180 cm² większe od pola prostokąta o bokach ${E('(x + 2)')} cm i ${E('(2x + 2)')} cm. Ile wynosi <i>x</i>?`,['18','20','16','8'],2,`${E('(x + 6)(2x + 4) = 2x^2 + 16x + 24')} i ${E('(x + 2)(2x + 2) = 2x^2 + 6x + 4')}. Różnica: ${E('10x + 20 = 180')}, <b><i>x</i> = 16</b>.`),
+ q('rw8-14b',`Kwadrat ma bok ${E('(2x + 5)')} cm, a prostokąt ma wymiary ${E('(4x + 3)')} cm × ${E('(x + 2)')} cm. Pole kwadratu jest o 55 cm² większe od pola prostokąta. Ile wynosi <i>x</i>?`,['6','4','2','8'],1,`Kwadrat: ${E('(2x + 5)(2x + 5) = 4x^2 + 20x + 25')}. Prostokąt: ${E('4x^2 + 11x + 6')}. Różnica: ${E('9x + 19 = 55')}, <b><i>x</i> = 4</b>.`),
+ // Trójkąt
+ q('rw8-15',`Trójkąt równoramienny ma podstawę ${E('6x - 2')} i wysokość 8 opuszczoną na tę podstawę. Jego pole można zapisać jako ${E('4(5x + 2)')}. Jaką długość ma podstawa?`,['22','4','16','30'],0,`Pole: ${f(E('(6x - 2) · 8'),'2')} = ${E('24x - 8')}. ${E('24x - 8 = 20x + 8')}, ${E('x = 4')}. Podstawa: 6 · 4 − 2 = <b>22</b>. 4 to wartość <i>x</i>.`),
+ // Kartki z życzeniami
+ q('rw8-16',`Na urodziny każdy gość przygotował kartkę dla każdego z pozostałych gości. Okazało się, że przyjdą jeszcze 3 osoby, przez co liczba kartek wzrosła o 66. Ile osób będzie na urodzinach?`,['10','11','16','13'],3,`Najpierw było <i>n</i> osób i ${E('n(n - 1)')} kartek. Teraz: ${E('(n + 3)(n + 2)')}. ${E('n^2 + 5n + 6 - n^2 + n = 66')}, ${E('6n = 60')}, ${E('n = 10')}. Będzie 10 + 3 = <b>13</b> osób.`),
+ // Prostopadłościan i sześcian
+ q('rw8-17',`Prostopadłościan o wymiarach ${E('(x + 2)')} cm × ${E('(x + 2)')} cm × <i>x</i> cm ma pole powierzchni o 40 cm² większe niż sześcian o krawędzi <i>x</i> cm. Oblicz objętość prostopadłościanu.`,['32 cm³','8 cm³','24 cm³','64 cm³'],0,`Pole prostopadłościanu: ${E('2(x + 2)(x + 2) + 4x(x + 2) = 6x^2 + 16x + 8')}. Sześcian: ${E('6x^2')}. ${E('16x + 8 = 40')}, ${E('x = 2')}. Objętość: 4 · 4 · 2 = <b>32 cm³</b>.`),
+];

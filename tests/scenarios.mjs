@@ -6,14 +6,14 @@ assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
  'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Procenty — zadania egzaminacyjne', 'Potęgi', 'Potęgi o tych samych podstawach',
 ]);
 // Klasy 7 i 8 są podzielone na działy.
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.section), ['Statystyka i prawdopodobieństwo', 'Statystyka i prawdopodobieństwo', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.section), ['Statystyka i prawdopodobieństwo', 'Statystyka i prawdopodobieństwo', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.section), ['Procenty', 'Procenty', 'Procenty', 'Procenty', 'Potęgi', 'Potęgi']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
- 'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Wyrażenia algebraiczne', 'Mnożenie sum algebraicznych', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne',
+ 'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Wyrażenia algebraiczne', 'Mnożenie sum algebraicznych', 'Równania', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne',
 ]);
-assert.equal(SCENARIOS.length,25);
+assert.equal(SCENARIOS.length,26);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,870);
+assert.equal(new Set(all.map(q=>q.id)).size,901);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -671,4 +671,38 @@ for(const [id,v] of [['ms8-9a',{x:-0.5}],['ms8-9b',{x:-0.5}],['ms8-9c',{x:-3,y:4
 {const [d1,d2,d3]=plain(bold('ms8-14')).split('×').map(d=>d.replace('cm',''));only('ms8-14',a=>same(a,`2((${d1})(${d2})+(${d2})(${d3})+(${d1})(${d3}))`));}
 only('ms8-15',a=>same(a,'(a+2)(a+2)-a(a+4)'));
 console.log('PASS: grade 8 multiplying sums — all 32 answer keys checked with an expression evaluator');
+}
+
+// Klasa 8: równania — rozwiązania sprawdzane podstawieniem, zadania tekstowe liczone osobno.
+{
+const rw=SCENARIOS.find(s=>s.id==='equations-8');
+assert.equal(rw.grade,8);assert.equal(rw.section,'Wyrażenia algebraiczne i równania');assert.equal(rw.ordered,true);
+assert.equal(rw.questions.length,31);assert.equal(new Set(rw.questions.map(q=>q.sourceGroup)).size,17);
+const only=(id,ok)=>assert.deepEqual(ask(id).answers.filter(ok),[selected(id)],id);
+const bold=(id,k=0)=>[...ask(id).q.matchAll(/<b>(.*?)<\/b>/g)][k][1];
+const num=a=>at(a.replace(/<i>x<\/i> = | zł| ha| cm³/g,''),{});
+const sides=h=>{const p=h.split(' = ');assert.equal(p.length,2,h);return p;};
+const solves=(eq,x)=>{const [l,r]=sides(eq);return close(at(l,{x}),at(r,{x}));};
+// Równanie liniowe po redukcji: g(x) = L − R; zwraca rozwiązanie, 'all' albo 'none'.
+const root=eq=>{const [l,r]=sides(eq),g=x=>at(l,{x})-at(r,{x}),a=g(1)-g(0),b=g(0);assert(close(g(2),2*a+b),'linear: '+eq);
+ return Math.abs(a)<1e-12?(Math.abs(b)<1e-12?'all':'none'):-b/a;};
+for(const id of ['rw8-1a','rw8-1b','rw8-1c','rw8-2','rw8-4a','rw8-4b','rw8-4c','rw8-4d','rw8-8a','rw8-8b','rw8-8c','rw8-8d']) only(id,a=>solves(bold(id),num(a)));
+const PF=(i,ii)=>`I: ${i?'P':'F'}, II: ${ii?'P':'F'}`;
+only('rw8-9a',a=>a===PF(root(bold('rw8-9a',0))>0,root(bold('rw8-9a',1))<0));
+only('rw8-9b',a=>a===PF(root(bold('rw8-9b',0))==='all',root(bold('rw8-9b',1))==='none'));
+// Zadania tekstowe — każde liczone wprost z treści.
+{const [all,d]=[960,124],first=(all-d)/2;only('rw8-3a',a=>num(a)===first);only('rw8-3b',a=>num(a)===first+d);}
+only('rw8-5',a=>{const l=num(a);return 5.5*l+3*(30-l)===115;});
+{const m=(30+3*2.5)/5;only('rw8-6a',a=>close(num(a),m));only('rw8-6b',a=>close(num(a),m-2.5));}
+only('rw8-7',a=>{const p=num(a),b=p-5;return 6*b+14*p===330;});
+only('rw8-10',a=>close(num(a)*(1-0.6-1/4),12));
+{const g=7/(1-0.75);only('rw8-11a',a=>num(a)===g+0.75*g);only('rw8-11b',a=>num(a)===0.75*g);}
+{const big=(124+6)/2.6;only('rw8-12a',a=>close(num(a),big));only('rw8-12b',a=>close(num(a),0.8*big-6));}
+{const x=1.8/(1.2-0.9);only('rw8-13',a=>close(num(a),1.2*x));}
+only('rw8-14a',a=>{const x=num(a);return (x+6)*(2*x+4)-(x+2)*(2*x+2)===180;});
+only('rw8-14b',a=>{const x=num(a);return (2*x+5)**2-(4*x+3)*(x+2)===55;});
+{const x=root('(6x-2)·8/2 = 4(5x+2)');only('rw8-15',a=>num(a)===6*x-2);}
+only('rw8-16',a=>{const n=num(a)-3;return (n+3)*(n+2)-n*(n-1)===66;});
+{const x=root('2(x+2)(x+2)+4x(x+2)-6x^2 = 40');only('rw8-17',a=>num(a)===(x+2)*(x+2)*x);}
+console.log('PASS: grade 8 equations — all 31 answer keys checked by substitution and direct computation');
 }
