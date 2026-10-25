@@ -822,7 +822,11 @@ function selectScenario(id) {
   activeScenario = scenario;
   QUESTIONS = scenario.questions.slice(0, 12);
   $('#set-title').innerHTML = `<strong>${scenario.title}</strong>Matematyka · klasa ${scenario.grade}`;
+  // Na telefonie lista zestawów pokazuje tylko wybrany dział (bez działów: wszystkie zestawy klasy).
+  const siblings = SCENARIOS.filter(s => s.grade === selectedGrade && s.section === scenario.section);
+  $('#scenario-select').innerHTML = siblings.map(s => `<option value="${s.id}">${s.title}</option>`).join('');
   $('#scenario-select').value = id;
+  if (scenario.section) $('#section-select').value = scenario.section;
   $('#scenario-description').textContent = scenario.description;
   $$('.scenario-card').forEach(card => card.setAttribute('aria-pressed', String(card.dataset.scenario === id)));
 }
@@ -834,9 +838,11 @@ function chooseGrade(grade) {
   const scenarios = SCENARIOS.filter(s => s.grade === grade);
   // Działy (np. Procenty, Potęgi) w kolejności pierwszego wystąpienia; klasy bez działów mają jedną grupę bez nagłówka.
   const sections = [...new Set(scenarios.map(s => s.section))].map(name => ({ name, items: scenarios.filter(s => s.section === name) }));
-  const option = s => `<option value="${s.id}">${s.title}</option>`;
   const card = s => `<button type="button" class="scenario-card" data-scenario="${s.id}" aria-pressed="false"><span><strong>${s.title}</strong><small>${s.description}</small></span></button>`;
-  $('#scenario-select').innerHTML = sections.map(g => g.name ? `<optgroup label="${g.name}">${g.items.map(option).join('')}</optgroup>` : g.items.map(option).join('')).join('');
+  const named = sections.filter(g => g.name);
+  $('#section-picker').hidden = !named.length;
+  $('label[for="scenario-select"]').className = named.length ? 'picker-label' : 'visually-hidden';
+  $('#section-select').innerHTML = named.map(g => `<option value="${g.name}">${g.name}</option>`).join('');
   $('#scenario-options').innerHTML = sections.map(g => g.name ? `<h3 class="scenario-section">${g.name}</h3>${g.items.map(card).join('')}` : g.items.map(card).join('')).join('');
   selectScenario(activeScenario.grade === grade ? activeScenario.id : scenarios[0].id);
   renderResume();
@@ -845,6 +851,9 @@ function chooseGrade(grade) {
 
 function bind() {
   $('#scenario-select').addEventListener('change', e => selectScenario(e.target.value));
+  $('#section-select').addEventListener('change', e => {
+    selectScenario(SCENARIOS.find(s => s.grade === selectedGrade && s.section === e.target.value).id);
+  });
   $('#scenario-options').addEventListener('click', e => {
     const card = e.target.closest('[data-scenario]');
     if (card) selectScenario(card.dataset.scenario);
