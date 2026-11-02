@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import {SCENARIOS, makeRound, restoreRound} from '../js/scenarios.js';
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.title), ['Zegary, kalendarz i jednostki długości', 'Oś liczbowa', 'Dodawanie i odejmowanie', 'Szacowanie', 'Sprytne dodawanie', 'Sprytne odejmowanie', 'Powtórzenie: dodawanie i odejmowanie']);
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności', 'Liczby pierwsze i złożone', 'Potęgowanie', 'Cyfry rzymskie', 'Kolejność wykonywania działań', 'Płaszczyzna, proste, półproste, odcinki', 'Kąty']);
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.section), ['Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Figury geometryczne', 'Figury geometryczne']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności', 'Liczby pierwsze i złożone', 'Potęgowanie', 'Cyfry rzymskie', 'Kolejność wykonywania działań', 'Płaszczyzna, proste, półproste, odcinki', 'Kąty', 'Mierzenie kątów']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.section), ['Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Figury geometryczne', 'Figury geometryczne', 'Figury geometryczne']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
  'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Procenty — zadania egzaminacyjne', 'Potęgi', 'Potęgi o tych samych podstawach', 'Notacja wykładnicza',
 ]);
@@ -15,9 +15,9 @@ assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.section), ['Procenty'
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
  'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Wyrażenia algebraiczne', 'Mnożenie sum algebraicznych', 'Równania', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne',
 ]);
-assert.equal(SCENARIOS.length,29);
+assert.equal(SCENARIOS.length,30);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,1042);
+assert.equal(new Set(all.map(q=>q.id)).size,1098);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -875,4 +875,42 @@ const polyKinds=id=>{const ps=html(id).match(/data-poly="[^"]+" points="([^"]+)"
 {const A=arcs('kt5-13a');assert(Math.abs(A['40']-40)<0.5&&Math.abs(A['65']-65)<0.5);assert(Math.abs(A['40']+A['α']+A['65']-180)<0.5);
  only('kt5-13a',a=>Math.abs(deg(a)-A['α'])<0.5);only('kt5-13b',a=>Math.abs(deg(a)-(A['α']+A['β']))<0.5);}
 console.log('PASS: grade 5 angles — all 41 answer keys measured on drawing coordinates');
+}
+// Klasa 5: mierzenie kątów — miary z rysunku (współrzędne łuków i wskazówek) albo liczone niezależnie z treści.
+{
+const mk=SCENARIOS.find(s=>s.id==='measure-angles-5');
+assert.equal(mk.grade,5);assert.equal(mk.section,'Figury geometryczne');assert.equal(mk.ordered,true);
+assert.deepEqual(mk.award,{password:'Kąt ostry czy rozwarty? Ten quiz jest tego warty!',pluses:2});
+assert.equal(mk.questions.length,56);assert.equal(new Set(mk.questions.map(q=>q.sourceGroup)).size,14);
+assert.deepEqual([0,1,2,3].map(i=>mk.questions.filter(q=>q.correct===i).length),[14,14,14,14]);
+const only=(id,ok)=>assert.deepEqual(ask(id).answers.filter(ok),[selected(id)],id);
+const html=id=>ask(id).q;
+const xy=s=>s.split(',').map(Number);
+const dirDeg=(v,p)=>Math.atan2(-(p[1]-v[1]),p[0]-v[0])*180/Math.PI;
+const ccw=(v,a,b)=>((dirDeg(v,b)-dirDeg(v,a))%360+360)%360;
+const arcs=id=>Object.fromEntries([...html(id).matchAll(/data-arc="([^"]+)" data-v="([^"]+)" data-a="([^"]+)" data-b="([^"]+)"/g)].map(m=>[m[1],ccw(xy(m[2]),xy(m[3]),xy(m[4]))]));
+const kind=d=>Math.abs(d-90)<0.5?'prosty':Math.abs(d-180)<0.5?'półpełny':d<90?'ostry':d<180?'rozwarty':'wklęsły';
+const deg=a=>parseFloat(a), near=(a,b)=>Math.abs(a-b)<0.5, task=q=>q.q.match(/<b>(.*?)<\/b>/)[1];
+const ids=g=>mk.questions.filter(q=>q.sourceGroup===g).map(q=>q.id);
+// Łuki z podpisem liczbowym mają taką miarę, jak podpis; kwadracik to 90°.
+for(const q of mk.questions) for(const [n,d] of Object.entries(arcs(q.id))){if(n==='prosty')assert(near(d,90),q.id);else if(/°$/.test(n))assert(near(d,deg(n)),q.id+' '+n);}
+for(const id of ids('mk5-1')) only(id,a=>a===kind(deg(task(ask(id)))));
+only('mk5-2a',a=>!['ostry','rozwarty'].includes(kind(deg(a))));only('mk5-2b',a=>!['ostry','rozwarty'].includes(kind(deg(a))));only('mk5-2c',a=>kind(deg(a))==='ostry');
+only('mk5-2d',a=>deg(a)===html('mk5-2d').match(/kątów (.*?) to/)[1].split(', ').map(deg).filter(d=>d<90).length);
+// Rysunki: odpowiedź równa zmierzonemu łukowi x albo „?”.
+for(const g of ['mk5-3','mk5-4']) for(const id of ids(g)) only(id,a=>near(deg(a),arcs(id).x));
+for(const g of ['mk5-7','mk5-8','mk5-9','mk5-10']) for(const id of ids(g)) only(id,a=>near(deg(a),arcs(id)['?']));
+// Kątomierz: jedno ramię na podstawie, odczyt z właściwej skali; druga skala daje 180° − x i musi być wśród odpowiedzi.
+for(const id of ids('mk5-4')){const x=arcs(id).x;assert(ask(id).answers.some(a=>near(deg(a),180-x)),id);}
+// Wskazówki: minutowa 6° na minutę, godzinowa 0,5° na minutę.
+const minutes={'mk5-5a':25,'mk5-5b':45,'mk5-5c':35,'mk5-5d':15,'mk5-6a':180,'mk5-6b':420,'mk5-6c':30,'mk5-6d':140};
+for(const [id,m] of Object.entries(minutes)) only(id,a=>deg(a)===(id.startsWith('mk5-5')?6:0.5)*m);
+assert.equal(pick('mk5-11a'),truth(15*6===90,false));assert.equal(pick('mk5-11b'),truth(kind(200)==='wklęsły',kind(180-60)==='rozwarty'));
+assert.equal(pick('mk5-11c'),truth(360/12===60,true));assert.equal(pick('mk5-11d'),truth(89+89>=180,false));
+for(const id of ids('mk5-12')){const H=Object.fromEntries([...html(id).matchAll(/data-hand="(\w)" x1="([\d.-]+)" y1="([\d.-]+)" x2="([\d.-]+)" y2="([\d.-]+)"/g)].map(m=>[m[1],[[+m[2],+m[3]],[+m[4],+m[5]]]]));
+ const d=ccw(H.h[0],H.h[1],H.m[1]);only(id,a=>near(deg(a),Math.min(d,360-d)));}
+{const A=arcs('mk5-13a');assert(near(A['α'],A['β']));assert(near(A['50°']+A['α']+A['β'],180));
+ only('mk5-13a',a=>near(deg(a),A['α']));only('mk5-13b',a=>near(deg(a),A['γ']));only('mk5-13c',a=>near(deg(a),A['α']+A['δ']));only('mk5-13d',a=>near(deg(a),A['β']+A['γ']+A['δ']));}
+only('mk5-14a',a=>deg(a)+deg(a)/2===180);only('mk5-14b',a=>4*deg(a)===180);only('mk5-14c',a=>deg(a)+deg(a)/2===90);only('mk5-14d',a=>2*deg(a)+100===360);
+console.log('PASS: grade 5 measuring angles — all 56 answer keys measured on drawings or computed');
 }

@@ -215,3 +215,113 @@ export const angleQuestions5 = [
  q('kt5-13a',`${three}Trzy proste przecinają się w jednym punkcie. Ile stopni ma kąt α?`,['75°','65°','40°','115°'],0,'Kąty 40°, α i 65° tworzą razem kąt półpełny: α = 180° − 40° − 65° = <b>75°</b>.'),
  q('kt5-13b',`${three}Trzy proste przecinają się w jednym punkcie. Ile wynosi suma α + β?`,['180°','105°','140°','115°'],3,'α = 180° − 40° − 65° = 75°. β jest wierzchołkowy do kąta 40°, więc β = 40°. α + β = <b>115°</b>.'),
 ];
+
+// Klasa 5, dział „Figury geometryczne”: mierzenie kątów — rodzaj kąta po mierze, wybór miary dla rysunku, kątomierz
+// z dwiema skalami, obrót wskazówek zegara w stopniach, kąty zaznaczone łukami (przyległe, wierzchołkowe, wklęsłe, z kątem
+// prostym), trzy proste, podział kąta na części. Od łatwych do trudnych (`ordered`). Łuki mają współrzędne w data-*.
+const dg = (n) => `${n}°`;
+const MK = ['ostry', 'prosty', 'rozwarty', 'wklęsły'];
+const ptext = ([x, y], s, color, size = 11) => `<text x="${x}" y="${r1(y + size / 3)}" text-anchor="middle" fill="${color}" font-family="Arial, sans-serif" font-size="${size}">${s}</text>`;
+// Kątomierz: zewnętrzna biała skala ma 0 po lewej, wewnętrzna żółta — 0 po prawej. Kąt ma wierzchołek w środku kątomierza.
+function protractor(from, span) {
+ const v = [200, 200], R = 165;
+ let s = `<path d="M${200 - R} 200A${R} ${R} 0 0 1 ${200 + R} 200Z" fill="#1d3a6b" fill-opacity="0.6" stroke="#9fd3ff" stroke-width="1.5"/><rect x="20" y="200" width="360" height="22" fill="#1d3a6b" fill-opacity="0.6" stroke="#9fd3ff" stroke-width="1.5"/>`;
+ for (let d = 0; d <= 180; d += 5) { const a = at(v, d, R), b = at(v, d, R - (d % 10 ? 6 : 12)); s += `<path d="M${a[0]} ${a[1]}L${b[0]} ${b[1]}" stroke="#9fd3ff" stroke-width="1"/>`; }
+ // 0 i 180 lekko nad podstawą, żeby ramię kąta ich nie zasłaniało.
+ for (let d = 0; d <= 180; d += 10) { const up = d % 180 ? 0 : 9, o = at(v, d, R - 23), i = at(v, d, R - 42); s += ptext([o[0], o[1] - up], 180 - d, '#f3f5ff') + ptext([i[0], i[1] - up], d, '#f6c85c'); }
+ return fig(s + arm(v, from, 190) + arm(v, from + span, 190) + arc('x', v, from, span, '', 28) + `<circle cx="200" cy="200" r="4" fill="#f6c85c"/>`,
+  'Kąt przyłożony do kątomierza: wierzchołek w środku kątomierza, jedno ramię wzdłuż jego podstawy');
+}
+const measureQ = (id, svg, answers, correct, explain) => q(id, `${svg}Ile stopni ma zaznaczony kąt?`, answers, correct, explain);
+// Prosta i półprosta: kąt podany po jednej stronie półprostej, „?” po drugiej.
+function onLine(ray, givenRight) {
+ const v = [200, 170], [g0, gs, q0, qs] = givenRight ? [0, ray, ray, 180 - ray] : [ray, 180 - ray, 0, ray];
+ return fig(arm(v, 0, 180) + arm(v, 180, 180) + arm(v, ray, 150) + arc(dg(gs), v, g0, gs, dg(gs), 30) + arc('?', v, q0, qs, '?', 46), 'Prosta i półprosta wychodząca z punktu na prostej; zaznaczone dwa kąty');
+}
+// Kąt wypukły z podaną miarą i łuk „?” dookoła — kąt wklęsły.
+function reflexFig(x) {
+ const v = [200, 140], f = 90 - x / 2;
+ return fig(arm(v, f, 100) + arm(v, f + x, 100) + arc(dg(x), v, f, x, dg(x), 26) + arc('?', v, f + x, 360 - x, '?', 34), 'Dwa ramiona kąta; zaznaczony kąt wypukły i kąt wklęsły');
+}
+// Dwie proste przecinające się: kąt x° między kierunkami 15° i 15° + x, łuk „?” od `qFrom` o `qSpan`.
+const crossFig = (x, qFrom, qSpan) => { const v = [200, 118]; return fig([15, 15 + x, 195, 195 + x].map((d) => arm(v, d, 108)).join('') + arc(dg(x), v, 15, x, dg(x), 26) + arc('?', v, qFrom, qSpan, '?', 44), 'Dwie proste przecinające się w jednym punkcie'); };
+// Trzy proste przez jeden punkt: 50°, α, β, γ, δ.
+const TV = [200, 118];
+const threeEq = fig([0, 50, 115].map((d) => arm(TV, d, 110) + arm(TV, d + 180, 110)).join('') + arc('50°', TV, 0, 50, '50°', 34) + arc('α', TV, 50, 65, 'α', 28) + arc('β', TV, 115, 65, 'β', 28) + arc('γ', TV, 180, 50, 'γ', 28) + arc('δ', TV, 230, 65, 'δ', 28),
+ 'Trzy proste przecinające się w jednym punkcie; zaznaczone kąty 50°, α, β, γ i δ');
+const THREE = `${threeEq}Trzy proste przecinają się w jednym punkcie. Kąty α i β są równe.`;
+const turnQ = (id, hand, time, answers, correct, explain) => q(id, `O ile stopni obróci się wskazówka <b>${hand}</b> w ciągu <b>${time}</b>?`, answers, correct, explain);
+const MIN6 = 'Wskazówka minutowa robi pełny obrót (360°) w 60 minut, więc w minutę obraca się o 360° : 60 = 6°';
+const HOUR30 = 'Wskazówka godzinowa robi pełny obrót (360°) w 12 godzin, więc w godzinę obraca się o 360° : 12 = 30°';
+const clockDegQ = (id, h, m, answers, correct, explain) => q(id, `${clock(h, m)}Ile stopni ma <b>mniejszy</b> kąt między wskazówkami tego zegara?`, answers, correct, explain);
+
+export const measureQuestions5 = [
+ // Rodzaj kąta po mierze
+ ...[[62, 0, 'Kąt mniejszy od 90° to kąt <b>ostry</b>.'], [90, 1, 'Kąt o mierze 90° to kąt <b>prosty</b>.'], [168, 2, 'Kąt większy od 90°, a mniejszy od 180° to kąt <b>rozwarty</b>.'], [301, 3, 'Kąt większy od 180°, a mniejszy od 360° to kąt <b>wklęsły</b>.']]
+  .map(([n, c, e], i) => q(`mk5-1${'abcd'[i]}`, `Jakiego rodzaju jest kąt o mierze <b>${dg(n)}</b>?`, MK, c, e)),
+ // Pojemniki: kąty ostre i rozwarte
+ q('mk5-2a','Kąty ostre wrzucamy do jednego pojemnika, a rozwarte — do drugiego. Który kąt <b>nie pasuje</b> do żadnego z nich?',['17°','134°','91°','180°'],3,'17° to kąt ostry, 134° i 91° — rozwarte. <b>180°</b> to kąt półpełny: nie jest ani ostry, ani rozwarty.'),
+ q('mk5-2b','Kąty ostre wrzucamy do jednego pojemnika, a rozwarte — do drugiego. Który kąt <b>nie pasuje</b> do żadnego z nich?',['90°','89°','46°','179°'],0,'89° i 46° to kąty ostre, 179° — rozwarty. <b>90°</b> to kąt prosty: nie jest ani ostry, ani rozwarty.'),
+ q('mk5-2c','Który z kątów jest <b>ostry</b>?',['95°','90°','89°','100°'],2,'Kąt ostry ma mniej niż 90°. Tylko <b>89°</b> spełnia ten warunek — 90° to już kąt prosty.'),
+ q('mk5-2d','Ile spośród kątów 14°, 90°, 102°, 179°, 47°, 88°, 180°, 135° to kąty <b>ostre</b>?',['2','3','4','5'],1,'Ostre są kąty mniejsze od 90°: 14°, 47° i 88° — razem <b>3</b>. 90° to kąt prosty, a nie ostry.'),
+ // Która miara pasuje do rysunku?
+ q('mk5-3a',`${fig(angle('x', [110, 190], 10, 50, '', 200), 'Kąt ostry')}Która miara pasuje do zaznaczonego kąta?`,['50°','130°','230°','310°'],0,'Kąt jest węższy od prostego, czyli ostry. Ma mniej niż 90°, więc pasuje tylko <b>50°</b>.'),
+ q('mk5-3b',`${fig(angle('x', [200, 185], 15, 150, '', 150), 'Kąt rozwarty')}Która miara pasuje do zaznaczonego kąta?`,['30°','150°','210°','330°'],1,'Kąt jest szerszy od prostego, ale ramiona nie tworzą prostej — to kąt rozwarty, od 90° do 180°. Pasuje <b>150°</b>.'),
+ q('mk5-3c',`${fig(angle('x', [200, 205], 40, 100, '', 160), 'Kąt rozwarty')}Która miara pasuje do zaznaczonego kąta?`,['80°','260°','100°','280°'],2,'Kąt jest trochę szerszy od prostego, więc jest rozwarty. Pasuje <b>100°</b>; 80° to kąt ostry.'),
+ q('mk5-3d',`${fig(arm([170, 125], 0, 120) + arm([170, 125], 90, 105) + arc('x', [170, 125], 90, 270, '', 26), 'Dwa prostopadłe ramiona; zaznaczony kąt wklęsły')}Która miara pasuje do zaznaczonego kąta?`,['90°','180°','45°','270°'],3,'Łuk obejmuje kąt wklęsły — większy od półpełnego. Ramiona są prostopadłe, więc do pełnego kąta brakuje 90°: 360° − 90° = <b>270°</b>.'),
+ // Kątomierz
+ measureQ('mk5-4a',protractor(0, 40),['40°','140°','50°','130°'],0,'Jedno ramię biegnie w prawo, do zera <b>żółtej</b> skali. Na tej samej skali drugie ramię wskazuje <b>40°</b>. Kąt jest ostry, więc 140° (biała skala) nie pasuje.'),
+ measureQ('mk5-4b',protractor(120, 60),['120°','60°','70°','110°'],1,'Jedno ramię biegnie w lewo, do zera <b>białej</b> skali. Na tej samej skali drugie ramię wskazuje <b>60°</b>. Kąt jest ostry, więc 120° (żółta skala) nie pasuje.'),
+ measureQ('mk5-4c',protractor(0, 110),['70°','100°','110°','80°'],2,'Jedno ramię biegnie w prawo, do zera <b>żółtej</b> skali. Na niej drugie ramię wskazuje <b>110°</b>. Kąt jest rozwarty, więc 70° nie pasuje.'),
+ measureQ('mk5-4d',protractor(25, 155),['25°','145°','35°','155°'],3,'Jedno ramię biegnie w lewo, do zera <b>białej</b> skali. Na niej drugie ramię wskazuje <b>155°</b> — w połowie między 150 a 160. Kąt jest rozwarty, więc 25° nie pasuje.'),
+ // Wskazówka minutowa
+ turnQ('mk5-5a','minutowa','25 minut',['25°','125°','150°','250°'],2,`${MIN6}. 25 · 6° = <b>150°</b>.`),
+ turnQ('mk5-5b','minutowa','45 minut',['270°','45°','180°','135°'],0,`${MIN6}. 45 · 6° = <b>270°</b> — trzy czwarte pełnego obrotu.`),
+ turnQ('mk5-5c','minutowa','35 minut',['35°','180°','185°','210°'],3,`${MIN6}. 35 · 6° = <b>210°</b>.`),
+ turnQ('mk5-5d','minutowa','kwadransa',['15°','90°','45°','150°'],1,`Kwadrans to 15 minut, czyli ćwierć obrotu. ${MIN6}: 15 · 6° = <b>90°</b>.`),
+ // Wskazówka godzinowa
+ turnQ('mk5-6a','godzinowa','3 godzin',['3°','30°','90°','180°'],2,`${HOUR30}. 3 · 30° = <b>90°</b>.`),
+ turnQ('mk5-6b','godzinowa','7 godzin',['210°','70°','150°','240°'],0,`${HOUR30}. 7 · 30° = <b>210°</b>.`),
+ turnQ('mk5-6c','godzinowa','pół godziny',['30°','15°','180°','3°'],1,`${HOUR30}, a w pół godziny — o połowę tego: <b>15°</b>. 180° to obrót wskazówki minutowej.`),
+ turnQ('mk5-6d','godzinowa','2 godzin i 20 minut',['60°','80°','140°','70°'],3,`${HOUR30}. 2 godziny to 60°, a 20 minut to trzecia część godziny: 30° : 3 = 10°. Razem <b>70°</b>.`),
+ // Prosta i półprosta
+ measureQ('mk5-7a',onLine(65, true),['25°','115°','65°','125°'],1,'Oba kąty leżą przy prostej, razem tworzą kąt półpełny — 180°. ? = 180° − 65° = <b>115°</b>.'),
+ measureQ('mk5-7b',onLine(128, true),['52°','128°','62°','38°'],0,'Razem tworzą kąt półpełny — 180°. ? = 180° − 128° = <b>52°</b>.'),
+ measureQ('mk5-7c',onLine(143, false),['53°','37°','143°','133°'],2,'Razem tworzą kąt półpełny — 180°. ? = 180° − 37° = <b>143°</b>.'),
+ measureQ('mk5-7d',onLine(28, false),['152°','38°','62°','28°'],3,'Razem tworzą kąt półpełny — 180°. ? = 180° − 152° = <b>28°</b>.'),
+ // Kąt wklęsły
+ measureQ('mk5-8a',reflexFig(115),['245°','65°','255°','235°'],0,'Oba kąty razem tworzą kąt pełny — 360°. ? = 360° − 115° = <b>245°</b>.'),
+ measureQ('mk5-8b',reflexFig(104),['76°','266°','256°','104°'],2,'Oba kąty razem tworzą kąt pełny — 360°. ? = 360° − 104° = <b>256°</b>. 76° to dopełnienie do 180°, a nie do 360°.'),
+ measureQ('mk5-8c',reflexFig(40),['140°','320°','40°','300°'],1,'Oba kąty razem tworzą kąt pełny — 360°. ? = 360° − 40° = <b>320°</b>.'),
+ measureQ('mk5-8d',reflexFig(150),['30°','150°','310°','210°'],3,'Oba kąty razem tworzą kąt pełny — 360°. ? = 360° − 150° = <b>210°</b>.'),
+ // Z kątem prostym
+ measureQ('mk5-9a',fig(arm([110, 205], 0, 230) + arm([110, 205], 90, 190) + arm([110, 205], 35, 200) + arc('prosty', [110, 205], 0, 90) + arc('35°', [110, 205], 0, 35, '35°', 60) + arc('?', [110, 205], 35, 55, '?', 60), 'Kąt prosty podzielony półprostą na dwa kąty'),['55°','45°','65°','35°'],0,'Kwadracik oznacza kąt prosty — 90°. ? = 90° − 35° = <b>55°</b>.'),
+ measureQ('mk5-9b',fig(arm([200, 195], 0, 180) + arm([200, 195], 180, 180) + arm([200, 195], 90, 170) + arm([200, 195], 130, 170) + arc('prosty', [200, 195], 0, 90) + arc('40°', [200, 195], 90, 40, '40°', 50) + arc('?', [200, 195], 130, 50, '?', 50), 'Prosta, półprosta prostopadła do niej i jeszcze jedna półprosta'),['40°','50°','90°','140°'],1,'Kąt półpełny ma 180°, a kąt prosty 90°. ? = 180° − 90° − 40° = <b>50°</b>.'),
+ measureQ('mk5-9c',fig(arm([200, 125], 30, 105) + arm([200, 125], 120, 105) + arc('prosty', [200, 125], 30, 90) + arc('?', [200, 125], 120, 270, '?', 30), 'Dwa prostopadłe ramiona; zaznaczony kąt wklęsły'),['90°','180°','270°','300°'],2,'Ramiona tworzą kąt prosty — 90°. Łuk obejmuje resztę kąta pełnego: 360° − 90° = <b>270°</b>.'),
+ measureQ('mk5-9d',fig([0, 90, 220].map((d) => arm([200, 120], d, 110)).join('') + arc('prosty', [200, 120], 0, 90) + arc('130°', [200, 120], 90, 130, '130°', 30) + arc('?', [200, 120], 220, 140, '?', 30), 'Trzy półproste wychodzące z jednego punktu'),['130°','90°','150°','140°'],3,'Kąty dookoła punktu tworzą razem kąt pełny — 360°. ? = 360° − 90° − 130° = <b>140°</b>.'),
+ // Dwie proste przecinające się
+ measureQ('mk5-10a',crossFig(38, 53, 142),['38°','52°','142°','152°'],2,'Kąt ? jest przyległy do kąta 38° — razem tworzą 180°. ? = 180° − 38° = <b>142°</b>.'),
+ measureQ('mk5-10b',crossFig(38, 53, 322),['322°','142°','218°','342°'],0,'Łuk obejmuje cały kąt pełny poza kątem 38°: ? = 360° − 38° = <b>322°</b>.'),
+ measureQ('mk5-10c',crossFig(125, 195, 125),['55°','125°','235°','65°'],1,'Kąt ? leży naprzeciwko kąta 125° — to kąty wierzchołkowe, więc są równe: <b>125°</b>.'),
+ measureQ('mk5-10d',crossFig(72, 87, 180),['108°','252°','144°','180°'],3,'Łuk obejmuje kąt przyległy (180° − 72° = 108°) i kąt wierzchołkowy (72°): 108° + 72° = <b>180°</b>. Jego ramiona tworzą prostą.'),
+ // Prawda czy fałsz
+ truth('mk5-11a','Wskazówka minutowa w ciągu kwadransa obraca się o 90°.','Kąt o mierze 180° to kąt rozwarty.','PF','I: 15 · 6° = 90° — <b>prawda</b>. II: 180° to kąt półpełny, a kąt rozwarty ma mniej niż 180° — <b>fałsz</b>.'),
+ truth('mk5-11b','Kąt o mierze 200° jest kątem wklęsłym.','Kąt przyległy do kąta ostrego jest rozwarty.','PP','I: 200° to więcej niż 180° — <b>prawda</b>. II: np. 180° − 60° = 120°; od 180° odejmujemy mniej niż 90°, więc zostaje więcej niż 90° — <b>prawda</b>.'),
+ truth('mk5-11c','Wskazówka godzinowa w ciągu godziny obraca się o 60°.','Kąty wierzchołkowe mają równe miary.','FP','I: w godzinę wskazówka godzinowa obraca się o 360° : 12 = 30° — <b>fałsz</b>. II: kąty wierzchołkowe są równe — <b>prawda</b>.'),
+ truth('mk5-11d','Dwa kąty ostre mogą być kątami przyległymi.','Kąt pełny ma 180°.','FF','I: kąty przyległe mają razem 180°, a dwa kąty ostre — mniej niż 90° + 90° = 180° — <b>fałsz</b>. II: kąt pełny ma 360° — <b>fałsz</b>.'),
+ // Kąt między wskazówkami w stopniach
+ clockDegQ('mk5-12a',2,0,['30°','60°','90°','120°'],1,'Między sąsiednimi liczbami na tarczy jest 360° : 12 = 30°. Od 12 do 2 są dwa takie odstępy: 2 · 30° = <b>60°</b>.'),
+ clockDegQ('mk5-12b',4,0,['120°','100°','150°','140°'],0,'Od 12 do 4 są cztery odstępy po 30°: 4 · 30° = <b>120°</b>.'),
+ clockDegQ('mk5-12c',3,30,['90°','105°','75°','60°'],2,'Wskazówka minutowa jest na 6, a godzinowa w połowie między 3 a 4. Od tego miejsca do 6 są dwa i pół odstępu: 2,5 · 30° = <b>75°</b>.'),
+ clockDegQ('mk5-12d',9,30,['90°','75°','120°','105°'],3,'Wskazówka minutowa jest na 6, a godzinowa w połowie między 9 a 10. Od 6 do tego miejsca są trzy i pół odstępu: 3,5 · 30° = <b>105°</b>.'),
+ // Trzy proste
+ q('mk5-13a',`${THREE} Ile stopni ma kąt α?`,['50°','65°','130°','75°'],1,'Kąty 50°, α i β tworzą kąt półpełny, więc α + β = 180° − 50° = 130°. Są równe, więc α = 130° : 2 = <b>65°</b>.'),
+ q('mk5-13b',`${THREE} Ile stopni ma kąt γ?`,['130°','65°','50°','40°'],2,'γ leży naprzeciwko kąta 50° — to kąty wierzchołkowe, więc γ = <b>50°</b>.'),
+ q('mk5-13c',`${THREE} Ile wynosi suma α + δ?`,['115°','100°','180°','130°'],3,'α = (180° − 50°) : 2 = 65°. δ jest wierzchołkowy do α, więc też ma 65°. α + δ = <b>130°</b>.'),
+ q('mk5-13d',`${THREE} Ile wynosi suma β + γ + δ?`,['180°','130°','115°','245°'],0,'β, γ i δ leżą obok siebie i tworzą kąt półpełny: <b>180°</b>. Rachunek: 65° + 50° + 65° = 180°.'),
+ // Podział kąta na części
+ q('mk5-14a','Kąty α i β są przyległe, a kąt α jest <b>dwa razy większy</b> od kąta β. Ile stopni ma kąt α?',['60°','90°','120°','135°'],2,'Razem mają 180°. β to jedna część, α — dwie takie części, razem 3 równe części: 180° : 3 = 60°. β = 60°, a α = 2 · 60° = <b>120°</b>.'),
+ q('mk5-14b','Kąty α i β są przyległe, a kąt α jest <b>trzy razy większy</b> od kąta β. Ile stopni ma kąt β?',['45°','60°','135°','90°'],0,'Razem mają 180°. β to jedna część, α — trzy, razem 4 równe części: 180° : 4 = <b>45°</b>. α ma 135°.'),
+ q('mk5-14c','Kąt prosty podzielono na dwa kąty. Jeden z nich jest <b>dwa razy większy</b> od drugiego. Ile stopni ma większy z nich?',['30°','60°','45°','70°'],1,'90° dzielimy na 3 równe części: 90° : 3 = 30°. Mniejszy kąt ma 30°, a większy 2 · 30° = <b>60°</b>.'),
+ q('mk5-14d','Kąt pełny podzielono na trzy kąty: α, β i γ. Kąty α i β są równe, a γ = 100°. Ile stopni ma kąt α?',['100°','80°','260°','130°'],3,'Razem mają 360°. α + β = 360° − 100° = 260°, a skoro są równe, to α = 260° : 2 = <b>130°</b>.'),
+];
