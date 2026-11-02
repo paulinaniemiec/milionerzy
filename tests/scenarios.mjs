@@ -4,20 +4,20 @@ assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.title), ['Zegary, kal
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności', 'Liczby pierwsze i złożone', 'Potęgowanie', 'Cyfry rzymskie', 'Kolejność wykonywania działań', 'Płaszczyzna, proste, półproste, odcinki', 'Kąty']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.section), ['Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Figury geometryczne', 'Figury geometryczne']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
- 'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Procenty — zadania egzaminacyjne', 'Potęgi', 'Potęgi o tych samych podstawach',
+ 'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Procenty — zadania egzaminacyjne', 'Potęgi', 'Potęgi o tych samych podstawach', 'Notacja wykładnicza',
 ]);
 // Klasy 4, 7 i 8 są podzielone na działy.
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.section), ['Zaczynamy przygodę z matematyką', ...Array(6).fill('Dodawanie i odejmowanie')]);
 // Klasa 8: każdy zestaw ma 3 plusy, a hasła (nazwy zwierząt) się nie powtarzają.
 {const g8=SCENARIOS.filter(s=>s.grade===8);assert(g8.every(s=>s.award&&s.award.pluses===3),'grade 8: 3 pluses');assert.equal(new Set(g8.map(s=>s.award.password)).size,g8.length);}
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.section), ['Statystyka i prawdopodobieństwo', 'Statystyka i prawdopodobieństwo', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu']);
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.section), ['Procenty', 'Procenty', 'Procenty', 'Procenty', 'Potęgi', 'Potęgi']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.section), ['Procenty', 'Procenty', 'Procenty', 'Procenty', 'Potęgi', 'Potęgi', 'Potęgi']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
  'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Wyrażenia algebraiczne', 'Mnożenie sum algebraicznych', 'Równania', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne',
 ]);
-assert.equal(SCENARIOS.length,28);
+assert.equal(SCENARIOS.length,29);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,978);
+assert.equal(new Set(all.map(q=>q.id)).size,1042);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -448,6 +448,50 @@ const v17a=ask('ps7-17a').answers.map(val),v17b=ask('ps7-17b').answers.map(val);
 assert.equal(v17a.indexOf(Math.max(...v17a)),ask('ps7-17a').correct);assert.equal(v17a.filter(v=>v===Math.max(...v17a)).length,1);
 assert.equal(v17b.indexOf(Math.min(...v17b)),ask('ps7-17b').correct);assert.equal(v17b.filter(v=>v===Math.min(...v17b)).length,1);
 console.log('PASS: grade 7 same-base powers — all 70 answer keys computed independently');
+}
+// Klasa 7: notacja wykładnicza — wartości liczone z treści, poprawna odpowiedź jedyna o dobrej wartości i poprawnej postaci a · 10^n.
+{
+const ne=SCENARIOS.find(s=>s.id==='scientific-7');
+assert.equal(ne.grade,7);assert.equal(ne.section,'Potęgi');assert.equal(ne.ordered,true);
+assert.equal(ne.questions.length,64);assert.equal(new Set(ne.questions.map(q=>q.sourceGroup)).size,16);
+assert.deepEqual(SCENARIOS.filter(s=>s.questions===ne.questions).map(s=>s.grade),[7]);
+assert.deepEqual(ne.award,{password:'NOTACJA',pluses:1});
+assert.deepEqual([0,1,2,3].map(i=>ne.questions.filter(q=>q.correct===i).length),[16,16,16,16]);
+const txt=html=>html.replace(/<sup>(.*?)<\/sup>/g,'^$1').replace(/<[^>]+>/g,'').trim();
+const val=html=>Function(`return ${txt(html.replace(/<span class="frac"><span>(.*?)<\/span><span>(.*?)<\/span><\/span>/g,'(($1)/($2))'))
+ .replace(/ (g|kg)$/,'').replace(/\s/g,'').replace(/−/g,'-').replace(/,/g,'.').replace(/·/g,'*').replace(/:/g,'/').replace(/\^(-?\d+)/g,'**($1)')}`)();
+const same=(a,b)=>a===b||Math.abs(a-b)<=1e-9*Math.max(Math.abs(a),Math.abs(b));
+const isSci=html=>{const m=txt(html).match(/^(\d+(?:,\d+)?) · 10\^(−?\d+)$/);if(!m)return false;const a=+m[1].replace(',','.');return a>=1&&a<10;};
+const task=q=>q.q.match(/<b>(.*?)<\/b>/)[1];
+const only=(id,ok)=>{const q=ask(id);assert.deepEqual(q.answers.filter(ok),[q.answers[q.correct]],id);};
+const g=id=>ne.questions.filter(q=>q.sourceGroup===id).map(q=>q.id);
+// Zamiana na notację: wartość z pogrubionej liczby w treści (słownie — wpisana ręcznie).
+const words={'czterdzieści tysięcy':4e4,'sześćdziesiąt trzy miliony':63e6,'dziewięć miliardów':9e9,'siedemset dwadzieścia tysięcy':72e4};
+for(const id of [...g('ne7-1'),...g('ne7-4'),...g('ne7-6'),...g('ne7-8'),...g('ne7-9'),...g('ne7-13'),...g('ne7-15')]){
+ const t=task(ask(id)), v=words[t]??val(t);only(id,a=>isSci(a)&&same(val(a),v));}
+for(const [id,v] of [['ne7-16a',60*3e5],['ne7-16b',5*2e9],['ne7-16d',6e3/3e-6]]) only(id,a=>isSci(a)&&same(val(a),v));
+// Zwykły zapis.
+for(const id of [...g('ne7-2'),...g('ne7-7')]) only(id,a=>same(val(a),val(task(ask(id)))));
+for(const [id,v] of [['ne7-5a',1e-2],['ne7-5b',1e-3],['ne7-5d',1e-4],['ne7-10a',3e5],['ne7-10b',4.5e9],['ne7-10d',4e7],['ne7-16c',1000*5e-4]]) only(id,a=>same(val(a),v));
+assert.equal(selected('ne7-5c'),'jedna dziesiąta');assert.equal(1e-1,1/10);
+const named={'trzydzieści siedem miliardów':37e9,'trzysta siedemdziesiąt miliardów':370e9,'trzydzieści siedem bilionów':37e12,'trzy biliony siedemset miliardów':3.7e12};
+only('ne7-10c',a=>same(named[a],3.7e13));
+// Czy to notacja wykładnicza?
+only('ne7-3a',isSci);only('ne7-3b',a=>!isSci(a));only('ne7-3c',isSci);only('ne7-3d',a=>!isSci(a));
+// Brakujący wykładnik lub czynnik.
+for(const id of g('ne7-11')) only(id,a=>{const [l,r]=task(ask(id)).replace('□',a).split(' = ').map(val);return same(l,r);});
+// Porównywanie.
+const vals=id=>ask(id).answers.map(val);
+for(const [id,pickBy] of [['ne7-12a',Math.max],['ne7-12b',Math.min],['ne7-12d',Math.max]]){const v=vals(id),best=pickBy(...v);assert.equal(v.indexOf(best),ask(id).correct,id);assert.equal(v.filter(x=>x===best).length,1,id);}
+only('ne7-12c',a=>val(a)>1e6);
+// Prawda/fałsz z jednostkami (g, dag, kg; mm, cm, m, km).
+assert.equal(pick('ne7-14a'),truth(3.5e4/1000>2e2,6e3/1000===6));
+assert.equal(pick('ne7-14b'),truth(4.2e5/100>3e3,same(7e-2*1000,70)));
+assert.equal(pick('ne7-14c'),truth(2.5e6/100>3e4,same(1.5e-3*1e5,15)));
+assert.equal(pick('ne7-14d'),truth(8e7/1e6>50,same(4e-3*100,4)));
+// Długie liczby: tyle cyfr, ile wynika z wykładnika.
+assert.equal('5970000000000000000000000'.length,25);assert.equal('73500000000000000000000'.length,23);
+console.log('PASS: grade 7 scientific notation — all 64 answer keys computed independently');
 }
 
 // Klasa 4: sprytne dodawanie — każdy klucz liczony z treści zadania.

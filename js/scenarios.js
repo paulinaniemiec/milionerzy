@@ -2,7 +2,7 @@ import { QUESTIONS as original } from './questions.js';
 import { diagramQuestions, probabilityQuestions } from './exam-sets.js';
 import { divisibilityQuestions, powerQuestions, romanQuestions, primeQuestions, orderQuestions } from './grade5-sets.js';
 import { percentExamQuestions } from './percent-exam-sets.js';
-import { powerQuestions7, samePowerQuestions7 } from './grade7-sets.js';
+import { powerQuestions7, samePowerQuestions7, scientificQuestions7 } from './grade7-sets.js';
 import { axisQuestions } from './axis-sets.js';
 import { geometryQuestions5, angleQuestions5 } from './geometry5-sets.js';
 import { algebraQuestions8, multiplicationQuestions8, equationQuestions8 } from './algebra-sets.js';
@@ -121,6 +121,7 @@ export const SCENARIOS = [
  {id:'percent-exam-7', grade:7, section:'Procenty', title:'Procenty — zadania egzaminacyjne', description:'Zadania z egzaminów 2011–2026 i materiałów CKE. Rabaty, podwyżki, VAT i podatki.', questions:percentExamQuestions},
  {id:'powers-7', grade:7, section:'Potęgi', title:'Potęgi', description:'Ułamki i liczby ujemne do potęgi, wykładnik 0 i 1, potęgi liczby 10, bakterie i zadania tekstowe.', questions:powerQuestions7},
  {id:'same-base-7', grade:7, section:'Potęgi', title:'Potęgi o tych samych podstawach', description:'Mnożenie i dzielenie potęg, potęga potęgi, brakujące wykładniki, potęgi liczby 10 i typowe pułapki.', questions:samePowerQuestions7, award:{password:'MATEMATYKA TO WF DLA MÓZGU', pluses:2}},
+ {id:'scientific-7', grade:7, section:'Potęgi', title:'Notacja wykładnicza', description:'Duże i małe liczby w postaci a · 10ⁿ, potęgi liczby 10 o wykładniku ujemnym, kosmiczne odległości, zamiana jednostek, porównywanie i działania.', questions:scientificQuestions7, ordered:true, award:{password:'NOTACJA', pluses:1}},
 ];
 function shuffle(items, random) {
  const result = [...items];

@@ -172,3 +172,96 @@ export const samePowerQuestions7 = [
  q('ps7-17a','Która liczba jest <b>największa</b>?', [`${p(2,5)} · ${p(2,3)}`,pp(p(2,3),3),`${p(2,12)} : ${p(2,2)}`,p(4,6)],3,`Wszystko jako potęgi dwójki: ${p(2,8)}, ${p(2,9)}, ${p(2,10)} oraz ${p(4,6)} = ${pp(p(2,2),6)} = ${p(2,12)}. Największa jest <b>${p(4,6)}</b>.`),
  q('ps7-17b','Która liczba jest <b>najmniejsza</b>?', [`${p(3,9)} : ${p(3,4)}`,pp(p(3,2),3),`3 · ${p(3,2)}`,p(9,2)],2,`Wszystko jako potęgi trójki: ${p(3,5)}, ${p(3,6)}, ${p(3,3)} oraz ${p(9,2)} = ${p(3,4)}. Najmniejsza jest <b>3 · ${p(3,2)} = ${p(3,3)} = 27</b>.`),
 ];
+
+// Klasa 7: notacja wykładnicza — duże i małe liczby w postaci a · 10ⁿ (1 ≤ a < 10), ujemne wykładniki, jednostki.
+// Zadania są w kolejności od najłatwiejszych do najtrudniejszych (`ordered: true` w scenariuszu).
+const e10 = (n) => p(10, n < 0 ? `−${-n}` : n);
+const sci = (a, n) => `${a} · ${e10(n)}`;
+const toSci = (text, intro = 'Zapisz liczbę') => `${intro} <b>${text}</b> w notacji wykładniczej.`;
+const fromSci = (e) => `Zapisz liczbę <b>${e}</b> bez użycia notacji wykładniczej.`;
+const gap = (e) => `Jaką liczbę trzeba wpisać w miejsce □, aby otrzymać równość <b>${e}</b>?`;
+const judge = (id, a, b, truth, explain) => q(id, `Oceń prawdziwość zdań.<div class="task-statements">I. ${a}<br>II. ${b}</div>Wybierz ocenę zdań (P — prawda, F — fałsz).`, ['I: P, II: P', 'I: P, II: F', 'I: F, II: P', 'I: F, II: F'], ['PP','PF','FP','FF'].indexOf(truth), explain);
+const SCI = 'W notacji wykładniczej liczbę zapisujemy jako <i>a</i> · 10<sup><i>n</i></sup>, gdzie 1 ≤ <i>a</i> &lt; 10';
+
+export const scientificQuestions7 = [
+ // Duża liczba → notacja wykładnicza
+ q('ne7-1a',toSci('340 000'), [sci(34,4),sci('3,4',5),sci('3,4',4),sci('0,34',6)],1,`Przecinek stawiamy po pierwszej cyfrze: 3,4. Do 340 000 trzeba go przesunąć o 5 miejsc w prawo, więc <b>${sci('3,4',5)}</b>. ${sci(34,4)} ma dobrą wartość, ale 34 nie jest mniejsze od 10.`),
+ q('ne7-1b',toSci('7 000 000'), [sci(7,5),sci(70,5),sci(7,7),sci(7,6)],3,`7 000 000 to 7 i sześć zer, czyli <b>${sci(7,6)}</b>. ${sci(70,5)} ma tę samą wartość, ale 70 nie jest mniejsze od 10.`),
+ q('ne7-1c',toSci('52 000'), [sci('5,2',4),sci(52,3),sci('5,2',3),sci('0,52',5)],0,`5,2 · 10 000 = 52 000, więc <b>${sci('5,2',4)}</b>. ${sci(52,3)} to nie notacja wykładnicza, bo 52 jest większe od 10.`),
+ q('ne7-1d',toSci('1 800 000'), [sci('1,8',5),sci(18,5),sci('1,8',6),sci('1,8',7)],2,`1 800 000 = 1,8 · 1 000 000 = <b>${sci('1,8',6)}</b>. Przecinek przesuwamy o 6 miejsc.`),
+ // Notacja wykładnicza → zwykły zapis
+ q('ne7-2a',fromSci(sci(4,5)), ['400 000','40 000','4 000 000','20'],0,`${e10(5)} = 100 000, a 4 · 100 000 = <b>400 000</b>. Wynik 20 to 4 · 5 — wykładnik mówi, ile zer ma potęga, a nie przez co mnożyć.`),
+ q('ne7-2b',fromSci(sci('2,7',6)), ['270 000','2 700 000','27 000 000','16,2'],1,`${e10(6)} = 1 000 000. Przecinek w 2,7 przesuwamy o 6 miejsc w prawo: <b>2 700 000</b>. Wynik 16,2 to błędne 2,7 · 6.`),
+ q('ne7-2c',fromSci(sci('9,05',4)), ['9 050','905 000','90 500','95 000'],2,`Przecinek w 9,05 przesuwamy o 4 miejsca w prawo: <b>90 500</b>. Zero po przecinku nie znika.`),
+ q('ne7-2d',fromSci(sci('1,36',7)), ['136 000 000','1 360 000','136 000','13 600 000'],3,`Przecinek w 1,36 przesuwamy o 7 miejsc w prawo: <b>13 600 000</b>, czyli 13,6 miliona.`),
+ // Czy to jest notacja wykładnicza?
+ q('ne7-3a','Która liczba jest zapisana w <b>notacji wykładniczej</b>?', [sci(25,3),sci('0,4',5),sci('3,7',6),sci(10,2)],2,`${SCI}. Warunek spełnia tylko <b>${sci('3,7',6)}</b>. Liczby 25 i 10 są za duże, a 0,4 — za mała.`),
+ q('ne7-3b','Który zapis <b>nie jest</b> notacją wykładniczą?', [sci('1,2',4),sci('9,99',7),sci(5,-2),sci(12,3)],3,`${SCI}. W zapisie <b>${sci(12,3)}</b> liczba 12 jest większa od 10. Wykładnik może być ujemny, jak w ${sci(5,-2)}.`),
+ q('ne7-3c','Która liczba jest zapisana w <b>notacji wykładniczej</b>?', [sci('7,05',8),sci('70,5',7),sci('0,705',9),sci(705,6)],0,`${SCI}. Warunek spełnia tylko <b>${sci('7,05',8)}</b>. Pozostałe zapisy mają tę samą wartość, ale 70,5 i 705 są za duże, a 0,705 — za mała.`),
+ q('ne7-3d','Który zapis <b>nie jest</b> notacją wykładniczą?', [sci(6,9),sci('0,6',-3),sci(1,5),sci('4,44',-8)],1,`${SCI}. Liczba 0,6 jest mniejsza od 1, więc <b>${sci('0,6',-3)}</b> nie jest notacją wykładniczą (poprawnie: ${sci(6,-4)}). Ujemny wykładnik jest dozwolony.`),
+ // Słownie → notacja wykładnicza
+ q('ne7-4a',toSci('czterdzieści tysięcy'), [sci(4,3),sci(4,4),sci(40,3),sci(4,5)],1,`Czterdzieści tysięcy to 40 000 = 4 · 10 000 = <b>${sci(4,4)}</b>.`),
+ q('ne7-4b',toSci('sześćdziesiąt trzy miliony'), [sci(63,6),sci('6,3',6),sci('6,3',7),sci('6,3',8)],2,`Sześćdziesiąt trzy miliony to 63 000 000 = 6,3 · 10 000 000 = <b>${sci('6,3',7)}</b>. ${sci(63,6)} ma tę samą wartość, ale 63 jest większe od 10.`),
+ q('ne7-4c',toSci('dziewięć miliardów'), [sci(9,9),sci(9,6),sci(9,12),sci(90,8)],0,`Miliard to 1 i 9 zer, czyli ${e10(9)}. Dziewięć miliardów to <b>${sci(9,9)}</b>.`),
+ q('ne7-4d',toSci('siedemset dwadzieścia tysięcy'), [sci(72,4),sci('7,2',4),sci('7,2',6),sci('7,2',5)],3,`Siedemset dwadzieścia tysięcy to 720 000. Przecinek po siódemce daje 7,2, a przesunięcie wynosi 5 miejsc: <b>${sci('7,2',5)}</b>.`),
+ // Potęgi liczby 10 o wykładniku ujemnym
+ q('ne7-5a',`Ile jest równa potęga <b>${e10(-2)}</b>?`, ['−100','0,1','0,01','−20'],2,`${e10(-2)} = ${f(1,p(10,2))} = ${f(1,100)} = <b>0,01</b>. Ujemny wykładnik nie daje liczby ujemnej — oznacza odwrotność potęgi.`),
+ q('ne7-5b',`Zapisz potęgę <b>${e10(-3)}</b> w postaci ułamka zwykłego.`, [f(1,1000),'−1000',f(1,100),'−30'],0,`${e10(-3)} = ${f(1,p(10,3))} = <b>${f(1,1000)}</b>, czyli 0,001.`),
+ q('ne7-5c',`Jak słownie zapisać wartość potęgi <b>${e10(-1)}</b>?`, ['minus dziesięć','minus jeden','jedna setna','jedna dziesiąta'],3,`${e10(-1)} = ${f(1,10)} = 0,1, czyli <b>jedna dziesiąta</b>.`),
+ q('ne7-5d','Zapisz liczbę <b>0,0001</b> jako potęgę liczby 10.', [e10(4),e10(-4),e10(-3),e10(-5)],1,`0,0001 = ${f(1,'10 000')} = ${f(1,p(10,4))} = <b>${e10(-4)}</b>. Jedynka stoi na 4. miejscu po przecinku.`),
+ // Mała liczba → notacja wykładnicza
+ q('ne7-6a',toSci('0,003'), [sci(3,-2),sci(3,3),sci(3,-3),sci('0,3',-2)],2,`Przecinek przesuwamy w prawo, aż stanie za pierwszą cyfrą różną od zera: 0,003 → 3. To 3 miejsca, a liczba jest mniejsza od 1, więc wykładnik jest ujemny: <b>${sci(3,-3)}</b>.`),
+ q('ne7-6b',toSci('0,00045'), [sci('4,5',-4),sci(45,-5),sci('4,5',-5),sci('4,5',4)],0,`0,00045 → 4,5: przecinek przesuwamy o 4 miejsca w prawo, więc <b>${sci('4,5',-4)}</b>. ${sci(45,-5)} ma tę samą wartość, ale 45 jest większe od 10.`),
+ q('ne7-6c',toSci('0,000072'), [sci(72,-6),sci('7,2',-6),sci('0,72',-4),sci('7,2',-5)],3,`0,000072 → 7,2: przecinek przesuwamy o 5 miejsc, więc <b>${sci('7,2',-5)}</b>.`),
+ q('ne7-6d',toSci('0,0608'), [sci('6,08',-3),sci('6,08',-2),sci('60,8',-3),sci('6,8',-2)],1,`0,0608 → 6,08: przecinek przesuwamy o 2 miejsca, więc <b>${sci('6,08',-2)}</b>. Zero w środku zostaje: 6,08, a nie 6,8.`),
+ // Ujemny wykładnik → ułamek dziesiętny
+ q('ne7-7a',fromSci(sci(5,-3)), ['0,005','0,0005','0,05','−5000'],0,`Wykładnik −3: przecinek w liczbie 5 przesuwamy o 3 miejsca w lewo: <b>0,005</b>. Ujemny wykładnik nie daje liczby ujemnej.`),
+ q('ne7-7b',fromSci(sci('3,1',-4)), ['0,0031','0,00031','0,000031','−31 000'],1,`Przecinek w 3,1 przesuwamy o 4 miejsca w lewo: <b>0,00031</b>.`),
+ q('ne7-7c',fromSci(sci('8,25',-2)), ['0,825','0,00825','0,0825','825'],2,`Przecinek w 8,25 przesuwamy o 2 miejsca w lewo: <b>0,0825</b>.`),
+ q('ne7-7d',fromSci(sci(6,-6)), ['0,00006','0,0000006','−6 000 000','0,000006'],3,`Przecinek w liczbie 6 przesuwamy o 6 miejsc w lewo: <b>0,000006</b> — szóstka stoi na 6. miejscu po przecinku.`),
+ // Duże wielkości z życia i kosmosu
+ q('ne7-8a',toSci('384 000','Średnia odległość Ziemi od Księżyca wynosi około 384 000 km. Zapisz liczbę'), [sci('3,84',5),sci('38,4',4),sci('3,84',6),sci('3,84',4)],0,`384 000 → 3,84 i przesunięcie przecinka o 5 miejsc: <b>${sci('3,84',5)}</b> km.`),
+ q('ne7-8b',toSci('37 500 000','W Polsce mieszka około 37 500 000 osób. Zapisz liczbę'), [sci('3,75',6),sci('3,75',7),sci('37,5',6),sci('3,75',8)],1,`37 500 000 → 3,75 i przesunięcie o 7 miejsc: <b>${sci('3,75',7)}</b>. ${sci('37,5',6)} nie jest notacją wykładniczą, bo 37,5 jest większe od 10.`),
+ q('ne7-8c',toSci('143 000','Średnica Jowisza, największej planety Układu Słonecznego, wynosi około 143 000 km. Zapisz liczbę'), [sci('1,43',4),sci('14,3',4),sci('1,43',5),sci('1,43',6)],2,`143 000 → 1,43 i przesunięcie o 5 miejsc: <b>${sci('1,43',5)}</b> km.`),
+ q('ne7-8d',toSci('4 500 000 000','Neptun krąży około 4 500 000 000 km od Słońca. Zapisz liczbę'), [sci('4,5',8),sci(45,8),sci('4,5',10),sci('4,5',9)],3,`4 500 000 000 to 4,5 miliarda. Przecinek przesuwamy o 9 miejsc: <b>${sci('4,5',9)}</b> km.`),
+ // Małe wielkości z przyrody
+ q('ne7-9a',toSci('0,0001','Kartka papieru ma grubość około 0,0001 m. Zapisz liczbę'), [sci(1,-4),sci(1,-3),sci(1,4),sci('0,1',-3)],0,`0,0001 → 1: przecinek przesuwamy o 4 miejsca w prawo, więc <b>${sci(1,-4)}</b> m. ${sci('0,1',-3)} nie jest notacją wykładniczą, bo 0,1 jest mniejsze od 1.`),
+ q('ne7-9b',toSci('0,000007','Czerwona krwinka ma średnicę około 0,000007 m. Zapisz liczbę'), [sci(7,-5),sci(7,-6),sci(7,6),sci(7,-7)],1,`0,000007 → 7: przecinek przesuwamy o 6 miejsc, więc <b>${sci(7,-6)}</b> m.`),
+ q('ne7-9c',toSci('0,0000025','Komar waży około 0,0000025 kg. Zapisz liczbę'), [sci(25,-7),sci('2,5',-5),sci('2,5',-6),sci('2,5',6)],2,`0,0000025 → 2,5: przecinek przesuwamy o 6 miejsc, więc <b>${sci('2,5',-6)}</b> kg.`),
+ q('ne7-9d',toSci('0,000035','Ziarenko pyłku kwiatowego ma średnicę około 0,000035 m. Zapisz liczbę'), [sci('3,5',-4),sci(35,-6),sci('3,5',5),sci('3,5',-5)],3,`0,000035 → 3,5: przecinek przesuwamy o 5 miejsc, więc <b>${sci('3,5',-5)}</b> m.`),
+ // Notacja wykładnicza w tekście → zwykły zapis
+ q('ne7-10a',`Światło w ciągu jednej sekundy pokonuje około <b>${sci(3,5)}</b> km. Ile to kilometrów?`, ['3 000 000','30 000','15','300 000'],3,`${e10(5)} = 100 000, więc 3 · 100 000 = <b>300 000</b> km. Wynik 15 to błędne 3 · 5.`),
+ q('ne7-10b',`Ziemia ma około <b>${sci('4,5',9)}</b> lat. Ile to lat?`, ['4 500 000 000','450 000 000','45 000 000 000','40,5'],0,`Przecinek w 4,5 przesuwamy o 9 miejsc w prawo: <b>4 500 000 000</b> lat, czyli 4,5 miliarda. 40,5 to błędne 4,5 · 9.`),
+ q('ne7-10c',`Ciało dorosłego człowieka składa się z około <b>${sci('3,7',13)}</b> komórek. Jak zapisać tę liczbę słownie?`, ['trzydzieści siedem miliardów','trzysta siedemdziesiąt miliardów','trzydzieści siedem bilionów','trzy biliony siedemset miliardów'],2,`${sci('3,7',13)} = 37 · ${e10(12)}, a bilion to ${e10(12)}. To <b>trzydzieści siedem bilionów</b>.`),
+ q('ne7-10d',`Serce człowieka uderza w ciągu roku około <b>${sci(4,7)}</b> razy. Ile to razy?`, ['4 000 000','40 000 000','400 000 000','28'],1,`${e10(7)} = 10 000 000, więc 4 · 10 000 000 = <b>40 000 000</b>, czyli 40 milionów. Wynik 28 to błędne 4 · 7.`),
+ // Brakujący wykładnik lub czynnik
+ q('ne7-11a',gap(`37 000 000 = ${sci('3,7','□')}`), ['6','7','8','−7'],1,`Przecinek przesuwamy z końca liczby za trójkę o 7 miejsc: 37 000 000 = ${sci('3,7',7)}, więc □ = <b>7</b>.`),
+ q('ne7-11b',gap(`0,00056 = ${sci('5,6','□')}`), ['−5','4','−3','−4'],3,`0,00056 → 5,6: przecinek przesuwamy o 4 miejsca w prawo, a liczba jest mniejsza od 1, więc □ = <b>−4</b>.`),
+ q('ne7-11c',gap(`0,0408 = ${sci('4,08','□')}`), ['2','−3','−2','−1'],2,`0,0408 → 4,08: przecinek przesuwamy o 2 miejsca w prawo, a liczba jest mniejsza od 1, więc □ = <b>−2</b>.`),
+ q('ne7-11d',gap(`260 000 = □ · ${e10(5)}`), ['2,6','26','0,26','260'],0,`${e10(5)} = 100 000, a 260 000 : 100 000 = <b>2,6</b>.`),
+ // Porównywanie
+ q('ne7-12a','Która liczba jest <b>największa</b>?', [sci('9,8',5),sci('1,2',6),sci(5,5),sci('9,99',4)],1,`Najpierw porównujemy wykładniki. Tylko ${sci('1,2',6)} ma wykładnik 6 — to ponad milion, a pozostałe liczby są mniejsze od miliona. Największa jest <b>${sci('1,2',6)}</b>.`),
+ q('ne7-12b','Która liczba jest <b>najmniejsza</b>?', [sci(3,-4),sci('2,9',-3),sci(1,-3),sci(8,-5)],3,`Bez notacji: 0,0003; 0,0029; 0,001; 0,00008. Najmniejsza jest <b>${sci(8,-5)}</b> — ma najmniejszy wykładnik (−5).`),
+ q('ne7-12c','Która liczba jest <b>większa od miliona</b>?', [sci('9,9',5),sci(1,6),sci('1,01',6),sci(9,5)],2,`Milion to ${sci(1,6)}, więc ta liczba nie jest od niego większa. ${sci('9,9',5)} i ${sci(9,5)} są mniejsze. Większa od miliona jest tylko <b>${sci('1,01',6)}</b> = 1 010 000.`),
+ q('ne7-12d','Która liczba jest <b>największa</b>?', [sci(6,-2),sci(9,-3),sci(1,-2),sci('9,9',-3)],0,`Bez notacji: 0,06; 0,009; 0,01; 0,0099. Największa jest <b>${sci(6,-2)}</b>. Ma największy wykładnik (−2 jest większe od −3), a spośród liczb z wykładnikiem −2 — większy pierwszy czynnik.`),
+ // Bardzo duże i bardzo małe liczby
+ q('ne7-13a',toSci('5 970 000 000 000 000 000 000 000','Masa Ziemi wynosi około 5 970 000 000 000 000 000 000 000 kg. Zapisz liczbę'), [sci('5,97',21),sci(597,22),sci('5,97',24),sci('5,97',27)],2,`Liczba ma 25 cyfr, więc po piątce stoją 24 cyfry. Przecinek przesuwamy o 24 miejsca: <b>${sci('5,97',24)}</b> kg.`),
+ q('ne7-13b',toSci('73 500 000 000 000 000 000 000','Masa Księżyca wynosi około 73 500 000 000 000 000 000 000 kg. Zapisz liczbę'), [sci('73,5',21),sci('7,35',21),sci('7,35',23),sci('7,35',22)],3,`Liczba ma 23 cyfry, więc po siódemce stoją 22 cyfry. Przecinek przesuwamy o 22 miejsca: <b>${sci('7,35',22)}</b> kg.`),
+ q('ne7-13c',toSci('40 000 000 000 000','Najbliższa Słońcu gwiazda, Proxima Centauri, jest oddalona od nas o około 40 000 000 000 000 km. Zapisz liczbę'), [sci(4,13),sci(4,12),sci(40,12),sci(4,14)],0,`Po czwórce stoi 13 zer, więc <b>${sci(4,13)}</b> km. To około 40 bilionów kilometrów.`),
+ q('ne7-13d',toSci('0,0000001','Wirus grypy ma średnicę około 0,0000001 m. Zapisz liczbę'), [sci(1,-6),sci(1,-7),sci(1,7),sci(1,-8)],1,`Jedynka stoi na 7. miejscu po przecinku, więc <b>${sci(1,-7)}</b> m.`),
+ // Prawda czy fałsz — porównania z jednostkami
+ judge('ne7-14a',`Masa ${sci('3,5',4)} g jest większa niż masa ${sci(2,2)} kg.`,`Długość ${sci(6,3)} m to 6 km.`,'FP',`I: ${sci('3,5',4)} g = 35 000 g = 35 kg, a ${sci(2,2)} kg = 200 kg — <b>fałsz</b>. II: 6000 m = 6 km — <b>prawda</b>.`),
+ judge('ne7-14b',`Długość ${sci('4,2',5)} cm jest większa niż długość ${sci(3,3)} m.`,`Masa ${sci(7,-2)} kg to 70 g.`,'PP',`I: 420 000 cm = 4200 m, a to więcej niż 3000 m — <b>prawda</b>. II: 0,07 kg = 70 g — <b>prawda</b>.`),
+ judge('ne7-14c',`Masa ${sci('2,5',6)} dag jest większa niż masa ${sci(3,4)} kg.`,`Długość ${sci('1,5',-3)} km to 15 cm.`,'FF',`I: 1 kg = 100 dag, więc 2 500 000 dag = 25 000 kg, a ${sci(3,4)} kg = 30 000 kg — <b>fałsz</b>. II: 0,0015 km = 1,5 m = 150 cm — <b>fałsz</b>.`),
+ judge('ne7-14d',`Długość ${sci(8,7)} mm jest większa niż 50 km.`,`Długość ${sci(4,-3)} m to 4 cm.`,'PF',`I: 80 000 000 mm = 80 000 m = 80 km — <b>prawda</b>. II: 0,004 m = 4 mm — <b>fałsz</b>.`),
+ // Działania w notacji wykładniczej
+ q('ne7-15a',`Oblicz i wynik zapisz w notacji wykładniczej: <b>(${sci(3,4)}) · (${sci(2,5)})</b>.`, [sci(6,20),sci(5,9),sci(6,9),sci(6,10)],2,`Mnożymy osobno liczby i potęgi: 3 · 2 = 6 oraz ${e10(4)} · ${e10(5)} = ${e10(9)}. Wynik: <b>${sci(6,9)}</b>. ${e10(20)} to pomnożone wykładniki.`),
+ q('ne7-15b',`Oblicz i wynik zapisz w notacji wykładniczej: <b>(${sci(5,6)}) · (${sci(4,2)})</b>.`, [sci(20,8),sci(2,9),sci(2,8),sci(9,8)],1,`5 · 4 = 20 i ${e10(6)} · ${e10(2)} = ${e10(8)}, czyli ${sci(20,8)}. Ale 20 jest większe od 10: 20 = ${sci(2,1)}, więc wynik to <b>${sci(2,9)}</b>.`),
+ q('ne7-15c',`Oblicz i wynik zapisz w notacji wykładniczej: <b>(${sci(8,9)}) : (${sci(2,3)})</b>.`, [sci(4,6),sci(4,3),sci(6,6),sci(4,12)],0,`8 : 2 = 4 i ${e10(9)} : ${e10(3)} = ${e10(6)}. Wynik: <b>${sci(4,6)}</b>. ${e10(3)} to podzielone wykładniki.`),
+ q('ne7-15d',`Oblicz i wynik zapisz w notacji wykładniczej: <b>(${sci('1,5',-3)}) · (${sci(4,7)})</b>.`, [sci(6,-21),sci(6,10),sci('5,5',4),sci(6,4)],3,`1,5 · 4 = 6 i ${e10(-3)} · ${e10(7)} = ${e10(4)}, bo −3 + 7 = 4. Wynik: <b>${sci(6,4)}</b>.`),
+ // Zadania tekstowe z obliczeniami
+ q('ne7-16a',`Światło pokonuje w ciągu sekundy około ${sci(3,5)} km. Ile kilometrów pokonuje w ciągu <b>minuty</b>? Wynik podaj w notacji wykładniczej.`, [sci('1,8',7),sci(18,6),sci('1,8',6),sci('1,8',5)],0,`Minuta ma 60 sekund: 60 · 3 · ${e10(5)} = 180 · ${e10(5)} = 18 000 000 km, czyli <b>${sci('1,8',7)}</b> km. ${sci(18,6)} ma dobrą wartość, ale 18 jest większe od 10.`),
+ q('ne7-16b',`Komputer wykonuje w ciągu sekundy ${sci(2,9)} działań. Ile działań wykona w ciągu <b>5 sekund</b>? Wynik podaj w notacji wykładniczej.`, [sci(10,9),sci(7,9),sci(1,10),sci(1,45)],2,`5 · 2 · ${e10(9)} = 10 · ${e10(9)} = <b>${sci(1,10)}</b>. ${sci(10,9)} ma dobrą wartość, ale nie jest notacją wykładniczą, bo pierwszy czynnik musi być mniejszy od 10.`),
+ q('ne7-16c',`Ziarenko maku waży około ${sci(5,-4)} g. Ile waży <b>1000</b> takich ziarenek?`, ['5 g','0,5 g','0,05 g','50 g'],1,`${sci(5,-4)} g = 0,0005 g, a 1000 · 0,0005 g = <b>0,5 g</b>. Inaczej: ${e10(3)} · ${e10(-4)} = ${e10(-1)}, więc 5 · ${e10(-1)} g = 0,5 g.`),
+ q('ne7-16d',`Słoń afrykański waży około ${sci(6,3)} kg, a mrówka około ${sci(3,-6)} kg. <b>Ile razy</b> słoń jest cięższy od mrówki?`, [sci(2,3),sci(2,-3),sci(18,-3),sci(2,9)],3,`6 : 3 = 2 oraz ${e10(3)} : ${e10(-6)} = ${e10(9)}, bo 3 − (−6) = 9. Słoń jest <b>${sci(2,9)}</b> razy, czyli 2 miliardy razy cięższy.`),
+];
