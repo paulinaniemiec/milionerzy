@@ -2,6 +2,7 @@ import { QUESTIONS as original } from './questions.js';
 import { diagramQuestions, probabilityQuestions } from './exam-sets.js';
 import { divisibilityQuestions, powerQuestions, romanQuestions, primeQuestions, orderQuestions } from './grade5-sets.js';
 import { percentExamQuestions } from './percent-exam-sets.js';
+import { algebraExamQuestions } from './algebra-exam-sets.js';
 import { powerQuestions7, samePowerQuestions7, scientificQuestions7 } from './grade7-sets.js';
 import { axisQuestions } from './axis-sets.js';
 import { geometryQuestions5, angleQuestions5, measureQuestions5 } from './geometry5-sets.js';
@@ -115,6 +116,8 @@ export const SCENARIOS = [
  {id:'original', grade:8, section:'Przygotowanie do egzaminu', title:'Przygotowanie do egzaminu', description:'Liczby, algebra i geometria. Dotychczasowy zestaw.', questions:original.map((v,i)=>({...v,id:`original-${i+1}`,sourceGroup:`original-${i+1}`})), award:{password:'DELFIN', pluses:3}},
  // Ten sam zestaw w klasie 7 i 8: osobne wpisy, żeby wynik zapisywał się z właściwą klasą.
  {id:'percent-exam-8', grade:8, section:'Przygotowanie do egzaminu', title:'Procenty — zadania egzaminacyjne', description:'Zadania z egzaminów 2011–2026 i materiałów CKE. Rabaty, podwyżki, VAT i podatki.', questions:percentExamQuestions, award:{password:'JEŻOZWIERZ', pluses:3}},
+ // Hasło podała właścicielka (wyjątek od zasady „nazwa zwierzęcia”).
+ {id:'algebra-exam-8', grade:8, section:'Przygotowanie do egzaminu', title:'Wyrażenia algebraiczne — zadania egzaminacyjne', description:'Zadania z egzaminów ósmoklasisty i zadania do egzaminu w oryginalnym brzmieniu. Zapisywanie i przekształcanie wyrażeń, wartości, znaki liczb, P/F i uzupełnianie zdań.', questions:algebraExamQuestions, ordered:true, award:{password:'Wyrażenia algebraiczne – rozkminy logiczne!', pluses:3}},
  // Klasa 7 jest podzielona na działy (section). Przy nowym zestawie zapytaj właścicielkę, do którego działu go wrzucić.
  {id:'check', grade:7, section:'Procenty', title:'Procenty na rozgrzewkę', description:'„Sprawdź, czy potrafisz”. Ułamki, podziały i ceny.', questions:[...check, revision1.find(q=>q.id==='z1-1'), revision1.find(q=>q.id==='z1-7'), revision1.find(q=>q.id==='z1-14'), revision2.find(q=>q.id==='z2-11')]},
  {id:'revision-1', grade:7, section:'Procenty', title:'Procenty w życiu, zestaw 1', description:'„Powtórzenie I”. Rabaty, frekwencja, proporcje i VAT.', questions:revision1},

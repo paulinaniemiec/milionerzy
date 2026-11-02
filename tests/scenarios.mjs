@@ -10,14 +10,14 @@ assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.section), ['Zaczynamy przygodę z matematyką', ...Array(6).fill('Dodawanie i odejmowanie')]);
 // Klasa 8: każdy zestaw ma 3 plusy, a hasła (nazwy zwierząt) się nie powtarzają.
 {const g8=SCENARIOS.filter(s=>s.grade===8);assert(g8.every(s=>s.award&&s.award.pluses===3),'grade 8: 3 pluses');assert.equal(new Set(g8.map(s=>s.award.password)).size,g8.length);}
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.section), ['Statystyka i prawdopodobieństwo', 'Statystyka i prawdopodobieństwo', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.section), ['Statystyka i prawdopodobieństwo', 'Statystyka i prawdopodobieństwo', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.section), ['Procenty', 'Procenty', 'Procenty', 'Procenty', 'Potęgi', 'Potęgi', 'Potęgi']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
- 'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Wyrażenia algebraiczne', 'Mnożenie sum algebraicznych', 'Równania', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne',
+ 'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Wyrażenia algebraiczne', 'Mnożenie sum algebraicznych', 'Równania', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne', 'Wyrażenia algebraiczne — zadania egzaminacyjne',
 ]);
-assert.equal(SCENARIOS.length,30);
+assert.equal(SCENARIOS.length,31);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,1098);
+assert.equal(new Set(all.map(q=>q.id)).size,1120);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -913,4 +913,52 @@ for(const id of ids('mk5-12')){const H=Object.fromEntries([...html(id).matchAll(
  only('mk5-13a',a=>near(deg(a),A['α']));only('mk5-13b',a=>near(deg(a),A['γ']));only('mk5-13c',a=>near(deg(a),A['α']+A['δ']));only('mk5-13d',a=>near(deg(a),A['β']+A['γ']+A['δ']));}
 only('mk5-14a',a=>deg(a)+deg(a)/2===180);only('mk5-14b',a=>4*deg(a)===180);only('mk5-14c',a=>deg(a)+deg(a)/2===90);only('mk5-14d',a=>2*deg(a)+100===360);
 console.log('PASS: grade 5 measuring angles — all 56 answer keys measured on drawings or computed');
+}
+
+// Klasa 8: wyrażenia algebraiczne — zadania egzaminacyjne. Wartości wyrażeń liczone dla wielu liczb, znaki i warunki sprawdzane osobno.
+{
+const ae=SCENARIOS.find(s=>s.id==='algebra-exam-8');
+assert.equal(ae.grade,8);assert.equal(ae.section,'Przygotowanie do egzaminu');assert.equal(ae.ordered,true);
+assert.deepEqual(ae.award,{password:'Wyrażenia algebraiczne – rozkminy logiczne!',pluses:3});
+assert.equal(ae.questions.length,22);assert.equal(new Set(ae.questions.map(q=>q.sourceGroup)).size,22);
+const text=html=>html.replace(/<span class="frac"><span>(.*?)<\/span><span>(.*?)<\/span><\/span>/g,'(($1)/($2))').replace(/<sup>(\d)<\/sup>/g,'^$1').replace(/<[^>]+>/g,'');
+// Wyrażenie → funkcja zmiennych (mnożenie domyślne między liczbą/literą/nawiasem).
+const fn=src=>{const js=text(src).replace(/−/g,'-').replace(/·/g,'*').replace(/(\d),(\d)/g,'$1.$2').replace(/\^/g,'**').replace(/\s/g,'')
+ .replace(/([\d.a-z)])(?=[a-z(])/g,'$1*').replace(/\)(?=\d)/g,')*');return vars=>Function(...Object.keys(vars),`return ${js}`)(...Object.values(vars));};
+const same=(a,b)=>Math.abs(a-b)<1e-9;
+const samples=[{a:1.7,b:-0.6,x:2.3,y:-1.1,k:4.2,n:0.4},{a:-2.5,b:3.1,x:7,y:0.9,k:12,n:-1.3},{a:0.3,b:5,x:-4,y:2.6,k:9,n:2}];
+const equal=(l,r)=>samples.every(v=>same(fn(l)(v),fn(r)(v)));
+const onlyEq=(id,expr)=>{const q=ask(id);assert.deepEqual(q.answers.filter(a=>equal(a,expr)),[q.answers[q.correct]],id);};
+onlyEq('ae-5877','7a/b');
+onlyEq('ae-7764','x+4x+(4x+3)');
+onlyEq('ae-7920','2*x+2*(x/2)+4*x');
+onlyEq('ae-7358','k-k/3-3');
+onlyEq('ae-7434','x(x+4)-3(2x-5)');
+onlyEq('ae-5873','4a+(x-4)(a+100)');
+onlyEq('ae-5263','(2a+3b)(3b-2a)');
+onlyEq('ae-7273','(x-2)(4x-3)-x(1-x)');
+onlyEq('ae-7600','2(a-2b)-(a-b)(2-b)+b^2');
+// Para wyrażeń: (x + 7)·4 oraz 5y + 3.
+{const q=ask('ae-6991');assert.deepEqual(q.answers.filter(a=>{const [l,r]=a.split(' oraz ');return equal(l,'4*(x+7)')&&equal(r,'5*y+3');}),[q.answers[q.correct]]);}
+// Wartość 0 dla x = 3, y = −2.
+{const q=ask('ae-5876');assert.deepEqual(q.answers.filter(a=>same(fn(a)({x:3,y:-2}),0)),[q.answers[q.correct]]);}
+// G, H, J, K: zero dla x = 1 i x = −1.
+{const E={G:'2x^2+2',H:'2x^2+2x',J:'2x^2-2',K:'2x^2-2x'},q=ask('ae-6986');assert.deepEqual(q.answers.filter(a=>[1,-1].every(x=>fn(E[text(a)])({x})===0)),[q.answers[q.correct]]);}
+// Najmniejsza wartość (n^4 − 3)/6 wśród −3, −1, 0, 1, 3; pominięta odpowiedź E (3) daje to samo co −3.
+{const vals=[-3,-1,0,1,3],v=n=>(n**4-3)/6,best=vals.reduce((a,b)=>v(b)<v(a)?b:a);assert.equal(+pick('ae-6491').replace('−','-'),best);assert(v(3)>v(best));}
+// 3/5 = 1/x + 1/y.
+{const q=ask('ae-3727');assert.deepEqual(q.answers.filter(a=>{const [x,y]=a.split(' i ').map(Number);return same(1/x+1/y,3/5);}),[q.answers[q.correct]]);}
+// Uzupełnianie zdań (A/B, C/D).
+{const a=[3,1].find(a=>3*a-4===a+2);assert.equal(a,3);assert(equal('(3a-4)-(a+2)','2a-6')&&!equal('(3a-4)-(a+2)','2a-2'));assert.equal(pick('ae-7919'),'A i D');}
+{assert.equal(2-2*(-3)**2,-16);assert(equal('(2-2a^2)/2','1-a^2')&&!equal('(2-2a^2)/2','1-2a^2'));assert.equal(pick('ae-7347'),'A i D');}
+{const ok=[-1.5,-4,-10].every(a=>-1-a>0);const ok2=[0.5,2,7].every(a=>1/a>0);assert(ok&&ok2);assert.equal(pick('ae-7321'),'A i C');}
+// P/F.
+assert.equal(pick('ae-3817'),truth([[-1,-2],[-0.5,-3]].every(([x,y])=>y<0),[[-1,-2],[-0.5,-3]].every(([x,y])=>x>y)));
+{const pairs=[[10,36],[23,23],[45.5,0.5]];assert(pairs.every(([a,b])=>a+b===46));assert.equal(pick('ae-7319'),truth(pairs.every(([a,b])=>(a-6)+(b-6)===34),pairs.every(([a,b])=>same(1.5*a+1.5*b,69))));}
+{const grid=[];for(let a=2.1;a<3;a+=0.1)for(let b=-0.9;b<1;b+=0.1)grid.push([a,b]);assert.equal(pick('ae-4595'),truth(grid.every(([a,b])=>b/a>0),grid.every(([a,b])=>b-a>0)));}
+// Liczby dodatnie wśród x·y, x − y, x/y, (y − x)^2 dla x > 0, y < 0.
+{const cnt=[[2,-3],[0.5,-7]].map(([x,y])=>[x*y,x-y,x/y,(y-x)**2].filter(v=>v>0).length);assert(cnt.every(c=>c===2));assert.equal(ask('ae-4387').correct,1);}
+// Klasa IIIa: dziewczęta 2/3, chłopcy 1/3 — dwa razy więcej dziewcząt.
+{const g=2/3,b=1/3;assert(same(g,2*b)&&!(b>g)&&!same(g,2/3*b)&&!same(b/g,1/3));assert.equal(ask('ae-4596').correct,2);}
+console.log('PASS: grade 8 algebra exam tasks — all 22 answer keys checked');
 }
