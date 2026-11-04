@@ -542,3 +542,83 @@ export const reviewQuestions4 = [
  q('pw4-26a',`${HEIGHT} Ile centymetrów wzrostu ma Zosia?`,['117','138','126','147'],3,'Ewa jest niższa od Zosi, więc Zosia jest wyższa o 15 cm: 132 + 15 = <b>147 cm</b>.'),
  q('pw4-26b',`${HEIGHT} O ile centymetrów Zosia jest wyższa od Leny?`,['9','15','21','6'],2,'Zosia ma 147 cm, Lena 132 − 6 = 126 cm. 147 − 126 = <b>21 cm</b> (czyli 15 + 6).'),
 ];
+
+// Klasa 4, dział III „Mnożenie i dzielenie”: jak rozwiązywać zadania tekstowe — wybór działania, „o tyle więcej / mniej”,
+// zakupy i reszta, wiek, wzrost, przystanki, banknoty i monety, liczenie od końca. Od najłatwiejszych do najtrudniejszych (`ordered`).
+const HANIA = 'Hania ma 9 lat. Jest o 4 lata młodsza od brata Jasia i o 5 lat starsza od siostry Zuzi.';
+const STICKERS = '<div class="task-statements">Ela: Mam 8 naklejek.<br>Bartek: Mam o 5 naklejek więcej niż Ela.<br>Kasia: Mam o 3 naklejki mniej niż Bartek.</div>';
+const PAPER = 'W szkole zbierano makulaturę. Klasa 4a zebrała 48 kg, klasa 4b o 15 kg mniej, a klasa 4c o 9 kg więcej niż klasa 4b.';
+const SQUIRRELS = 'Trzy wiewiórki zbierały orzechy. Potem Ruda dała 6 orzechów Szarej, Szara dała 4 orzechy Małej, a Mała dała 2 orzechy Rudej. Teraz każda wiewiórka ma 20 orzechów.';
+const TRIP = 'Na wycieczkę jedzie 26 uczniów i 3 nauczycieli. W jednym busie jest 16 miejsc dla pasażerów.';
+
+export const wordProblemQuestions4 = [
+ // Które działanie pasuje do zadania?
+ q('zt4-1a','Kot waży 5 kg, a pies jest o 17 kg cięższy od kota. Które działanie pozwala obliczyć, ile waży pies?',['17 − 5','5 · 17','5 + 17','17 + 17'],2,'Pies jest cięższy, więc do wagi kota dodajemy 17 kg: <b>5 + 17</b> = 22 kg.'),
+ q('zt4-1b','Ola ma 138 cm wzrostu i jest o 12 cm wyższa od Ali. Które działanie pozwala obliczyć wzrost Ali?',['138 − 12','138 + 12','12 − 138','138 · 12'],0,'Ola jest wyższa, więc Ala jest niższa o 12 cm: <b>138 − 12</b> = 126 cm. Słowo „wyższa” nie zawsze oznacza dodawanie!'),
+ q('zt4-1c','W 4 pudełkach jest po 6 kredek. Które działanie pozwala obliczyć, ile jest wszystkich kredek?',['4 + 6','6 − 4','6 + 6','4 · 6'],3,'4 razy po 6 kredek: <b>4 · 6</b> = 24.'),
+ // Ile było na początku?
+ q('zt4-2a','Tata upiekł pierniki. Ola zjadła 3 pierniki, Kuba 5, babcia 2, a tata zjadł ostatnie 4 pierniki. Ile pierników upiekł tata?',['10','14','4','12'],1,'Zjedzono wszystkie pierniki, więc dodajemy: 3 + 5 + 2 + 4 = <b>14</b>. 10 wychodzi, gdy pominie się pierniki taty.'),
+ q('zt4-2b','W misce były śliwki. Ania zjadła 4 śliwki, Michał 6, a 5 śliwek zostało w misce. Ile śliwek było na początku?',['10','5','15','11'],2,'Na początku były i te zjedzone, i te, które zostały: 4 + 6 + 5 = <b>15</b>.'),
+ // O tyle więcej, o tyle mniej
+ q('zt4-3a','Pan Adam posadził 85 krzewów. Było to o 30 krzewów więcej, niż posadził pan Leszek. Ile krzewów posadził pan Leszek?',['115','65','45','55'],3,'Pan Adam posadził więcej, więc pan Leszek mniej: 85 − 30 = <b>55</b>. 115 wychodzi, gdy dodamy tylko dlatego, że w zadaniu jest słowo „więcej”.'),
+ q('zt4-3b','Na półce w sklepie stoją 64 słoiki dżemu. To o 18 słoików mniej niż w magazynie. Ile słoików jest w magazynie?',['82','46','72','56'],0,'Na półce jest mniej, więc w magazynie więcej: 64 + 18 = <b>82</b>.'),
+ // Zakupy i reszta
+ q('zt4-4a','Kuba kupił 2 lody po 4 zł i sok za 3 zł. Ile reszty otrzymał z 20 zł?',['13 zł','17 zł','9 zł','11 zł'],2,'Lody: 2 · 4 zł = 8 zł. Zakupy: 8 zł + 3 zł = 11 zł. Reszta: 20 zł − 11 zł = <b>9 zł</b>. 13 zł wychodzi, gdy policzy się tylko jednego loda.'),
+ q('zt4-4b','Zosia kupiła 3 batony po 2 zł i wodę za 4 zł. Ile reszty otrzymała z 20 zł?',['14 zł','10 zł','16 zł','6 zł'],1,'Batony: 3 · 2 zł = 6 zł. Zakupy: 6 zł + 4 zł = 10 zł. Reszta: 20 zł − 10 zł = <b>10 zł</b>.'),
+ // Przecięta wstążka
+ q('zt4-5a','Wstążkę przecięto na dwa kawałki. Pierwszy ma 46 cm, a drugi jest o 8 cm dłuższy. Jaką długość miała cała wstążka?',['54 cm','92 cm','84 cm','100 cm'],3,'Drugi kawałek: 46 + 8 = 54 cm. Cała wstążka: 46 + 54 = <b>100 cm</b>. 54 cm to tylko drugi kawałek.'),
+ q('zt4-5b','Deskę przecięto na dwie części. Pierwsza ma 75 cm, a druga jest o 15 cm krótsza. Jak długa była deska przed przecięciem?',['135 cm','60 cm','165 cm','90 cm'],0,'Druga część: 75 − 15 = 60 cm. Cała deska: 75 + 60 = <b>135 cm</b>. 60 cm to tylko druga część.'),
+ // Wzrost
+ q('zt4-6a','Igor ma 152 cm wzrostu i jest o 28 cm niższy od taty. Ile centymetrów wzrostu ma tata?',['124','180','170','190'],1,'Igor jest niższy, więc tata jest wyższy: 152 + 28 = <b>180 cm</b>. 124 wychodzi, gdy odejmiemy tylko dlatego, że w zadaniu jest słowo „niższy”.'),
+ q('zt4-6b','Wieża z klocków Ani ma 64 cm i jest o 17 cm wyższa od wieży Bartka. Jak wysoka jest wieża Bartka?',['81 cm','57 cm','47 cm','53 cm'],2,'Wieża Ani jest wyższa, więc wieża Bartka jest niższa: 64 − 17 = <b>47 cm</b>. Pomaga rysunek: dwa słupki, a różnica 17 cm „wystaje” nad niższym.'),
+ // Ile zostało po zakupach?
+ q('zt4-7a','Marta miała 50 zł. Kupiła 4 zeszyty po 3 zł, 2 długopisy po 5 zł i farby za 14 zł. Ile pieniędzy jej zostało?',['28 zł','36 zł','24 zł','14 zł'],3,'Zeszyty: 4 · 3 zł = 12 zł, długopisy: 2 · 5 zł = 10 zł. Razem z farbami: 12 + 10 + 14 = 36 zł. Zostało 50 − 36 = <b>14 zł</b>. 36 zł to wydatki, a nie reszta.'),
+ q('zt4-7b','Igor miał 40 zł. Kupił 3 gumki po 2 zł, 5 ołówków po 3 zł i linijkę za 6 zł. Ile pieniędzy mu zostało?',['13 zł','29 zł','27 zł','17 zł'],0,'Gumki: 3 · 2 zł = 6 zł, ołówki: 5 · 3 zł = 15 zł. Razem z linijką: 6 + 15 + 6 = 27 zł. Zostało 40 − 27 = <b>13 zł</b>. 29 zł wychodzi, gdy kupi się po jednej sztuce.'),
+ // Przystanki
+ q('zt4-8a','Do pustego autobusu na pierwszym przystanku wsiadło 18 osób. Na drugim przystanku 5 osób wysiadło, a 9 wsiadło. Na trzecim przystanku wysiadło 12 osób. Ile osób jest teraz w autobusie?',['22','10','20','44'],1,'Po pierwszym przystanku: 18. Po drugim: 18 − 5 + 9 = 22. Po trzecim: 22 − 12 = <b>10</b>. 44 to suma wszystkich liczb z zadania.'),
+ q('zt4-8b','W tramwaju jechało 25 osób. Na przystanku 7 osób wysiadło, a 4 wsiadły. Na następnym przystanku 10 osób wysiadło, a 6 wsiadło. Ile osób jest teraz w tramwaju?',['12','22','18','52'],2,'25 − 7 + 4 = 22, a potem 22 − 10 + 6 = <b>18</b>. 12 wychodzi, gdy zapomni się o 6 osobach, które wsiadły na końcu.'),
+ // Rodzeństwo Hani
+ q('zt4-9a',`${HANIA} Ile lat ma Jaś?`,['5','13','14','4'],1,'Hania jest młodsza od Jasia, więc Jaś jest starszy: 9 + 4 = <b>13</b> lat.'),
+ q('zt4-9b',`${HANIA} Ile lat ma Zuzia?`,['14','13','4','5'],2,'Hania jest starsza od Zuzi, więc Zuzia jest młodsza: 9 − 5 = <b>4</b> lata.'),
+ q('zt4-9c',`${HANIA} Ile lat różnicy jest między Jasiem a Zuzią?`,['1','8','17','9'],3,'Jaś ma 13 lat, a Zuzia 4. Różnica: 13 − 4 = <b>9</b> lat (czyli 4 + 5).'),
+ // Od poniedziałku do piątku
+ q('zt4-10a','W poniedziałek Kasia przeczytała 12 stron, we wtorek o 3 strony więcej, w środę i w czwartek po 10 stron, a w piątek 8 stron. Ile stron przeczytała od poniedziałku do piątku?',['45','43','55','58'],2,'Wtorek: 12 + 3 = 15 stron. Środa i czwartek: 10 + 10 = 20. Razem: 12 + 15 + 20 + 8 = <b>55</b>. 45 wychodzi, gdy 10 stron policzy się tylko raz.'),
+ q('zt4-10b','W poniedziałek Tymek zrobił 20 przysiadów, we wtorek o 5 mniej, w środę i w czwartek po 25, a w piątek 30. Ile przysiadów zrobił od poniedziałku do piątku?',['115','90','105','125'],0,'Wtorek: 20 − 5 = 15. Środa i czwartek: 25 + 25 = 50. Razem: 20 + 15 + 50 + 30 = <b>115</b>.'),
+ // Ile naklejek?
+ q('zt4-11a',`${STICKERS}Ile naklejek ma Kasia?`,['16','5','11','10'],3,'Bartek: 8 + 5 = 13. Kasia ma o 3 mniej niż Bartek (nie niż Ela!): 13 − 3 = <b>10</b>.'),
+ q('zt4-11b',`${STICKERS}Ile naklejek mają wszystkie dzieci razem?`,['31','26','37','21'],0,'Ela 8, Bartek 8 + 5 = 13, Kasia 13 − 3 = 10. Razem: 8 + 13 + 10 = <b>31</b>.'),
+ // Bilety
+ q('zt4-12a','Bilet do kina kosztuje 20 zł dla dorosłego i 15 zł dla dziecka. Ile zapłaci rodzina: 2 dorosłych i 3 dzieci?',['35 zł','85 zł','100 zł','75 zł'],1,'Dorośli: 2 · 20 zł = 40 zł, dzieci: 3 · 15 zł = 45 zł. Razem <b>85 zł</b>. 35 zł to jeden bilet dorosły i jeden dziecięcy.'),
+ q('zt4-12b','Bilet na basen kosztuje 14 zł dla dorosłego i 9 zł dla dziecka. Mama poszła na basen z trójką dzieci i zapłaciła banknotem 50 zł. Ile reszty otrzymała?',['41 zł','27 zł','14 zł','9 zł'],3,'Dzieci: 3 · 9 zł = 27 zł. Z biletem mamy: 27 + 14 = 41 zł. Reszta: 50 − 41 = <b>9 zł</b>. 41 zł to koszt biletów, a nie reszta.'),
+ // Płacimy kilkoma banknotami
+ q('zt4-13a','Pan Marek kupił koszulkę za 39 zł i 4 pary skarpet po 8 zł. Zapłacił dwoma banknotami po 50 zł. Ile reszty otrzymał?',['53 zł','71 zł','29 zł','19 zł'],2,'Skarpety: 4 · 8 zł = 32 zł. Zakupy: 39 + 32 = 71 zł. Zapłacił 2 · 50 zł = 100 zł. Reszta: 100 − 71 = <b>29 zł</b>.'),
+ q('zt4-13b','Pani Ewa kupiła 2 kg jabłek po 6 zł za kilogram i ser za 27 zł. Zapłaciła banknotem 20 zł i banknotem 50 zł. Ile reszty otrzymała?',['31 zł','11 zł','37 zł','39 zł'],0,'Jabłka: 2 · 6 zł = 12 zł. Zakupy: 12 + 27 = 39 zł. Zapłaciła 20 + 50 = 70 zł. Reszta: 70 − 39 = <b>31 zł</b>.'),
+ // Makulatura
+ q('zt4-14a',`${PAPER} Ile kilogramów zebrała klasa 4c?`,['57 kg','24 kg','42 kg','33 kg'],2,'Klasa 4b: 48 − 15 = 33 kg. Klasa 4c ma o 9 kg więcej niż 4b (nie niż 4a!): 33 + 9 = <b>42 kg</b>.'),
+ q('zt4-14b',`${PAPER} Ile kilogramów zebrały razem wszystkie trzy klasy?`,['138 kg','123 kg','114 kg','105 kg'],1,'4a: 48 kg, 4b: 48 − 15 = 33 kg, 4c: 33 + 9 = 42 kg. Razem: 48 + 33 + 42 = <b>123 kg</b>.'),
+ // Ile zostało?
+ q('zt4-15a','Książka ma 96 stron. Pierwszego dnia Ola przeczytała 25 stron, a drugiego o 7 stron więcej. Ile stron zostało jej do przeczytania?',['39','64','46','57'],0,'Drugi dzień: 25 + 7 = 32 strony. Przeczytała 25 + 32 = 57 stron. Zostało 96 − 57 = <b>39</b>.'),
+ q('zt4-15b','Album ma 120 miejsc na zdjęcia. Paweł wkleił w sobotę 34 zdjęcia, a w niedzielę o 9 zdjęć mniej. Ile miejsc zostało wolnych?',['52','61','59','77'],1,'Niedziela: 34 − 9 = 25 zdjęć. Wkleił 34 + 25 = 59 zdjęć. Wolnych zostało 120 − 59 = <b>61</b>.'),
+ // Tam i z powrotem
+ q('zt4-16a','Droga z domu Ani do szkoły ma 400 m. Ania codziennie idzie do szkoły i wraca tą samą drogą. Ile metrów przejdzie w ten sposób od poniedziałku do piątku?',['4000 m','2000 m','800 m','4800 m'],0,'Jednego dnia: 400 + 400 = 800 m. Przez 5 dni: 5 · 800 m = <b>4000 m</b>. 2000 m wychodzi, gdy zapomni się o powrocie.'),
+ q('zt4-16b','Babcia mieszka 6 km od Jasia. W sobotę Jaś pojechał do niej rowerem i wrócił, a w niedzielę zrobił to jeszcze raz. Ile kilometrów przejechał w weekend?',['12 km','18 km','6 km','24 km'],3,'Tam i z powrotem: 6 + 6 = 12 km. Dwa dni: 12 + 12 = <b>24 km</b>.'),
+ // Busy na wycieczkę
+ q('zt4-17a',`${TRIP} Ile co najmniej busów trzeba zamówić?`,['1','2','3','4'],1,'Jedzie 26 + 3 = 29 osób. Jeden bus (16 miejsc) to za mało. Dwa busy to 16 + 16 = 32 miejsca — wystarczy. Trzeba zamówić <b>2</b> busy.'),
+ q('zt4-17b',`${TRIP} Ile miejsc zostanie wolnych, gdy zamówi się 2 busy?`,['13','6','10','3'],3,'Miejsc jest 2 · 16 = 32, a osób 26 + 3 = 29. Wolne zostaną 32 − 29 = <b>3</b> miejsca. 6 wychodzi, gdy zapomni się o nauczycielach.'),
+ // Skarbonka: banknoty i monety
+ q('zt4-18a','Ela przez 10 tygodni odkładała po 12 zł. Teraz ma banknot 50 zł, 2 banknoty 20 zł, a resztę pieniędzy w monetach 5-złotowych. Ile ma monet 5-złotowych?',['30','14','6','10'],2,'Odłożyła 10 · 12 zł = 120 zł. Banknoty: 50 + 20 + 20 = 90 zł. W monetach: 120 − 90 = 30 zł, czyli 30 : 5 = <b>6</b> monet. 30 to złote, a nie liczba monet.'),
+ q('zt4-18b','Kuba przez 10 miesięcy odkładał po 20 zł. Teraz ma 3 banknoty 50 zł, 2 banknoty 10 zł, a resztę pieniędzy w monetach 2-złotowych. Ile ma monet 2-złotowych?',['15','30','25','10'],0,'Odłożył 10 · 20 zł = 200 zł. Banknoty: 3 · 50 + 2 · 10 = 170 zł. W monetach: 200 − 170 = 30 zł, czyli 30 : 2 = <b>15</b> monet.'),
+ // Kto gdzie przeszedł?
+ q('zt4-19a','Na przystanku pod dwiema wiatami schowało się przed deszczem 15 osób. Gdy przyjechał autobus, 3 osoby spod pierwszej wiaty odjechały, a 2 osoby przeszły spod pierwszej wiaty pod drugą. Pod pierwszą wiatą zostały 4 osoby. Ile osób jest teraz pod drugą wiatą?',['6','11','8','10'],2,'Na przystanku zostało 15 − 3 = 12 osób. Pod pierwszą wiatą są 4, więc pod drugą 12 − 4 = <b>8</b>. Przejście 2 osób nie zmienia liczby osób na przystanku.'),
+ q('zt4-19b','Na dwóch drzewach siedziało 20 wróbli. 5 wróbli odleciało z pierwszego drzewa, a 3 przeleciały z pierwszego drzewa na drugie. Na pierwszym drzewie zostały 4 wróble. Ile wróbli siedzi teraz na drugim drzewie?',['16','11','8','12'],1,'Na drzewach zostało 20 − 5 = 15 wróbli. Na pierwszym są 4, więc na drugim 15 − 4 = <b>11</b>. 8 wróbli siedziało tam na początku.'),
+ // Rok temu, trzy lata temu
+ q('zt4-20a','Kasia ma 8 lat, a jej mama 35 lat. Rok temu tata miał tyle lat, ile wtedy Kasia i mama razem. Ile lat ma teraz tata?',['43','41','44','42'],3,'Rok temu Kasia miała 7 lat, a mama 34. Tata miał wtedy 7 + 34 = 41 lat, więc teraz ma <b>42</b>. 43 wychodzi, gdy doda się dzisiejszy wiek Kasi i mamy.'),
+ q('zt4-20b','Ania ma 12 lat, a jej tata 40 lat. Trzy lata temu babcia miała tyle lat, ile wtedy Ania i tata razem. Ile lat ma teraz babcia?',['52','49','46','55'],1,'Trzy lata temu Ania miała 9 lat, a tata 37. Babcia miała wtedy 9 + 37 = 46 lat, więc teraz ma 46 + 3 = <b>49</b>.'),
+ // Wiek: teraz i za kilka lat
+ q('zt4-21a','Mama jest o 28 lat starsza od Kuby. Za 5 lat Kuba będzie miał 15 lat. Ile lat ma teraz mama?',['38','43','33','48'],0,'Teraz Kuba ma 15 − 5 = 10 lat. Mama: 10 + 28 = <b>38</b> lat. 43 to wiek mamy za 5 lat.'),
+ q('zt4-21b','Dziadek jest o 50 lat starszy od Ani. Razem mają 70 lat. Ile lat ma Ania?',['20','35','60','10'],3,'Gdyby dziadek był w wieku Ani, mieliby razem 70 − 50 = 20 lat, czyli po 10. Ania ma <b>10</b> lat, a dziadek 60. Sprawdzenie: 10 + 60 = 70 i 60 − 10 = 50.'),
+ // Liczymy od końca
+ q('zt4-22a',`${SQUIRRELS} Ile orzechów miała na początku Ruda?`,['16','28','20','24'],3,'Liczymy od końca. Ruda ma 20 orzechów, w tym 2 od Małej, a wcześniej oddała 6. Na początku: 20 − 2 + 6 = <b>24</b>.'),
+ q('zt4-22b',`${SQUIRRELS} Ile orzechów miała na początku Szara?`,['18','22','30','14'],0,'Liczymy od końca. Szara ma 20 orzechów, w tym 6 od Rudej, a wcześniej oddała 4. Na początku: 20 − 6 + 4 = <b>18</b>.'),
+ q('zt4-22c',`${SQUIRRELS} Która wiewiórka zebrała najwięcej orzechów?`,['Szara','Ruda','Mała','Wszystkie tyle samo'],1,'Na początku Ruda miała 20 + 6 − 2 = 24, Szara 20 − 6 + 4 = 18, a Mała 20 − 4 + 2 = 18. Najwięcej zebrała <b>Ruda</b>.'),
+];

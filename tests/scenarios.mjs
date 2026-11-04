@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict';
 import {SCENARIOS, makeRound, restoreRound} from '../js/scenarios.js';
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.title), ['Zegary, kalendarz i jednostki długości', 'Oś liczbowa', 'Dodawanie i odejmowanie', 'Szacowanie', 'Sprytne dodawanie', 'Sprytne odejmowanie', 'Powtórzenie: dodawanie i odejmowanie']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.title), ['Zegary, kalendarz i jednostki długości', 'Oś liczbowa', 'Dodawanie i odejmowanie', 'Szacowanie', 'Sprytne dodawanie', 'Sprytne odejmowanie', 'Powtórzenie: dodawanie i odejmowanie', 'Jak rozwiązywać zadania tekstowe']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności', 'Liczby pierwsze i złożone', 'Potęgowanie', 'Cyfry rzymskie', 'Kolejność wykonywania działań', 'Płaszczyzna, proste, półproste, odcinki', 'Kąty', 'Mierzenie kątów']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.section), ['Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Figury geometryczne', 'Figury geometryczne', 'Figury geometryczne']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
  'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Procenty — zadania egzaminacyjne', 'Potęgi', 'Potęgi o tych samych podstawach', 'Notacja wykładnicza',
 ]);
 // Klasy 4, 7 i 8 są podzielone na działy.
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.section), ['Zaczynamy przygodę z matematyką', ...Array(6).fill('Dodawanie i odejmowanie')]);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.section), ['Zaczynamy przygodę z matematyką', ...Array(6).fill('Dodawanie i odejmowanie'), 'Mnożenie i dzielenie']);
 // Klasa 8: każdy zestaw ma 3 plusy, a hasła (nazwy zwierząt) się nie powtarzają.
 {const g8=SCENARIOS.filter(s=>s.grade===8);assert(g8.every(s=>s.award&&s.award.pluses===3),'grade 8: 3 pluses');assert.equal(new Set(g8.map(s=>s.award.password)).size,g8.length);}
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.section), ['Statystyka i prawdopodobieństwo', 'Statystyka i prawdopodobieństwo', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu']);
@@ -15,9 +15,9 @@ assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.section), ['Procenty'
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
  'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Wyrażenia algebraiczne', 'Mnożenie sum algebraicznych', 'Równania', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne', 'Wyrażenia algebraiczne — zadania egzaminacyjne',
 ]);
-assert.equal(SCENARIOS.length,31);
+assert.equal(SCENARIOS.length,32);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,1120);
+assert.equal(new Set(all.map(q=>q.id)).size,1167);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -641,6 +641,51 @@ const PF=(i,ii)=>`I: ${i?'P':'F'}, II: ${ii?'P':'F'}`;
 {const [i,m]=nums('pw4-25a');only('pw4-25a',a=>N(a)===i-m);only('pw4-25b',a=>N(a)===i+m+(i-m));}
 {const [e,z,l]=nums('pw4-26a');only('pw4-26a',a=>+a===e+z);only('pw4-26b',a=>+a===(e+z)-(e-l));}
 console.log('PASS: grade 4 chapter II review — all 54 answer keys computed independently, rounds go from easy to hard');
+}
+
+// Klasa 4, dział III: zadania tekstowe — każdy klucz liczony z treści, pytania od łatwych do trudnych.
+{
+const zt=SCENARIOS.find(s=>s.id==='word-problems-4');
+assert.equal(zt.grade,4);assert.equal(zt.section,'Mnożenie i dzielenie');assert.equal(zt.questions.length,47);assert.equal(new Set(zt.questions.map(q=>q.sourceGroup)).size,22);
+assert.deepEqual(SCENARIOS.filter(s=>s.questions===zt.questions).map(s=>s.grade),[4]);
+assert.deepEqual(zt.award,{password:'Kto treść rozumie, ten wszystko umie!',pluses:2});assert.equal(zt.ordered,true);
+{const order=[...new Set(zt.questions.map(q=>q.sourceGroup))];let seed=13;const random=()=>{seed=(1664525*seed+1013904223)>>>0;return seed/4294967296;};
+ for(let i=0;i<500;i++) makeRound(zt,random).forEach((q,k)=>{const v=order.indexOf(q.sourceGroup);assert(v>=Math.floor(k*22/12)&&v<Math.floor((k+1)*22/12),'question '+k+' from its difficulty band');});}
+// Poprawne odpowiedzi rozłożone mniej więcej po równo na A–D.
+{const c=[0,0,0,0];zt.questions.forEach(q=>c[q.correct]++);assert(Math.max(...c)-Math.min(...c)<=2,'A–D balance '+c);}
+const only=(id,ok)=>assert.deepEqual(ask(id).answers.filter(ok),[selected(id)],id);
+const nums=id=>[...plain(ask(id).q).matchAll(/\d+/g)].map(m=>+m[0]);
+const N=a=>parseInt(a);
+const has=(id,s)=>assert(plain(ask(id).q).includes(s),id+': '+s);
+const ev=s=>{const t=s.replace(/−/g,'-').replace(/\s/g,'');assert(/^\d+([+\-·]\d+)$/.test(t),s);const [,x,op,y]=t.match(/^(\d+)([+\-·])(\d+)$/);return op==='+'?+x+ +y:op==='-'?x-y:x*y;};
+{const [k,d]=nums('zt4-1a');only('zt4-1a',a=>ev(a)===k+d);const [o,r]=nums('zt4-1b');only('zt4-1b',a=>ev(a)===o-r);const [p,c]=nums('zt4-1c');only('zt4-1c',a=>ev(a)===p*c&&a.includes('·'));}
+for(const id of ['zt4-2a','zt4-2b']) only(id,a=>+a===nums(id).reduce((x,y)=>x+y));
+{has('zt4-3a','więcej');const [x,d]=nums('zt4-3a');only('zt4-3a',a=>+a===x-d);has('zt4-3b','mniej');const [y,e]=nums('zt4-3b');only('zt4-3b',a=>+a===y+e);}
+for(const id of ['zt4-4a','zt4-4b']){const [n,p,w,b]=nums(id);only(id,a=>N(a)===b-(n*p+w));}
+{has('zt4-5a','dłuższy');const [x,d]=nums('zt4-5a');only('zt4-5a',a=>N(a)===x+(x+d));has('zt4-5b','krótsza');const [y,e]=nums('zt4-5b');only('zt4-5b',a=>N(a)===y+(y-e));}
+{has('zt4-6a','niższy od');const [x,d]=nums('zt4-6a');only('zt4-6a',a=>N(a)===x+d);has('zt4-6b','wyższa od');const [y,e]=nums('zt4-6b');only('zt4-6b',a=>N(a)===y-e);}
+for(const id of ['zt4-7a','zt4-7b']){const [m,a1,p1,a2,p2,c]=nums(id);only(id,a=>N(a)===m-a1*p1-a2*p2-c);}
+{const [a,b,c,d]=nums('zt4-8a');only('zt4-8a',x=>+x===a-b+c-d);const [p,q1,r,s1,t]=nums('zt4-8b');only('zt4-8b',x=>+x===p-q1+r-s1+t);}
+{const [h,y,o]=nums('zt4-9a');has('zt4-9a','młodsza od brata');const J=h+y,Z=h-o;only('zt4-9a',a=>+a===J);only('zt4-9b',a=>+a===Z);only('zt4-9c',a=>+a===J-Z);}
+{has('zt4-10a','o 3 strony więcej');const [m,d,c,f]=nums('zt4-10a');only('zt4-10a',a=>+a===m+(m+d)+2*c+f);has('zt4-10b','o 5 mniej');const [n,e,g,h]=nums('zt4-10b');only('zt4-10b',a=>+a===n+(n-e)+2*g+h);}
+{const [e,b,k]=nums('zt4-11a');const B=e+b,K=B-k;only('zt4-11a',a=>+a===K);only('zt4-11b',a=>+a===e+B+K);}
+{const [d,c,nd,nc]=nums('zt4-12a');only('zt4-12a',a=>N(a)===nd*d+nc*c);has('zt4-12b','z trójką dzieci');const [d2,c2,b]=nums('zt4-12b');only('zt4-12b',a=>N(a)===b-(d2+3*c2));}
+{has('zt4-13a','dwoma banknotami');const [k,n,p,b]=nums('zt4-13a');only('zt4-13a',a=>N(a)===2*b-(k+n*p));const [kg,p2,s2,b1,b2]=nums('zt4-13b');only('zt4-13b',a=>N(a)===b1+b2-(kg*p2+s2));}
+{const t=plain(ask('zt4-14a').q);const [,a,d,e]=t.match(/4a zebrała (\d+) kg, klasa 4b o (\d+) kg mniej, a klasa 4c o (\d+) kg więcej niż klasa 4b/).map(Number);const B=a-d,C=B+e;only('zt4-14a',x=>N(x)===C);only('zt4-14b',x=>N(x)===a+B+C);}
+{const [t,x,d]=nums('zt4-15a');only('zt4-15a',a=>+a===t-x-(x+d));const [u,y,e]=nums('zt4-15b');only('zt4-15b',a=>+a===u-y-(y-e));}
+{has('zt4-16a','od poniedziałku do piątku');const [m]=nums('zt4-16a');only('zt4-16a',a=>N(a)===5*2*m);const [k]=nums('zt4-16b');only('zt4-16b',a=>N(a)===2*2*k);}
+{const [u,n,s]=nums('zt4-17a');const need=Math.ceil((u+n)/s);only('zt4-17a',a=>+a===need);only('zt4-17b',a=>+a===2*s-(u+n));assert.equal(need,2);}
+{const [w,p,b1,n,b2,m]=nums('zt4-18a');only('zt4-18a',a=>+a*m===w*p-b1-n*b2);const [w2,p2,n1,v1,n2,v2,m2]=nums('zt4-18b');only('zt4-18b',a=>+a*m2===w2*p2-n1*v1-n2*v2);}
+for(const id of ['zt4-19a','zt4-19b']){const [t,a,b,c]=nums(id);only(id,x=>+x===t-a-c);}
+{const [k,m]=nums('zt4-20a');only('zt4-20a',a=>+a===(k-1)+(m-1)+1);const [x,y]=nums('zt4-20b');has('zt4-20b','Trzy lata temu');only('zt4-20b',a=>+a===(x-3)+(y-3)+3);}
+{const [d,k,w]=nums('zt4-21a');only('zt4-21a',a=>+a===w-k+d);const [r,s]=nums('zt4-21b');only('zt4-21b',a=>+a+(+a+r)===s);}
+// Wiewiórki: symulujemy przekazywanie orzechów od zgadniętych wartości początkowych.
+{const t=plain(ask('zt4-22a').q);const gives=[...t.matchAll(/(Ruda|Szara|Mała) dała (\d+) orzech\S* (Rudej|Szarej|Małej)/g)].map(m=>[m[1],+m[2],{Rudej:'Ruda',Szarej:'Szara',Małej:'Mała'}[m[3]]]);
+ assert.equal(gives.length,3);const end=+t.match(/każda wiewiórka ma (\d+)/)[1];
+ const start={};for(const n of ['Ruda','Szara','Mała']) for(let v=0;v<100;v++){const s={Ruda:0,Szara:0,Mała:0,[n]:v};for(const [f,k,to] of gives){s[f]-=k;s[to]+=k;}if(s[n]===end){start[n]=v;break;}}
+ only('zt4-22a',a=>+a===start.Ruda);only('zt4-22b',a=>+a===start.Szara);
+ const max=Math.max(...Object.values(start));assert.equal(Object.values(start).filter(v=>v===max).length,1);only('zt4-22c',a=>start[a]===max);}
+console.log('PASS: grade 4 word problems — all 47 answer keys computed independently, rounds go from easy to hard');
 }
 
 // Kalkulator wyrażeń algebraicznych do testów klasy 8: zapis z gry (kursywa, potęgi, ułamki, √) → funkcja zmiennych.

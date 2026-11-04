@@ -7,7 +7,7 @@ import { powerQuestions7, samePowerQuestions7, scientificQuestions7 } from './gr
 import { axisQuestions } from './axis-sets.js';
 import { geometryQuestions5, angleQuestions5, measureQuestions5 } from './geometry5-sets.js';
 import { algebraQuestions8, multiplicationQuestions8, equationQuestions8 } from './algebra-sets.js';
-import { grade4Questions, axisQuestions4, additionQuestions4, estimationQuestions4, smartAdditionQuestions4, smartSubtractionQuestions4, reviewQuestions4 } from './grade4-sets.js';
+import { grade4Questions, axisQuestions4, additionQuestions4, estimationQuestions4, smartAdditionQuestions4, smartSubtractionQuestions4, reviewQuestions4, wordProblemQuestions4 } from './grade4-sets.js';
 
 // Każdy wpis ma trwałe ID: zapis gry odtwarza dokładnie te same pytania.
 const q = (id, text, answers, correct, explain) => ({ id, sourceGroup: id.replace(/[a-z]+$/, ''), q: text, answers, correct, explain });
@@ -88,7 +88,7 @@ const revision2 = [
 
 export const SCENARIOS = [
  // Przy dodawaniu kolejnego scenariusza zapytaj właścicielkę, do której klasy go przypisać.
- // Klasa 4 ma działy jak w podręczniku: I. Zaczynamy przygodę z matematyką, II. Dodawanie i odejmowanie.
+ // Klasa 4 ma działy jak w podręczniku: I. Zaczynamy przygodę z matematyką, II. Dodawanie i odejmowanie, III. Mnożenie i dzielenie.
  {id:'time-length', grade:4, section:'Zaczynamy przygodę z matematyką', title:'Zegary, kalendarz i jednostki długości', description:'Godziny i minuty, tarcza zegara, miesiące i daty, wieki, cyfry rzymskie, mm, cm, m i km.', questions:grade4Questions},
  {id:'axis-4', grade:4, section:'Dodawanie i odejmowanie', title:'Oś liczbowa', description:'Jakie liczby oznaczono literami? Podpisy przy zerze, w środku osi i co kilka kresek.', questions:axisQuestions4},
  {id:'addition-4', grade:4, section:'Dodawanie i odejmowanie', title:'Dodawanie i odejmowanie', description:'Rachunki w pamięci, pełne setki i tysiące, okienka, odjemna i odjemnik, zadania tekstowe i kwadrat magiczny.', questions:additionQuestions4, award:{password:'AUTOBUSIK', pluses:2}},
@@ -96,6 +96,7 @@ export const SCENARIOS = [
  {id:'smart-addition-4', grade:4, section:'Dodawanie i odejmowanie', title:'Sprytne dodawanie', description:'Co dodać najpierw? Przekładanie do pełnych dziesiątek, kolejne liczby, okienka, tabelka ○ + ■ i jesienne zadania tekstowe.', questions:smartAdditionQuestions4, award:{password:'Jesienne dodawanie – matematyczne wyzwanie!', pluses:2}},
  {id:'smart-subtraction-4', grade:4, section:'Dodawanie i odejmowanie', title:'Sprytne odejmowanie', description:'Po kawałku, powiększanie obu liczb, odejmowanie przez dodawanie, reszta z banknotu, lata i zadania tekstowe.', questions:smartSubtractionQuestions4, ordered:true, award:{password:'Minusy pokonane, punkty pozbierane!', pluses:2}},
  {id:'review-2-4', grade:4, section:'Dodawanie i odejmowanie', title:'Powtórzenie: dodawanie i odejmowanie', description:'Cały dział II: zapis i porównywanie liczb, oś liczbowa, szacowanie, sposoby liczenia, tabelka ○ − ■, prawda czy fałsz i zadania tekstowe.', questions:reviewQuestions4, ordered:true, award:{password:'Powtórka zaliczona, wiedza utrwalona!', pluses:4}},
+ {id:'word-problems-4', grade:4, section:'Mnożenie i dzielenie', title:'Jak rozwiązywać zadania tekstowe', description:'Które działanie wybrać? Zakupy i reszta, „o tyle więcej, o tyle mniej”, wiek i wzrost, przystanki, banknoty i monety, liczenie od końca.', questions:wordProblemQuestions4, ordered:true, award:{password:'Kto treść rozumie, ten wszystko umie!', pluses:2}},
  // Klasa 5 ma działy jak w podręczniku: I. Liczby naturalne, II. Figury geometryczne.
  {id:'divisibility', grade:5, section:'Liczby naturalne', title:'Podzielność i wielokrotności', description:'Cechy podzielności przez 2, 3, 4, 5, 9 i 10 oraz wielokrotności liczb.', questions:divisibilityQuestions},
  {id:'primes', grade:5, section:'Liczby naturalne', title:'Liczby pierwsze i złożone', description:'Dzielniki, liczby pierwsze i złożone, rozkład na czynniki pierwsze.', questions:primeQuestions},
