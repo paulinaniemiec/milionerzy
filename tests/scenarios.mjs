@@ -4,20 +4,20 @@ assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.title), ['Zegary, kal
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności', 'Liczby pierwsze i złożone', 'Potęgowanie', 'Cyfry rzymskie', 'Kolejność wykonywania działań', 'Płaszczyzna, proste, półproste, odcinki', 'Kąty', 'Mierzenie kątów']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.section), ['Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Figury geometryczne', 'Figury geometryczne', 'Figury geometryczne']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
- 'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Procenty — zadania egzaminacyjne', 'Potęgi', 'Potęgi o tych samych podstawach', 'Notacja wykładnicza', 'Obliczenia w notacji wykładniczej',
+ 'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Procenty — zadania egzaminacyjne', 'Potęgi', 'Potęgi o tych samych podstawach', 'Notacja wykładnicza', 'Obliczenia w notacji wykładniczej', 'Potęgi — zadania egzaminacyjne',
 ]);
 // Klasy 4, 7 i 8 są podzielone na działy.
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.section), ['Zaczynamy przygodę z matematyką', ...Array(6).fill('Dodawanie i odejmowanie'), 'Mnożenie i dzielenie']);
 // Klasa 8: każdy zestaw ma 3 plusy, a hasła (nazwy zwierząt) się nie powtarzają.
 {const g8=SCENARIOS.filter(s=>s.grade===8);assert(g8.every(s=>s.award&&s.award.pluses===3),'grade 8: 3 pluses');assert.equal(new Set(g8.map(s=>s.award.password)).size,g8.length);}
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.section), ['Statystyka i prawdopodobieństwo', 'Statystyka i prawdopodobieństwo', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu']);
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.section), ['Procenty', 'Procenty', 'Procenty', 'Procenty', 'Potęgi', 'Potęgi', 'Potęgi', 'Potęgi']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.section), ['Statystyka i prawdopodobieństwo', 'Statystyka i prawdopodobieństwo', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.section), ['Procenty', 'Procenty', 'Procenty', 'Procenty', 'Potęgi', 'Potęgi', 'Potęgi', 'Potęgi', 'Potęgi']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
- 'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Wyrażenia algebraiczne', 'Mnożenie sum algebraicznych', 'Równania', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne', 'Wyrażenia algebraiczne — zadania egzaminacyjne',
+ 'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Wyrażenia algebraiczne', 'Mnożenie sum algebraicznych', 'Równania', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne', 'Wyrażenia algebraiczne — zadania egzaminacyjne', 'Potęgi — zadania egzaminacyjne',
 ]);
-assert.equal(SCENARIOS.length,33);
+assert.equal(SCENARIOS.length,35);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,1235);
+assert.equal(new Set(all.map(q=>q.id)).size,1263);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -524,6 +524,49 @@ for(const id of g('on7-13')){const [,a,b]=ask(id).q.match(/I\. (.*?)<br>II\. (.*
 // Zadania tekstowe.
 for(const [id,v,sci] of [['on7-16a',3e2/4e-3,1],['on7-16b',8e-5/2e-6,0],['on7-16c',1.4e9/3.5e6,0],['on7-16d',6e-5/1e-7,1],['on7-17a',500*1e-4,1],['on7-17b',5.97e24+7.35e22,1],['on7-17c',2e16/8e9,1],['on7-17d',3e-6-1.2e-7,1]]) only(id,a=>(!sci||isSci(a))&&same(val(a),v));
 console.log('PASS: grade 7 scientific calculations — all 68 answer keys computed independently');
+}
+
+// Klasy 7 i 8: potęgi — zadania egzaminacyjne. Wartości liczone niezależnie (BigInt dla dużych potęg).
+{
+const e7=SCENARIOS.find(s=>s.id==='power-exam-7'), e8=SCENARIOS.find(s=>s.id==='power-exam-8');
+assert.equal(e7.questions,e8.questions);assert.equal(e7.section,'Potęgi');assert.equal(e8.section,'Przygotowanie do egzaminu');
+for(const e of [e7,e8]){assert.equal(e.ordered,true);assert.deepEqual(e.award,{password:'Potęgi opanowane, miliony wygrane!',pluses:3});}
+assert.deepEqual(SCENARIOS.filter(s=>s.questions===e7.questions).map(s=>s.grade).sort(),[7,8]);
+assert.equal(e7.questions.length,28);assert.equal(new Set(e7.questions.map(q=>q.sourceGroup)).size,28);
+assert(e7.questions.every(q=>q.answers.length===4&&!/−\d+<\/sup>/.test(q.q.replace(/10<sup>−\d+<\/sup>/g,''))),'no negative exponents except 10');
+const n=BigInt, P=(a,b)=>n(a)**n(b), A=id=>ask(id).correct, L=['A i C','A i D','B i C','B i D'];
+const pf=(a,b)=>['PP','PF','FP','FF'].indexOf((a?'P':'F')+(b?'P':'F'));
+const eq=(x,y)=>x===y;
+// Kolejność a, b, c.
+{const a=P(-2,12),b=P(-2,11),c=P(2,10);assert(b<c&&c<a);assert.equal(A('pw-3816'),3);}
+assert.equal(A('pw-5286'),3);assert(-(5**2)===-25&&(-2)**3===-8);
+assert.equal(ask('pw-4022').answers[A('pw-4022')],'3<sup>17</sup>');assert(eq(3n*P(3,4)*P(3,12),P(3,17)));
+assert(eq(P(2,5)*3n*P(3,4)*P(2,3),P(2,8)*P(3,5)));assert(!eq(P(2,8)*P(3,5),P(2,15)*P(3,4)));assert.equal(A('pw-8049'),0);
+assert.equal(A('pw-7432'),pf(eq(3n*P(9,5),P(3,11)),eq(P(2,8)*P(2,7)/P(2,10),P(2,5))));
+assert.equal(A('pw-7841'),pf(eq(P(9,4)/P(3,2),P(3,2)),eq(P(3,8),3n*P(3,5)*P(3,2))));
+assert(eq(P(8,6)/P(4,3),P(2,12)));assert.equal(A('pw-7766'),3);
+assert(eq(P(3,5)*P(9,6),P(3,17)));assert.equal(A('pw-7342'),2);
+assert.equal(A('pw-7357'),pf(eq(P(P(4,4),3),P(4,7)),eq(P(5,3)*P(10,3),P(5,6)*P(2,3))));
+assert(P(-2,4)/P(-2,3)===-2n&&eq(P(-2,2)*P(-2,3),P(-2,5)));assert.equal(L[A('pw-7298')],'A i D');
+assert.equal(4**3-8**2/2**4,60);assert.equal(A('pw-7916'),3);
+assert.equal(A('pw-7492'),pf((1/5)**8>(1/5)**6,Math.abs(2**2*(1/2)**2-(-2)**3*(-1/2)**3)<1e-12));
+{const v=[3n*P(3,14),P(3,9)*P(3,6),P(3,17)/9n,P(9,15)/3n];assert.deepEqual(v.map(x=>x!==P(3,15)),[false,false,false,true]);assert.equal(A('pw-5368'),3);}
+assert.equal((3**2*3)/3**3,1);assert.equal(A('pw-3432'),0);
+assert(eq(P(10,8)/P(5,8),P(2,8))&&eq(P(2,6)*P(25,3),P(10,6))&&!eq(P(2,6)*P(25,3),P(50,9)));assert.equal(L[A('pw-6990')],'B i D');
+assert(eq(P(27,6)/P(3,6),P(3,12))&&eq(P(25,8)/P(5,4),P(5,12)));assert.equal(L[A('pw-7317')],'B i D');
+assert(eq(P(6,8)/P(2,4),P(2,4)*P(3,8)));assert.equal(A('pw-5522'),3);
+assert.equal(A('pw-7599'),pf(eq(P(5,2)*P(5,3)*P(5,5),P(P(5,5),2)),P(2,3)*P(3,3)/6n===P(6,2)));
+{const v=[P(2,24)/2n,P(4,12)*4n,P(2,25)/8n,P(32,4)];assert.equal(v.indexOf(v.reduce((m,x)=>x>m?x:m)),A('pw-8174'));}
+assert(eq(P(60000000,3),P(6,3)*P(10,21)));assert.equal(A('pw-5621'),0);
+{const x=P(10,30)*P(10,70)/10n,y=P(P(10,3),15)*P(10,60),z=P(10,50)*P(10,80)/P(10,20),h=P(10,100);assert(x<h&&y>h&&z>h);assert.equal(A('pw-6489'),0);}
+{const t=P(50,8),v=[P(5,2)*P(10,8)*P(5,4),P(5,10)/P(5,2)*P(10,8),P(2,8)*P(5,8)*P(5,8)];assert.deepEqual(v.map(x=>x===t),[false,true,true]);assert.equal(A('pw-5258'),1);}
+assert.equal(ask('pw-5867').answers[A('pw-5867')],String(Math.floor((5/3)**2)+1));
+{const r=P(5,6)*5n*P(5,8),br=r/(P(5,6)*P(5,5)),sh=r/(5n*P(5,5));assert.equal(sh,P(5,9));assert.equal(P(5,2)*sh*br,r);assert.equal(A('pw-5410'),pf(r===P(5,15),sh===P(5,9)));}
+assert.equal(P(36,6)*216n,P(27,5)*P(8,5));assert.equal(A('pw-5870'),1);
+assert.equal(A('pw-5868'),pf(12n*P(7,13)>13n*P(7,12),P(3,50)>P(6,25)));
+{const v=[P(25,41),P(125,41),P(2,862),P(5,431)];assert.equal(v.indexOf(v.reduce((m,x)=>x>m?x:m)),A('pw-4592'));}
+assert(Math.abs(19300*0.001*0.000001-1.93e-5)<1e-15);assert.equal(A('pw-5872'),2);
+console.log('PASS: grades 7–8 power exam tasks — all 28 answer keys computed independently');
 }
 
 // Klasa 4: sprytne dodawanie — każdy klucz liczony z treści zadania.

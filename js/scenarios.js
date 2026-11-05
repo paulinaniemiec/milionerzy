@@ -3,6 +3,7 @@ import { diagramQuestions, probabilityQuestions } from './exam-sets.js';
 import { divisibilityQuestions, powerQuestions, romanQuestions, primeQuestions, orderQuestions } from './grade5-sets.js';
 import { percentExamQuestions } from './percent-exam-sets.js';
 import { algebraExamQuestions } from './algebra-exam-sets.js';
+import { powerExamQuestions } from './power-exam-sets.js';
 import { powerQuestions7, samePowerQuestions7, scientificQuestions7, scientificCalcQuestions7 } from './grade7-sets.js';
 import { axisQuestions } from './axis-sets.js';
 import { geometryQuestions5, angleQuestions5, measureQuestions5 } from './geometry5-sets.js';
@@ -119,6 +120,7 @@ export const SCENARIOS = [
  {id:'percent-exam-8', grade:8, section:'Przygotowanie do egzaminu', title:'Procenty — zadania egzaminacyjne', description:'Zadania z egzaminów 2011–2026 i materiałów CKE. Rabaty, podwyżki, VAT i podatki.', questions:percentExamQuestions, award:{password:'JEŻOZWIERZ', pluses:3}},
  // Hasło podała właścicielka (wyjątek od zasady „nazwa zwierzęcia”).
  {id:'algebra-exam-8', grade:8, section:'Przygotowanie do egzaminu', title:'Wyrażenia algebraiczne — zadania egzaminacyjne', description:'Zadania z egzaminów ósmoklasisty i zadania do egzaminu w oryginalnym brzmieniu. Zapisywanie i przekształcanie wyrażeń, wartości, znaki liczb, P/F i uzupełnianie zdań.', questions:algebraExamQuestions, ordered:true, award:{password:'Wyrażenia algebraiczne – rozkminy logiczne!', pluses:3}},
+ {id:'power-exam-8', grade:8, section:'Przygotowanie do egzaminu', title:'Potęgi — zadania egzaminacyjne', description:'Zadania z egzaminów ósmoklasisty i gimnazjalnych oraz materiałów CKE w oryginalnym brzmieniu. Mnożenie, dzielenie i porównywanie potęg, potęga potęgi, liczby ujemne do potęgi, P/F i uzupełnianie zdań.', questions:powerExamQuestions, ordered:true, award:{password:'Potęgi opanowane, miliony wygrane!', pluses:3}},
  // Klasa 7 jest podzielona na działy (section). Przy nowym zestawie zapytaj właścicielkę, do którego działu go wrzucić.
  {id:'check', grade:7, section:'Procenty', title:'Procenty na rozgrzewkę', description:'„Sprawdź, czy potrafisz”. Ułamki, podziały i ceny.', questions:[...check, revision1.find(q=>q.id==='z1-1'), revision1.find(q=>q.id==='z1-7'), revision1.find(q=>q.id==='z1-14'), revision2.find(q=>q.id==='z2-11')]},
  {id:'revision-1', grade:7, section:'Procenty', title:'Procenty w życiu, zestaw 1', description:'„Powtórzenie I”. Rabaty, frekwencja, proporcje i VAT.', questions:revision1},
@@ -128,6 +130,7 @@ export const SCENARIOS = [
  {id:'same-base-7', grade:7, section:'Potęgi', title:'Potęgi o tych samych podstawach', description:'Mnożenie i dzielenie potęg, potęga potęgi, brakujące wykładniki, potęgi liczby 10 i typowe pułapki.', questions:samePowerQuestions7, award:{password:'MATEMATYKA TO WF DLA MÓZGU', pluses:2}},
  {id:'scientific-7', grade:7, section:'Potęgi', title:'Notacja wykładnicza', description:'Duże i małe liczby w postaci a · 10ⁿ, potęgi liczby 10 o wykładniku ujemnym, kosmiczne odległości, zamiana jednostek, porównywanie i działania.', questions:scientificQuestions7, ordered:true, award:{password:'NOTACJA', pluses:1}},
  {id:'scientific-calc-7', grade:7, section:'Potęgi', title:'Obliczenia w notacji wykładniczej', description:'Dodawanie, odejmowanie, mnożenie, dzielenie i potęgowanie w notacji wykładniczej, poprawianie wyniku do postaci a · 10ⁿ, porządkowanie liczb i zadania „ile razy?” z kosmosu i przyrody.', questions:scientificCalcQuestions7, ordered:true, award:{password:'Dodaję, odejmuję, notację zapisuję!', pluses:2}},
+ {id:'power-exam-7', grade:7, section:'Potęgi', title:'Potęgi — zadania egzaminacyjne', description:'Zadania z egzaminów ósmoklasisty i gimnazjalnych oraz materiałów CKE w oryginalnym brzmieniu. Mnożenie, dzielenie i porównywanie potęg, potęga potęgi, liczby ujemne do potęgi, P/F i uzupełnianie zdań.', questions:powerExamQuestions, ordered:true, award:{password:'Potęgi opanowane, miliony wygrane!', pluses:3}},
 ];
 function shuffle(items, random) {
  const result = [...items];
