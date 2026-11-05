@@ -4,20 +4,20 @@ assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.title), ['Zegary, kal
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności', 'Liczby pierwsze i złożone', 'Potęgowanie', 'Cyfry rzymskie', 'Kolejność wykonywania działań', 'Płaszczyzna, proste, półproste, odcinki', 'Kąty', 'Mierzenie kątów']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.section), ['Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Figury geometryczne', 'Figury geometryczne', 'Figury geometryczne']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
- 'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Procenty — zadania egzaminacyjne', 'Potęgi', 'Potęgi o tych samych podstawach', 'Notacja wykładnicza',
+ 'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Procenty — zadania egzaminacyjne', 'Potęgi', 'Potęgi o tych samych podstawach', 'Notacja wykładnicza', 'Obliczenia w notacji wykładniczej',
 ]);
 // Klasy 4, 7 i 8 są podzielone na działy.
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.section), ['Zaczynamy przygodę z matematyką', ...Array(6).fill('Dodawanie i odejmowanie'), 'Mnożenie i dzielenie']);
 // Klasa 8: każdy zestaw ma 3 plusy, a hasła (nazwy zwierząt) się nie powtarzają.
 {const g8=SCENARIOS.filter(s=>s.grade===8);assert(g8.every(s=>s.award&&s.award.pluses===3),'grade 8: 3 pluses');assert.equal(new Set(g8.map(s=>s.award.password)).size,g8.length);}
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.section), ['Statystyka i prawdopodobieństwo', 'Statystyka i prawdopodobieństwo', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu']);
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.section), ['Procenty', 'Procenty', 'Procenty', 'Procenty', 'Potęgi', 'Potęgi', 'Potęgi']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.section), ['Procenty', 'Procenty', 'Procenty', 'Procenty', 'Potęgi', 'Potęgi', 'Potęgi', 'Potęgi']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
  'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Wyrażenia algebraiczne', 'Mnożenie sum algebraicznych', 'Równania', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne', 'Wyrażenia algebraiczne — zadania egzaminacyjne',
 ]);
-assert.equal(SCENARIOS.length,32);
+assert.equal(SCENARIOS.length,33);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,1167);
+assert.equal(new Set(all.map(q=>q.id)).size,1235);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -492,6 +492,38 @@ assert.equal(pick('ne7-14d'),truth(8e7/1e6>50,same(4e-3*100,4)));
 // Długie liczby: tyle cyfr, ile wynika z wykładnika.
 assert.equal('5970000000000000000000000'.length,25);assert.equal('73500000000000000000000'.length,23);
 console.log('PASS: grade 7 scientific notation — all 64 answer keys computed independently');
+}
+
+// Klasa 7: obliczenia w notacji wykładniczej — wynik liczony z treści; poprawna odpowiedź jedyna o dobrej wartości i postaci a · 10^n.
+{
+const oc=SCENARIOS.find(s=>s.id==='scientific-calc-7');
+assert.equal(oc.grade,7);assert.equal(oc.section,'Potęgi');assert.equal(oc.ordered,true);
+assert.equal(oc.questions.length,68);assert.equal(new Set(oc.questions.map(q=>q.sourceGroup)).size,17);
+assert.deepEqual(SCENARIOS.filter(s=>s.questions===oc.questions).map(s=>s.grade),[7]);
+assert.deepEqual(oc.award,{password:'Dodaję, odejmuję, notację zapisuję!',pluses:2});
+assert.deepEqual([0,1,2,3].map(i=>oc.questions.filter(q=>q.correct===i).length),[17,17,17,17]);
+const txt=html=>html.replace(/<sup>(.*?)<\/sup>/g,'^$1').replace(/<[^>]+>/g,'').replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim();
+const val=html=>Function(`return ${txt(html.replace(/<span class="frac"><span>(.*?)<\/span><span>(.*?)<\/span><\/span>/g,'(($1)/($2))'))
+ .replace(/\s/g,'').replace(/−/g,'-').replace(/,/g,'.').replace(/·/g,'*').replace(/:/g,'/').replace(/\^(-?\d+)/g,'**($1)')}`)();
+const same=(a,b)=>a===b||Math.abs(a-b)<=1e-9*Math.max(Math.abs(a),Math.abs(b));
+const isSci=html=>{const m=txt(html).match(/^(\d+(?:,\d+)?) · 10\^(−?\d+)$/);if(!m)return false;const a=+m[1].replace(',','.');return a>=1&&a<10;};
+const bolds=q=>[...q.q.matchAll(/<b>(.*?)<\/b>/g)].map(m=>m[1]);
+const only=(id,ok)=>{const q=ask(id);assert.deepEqual(q.answers.filter(ok),[q.answers[q.correct]],id);};
+const g=id=>oc.questions.filter(q=>q.sourceGroup===id).map(q=>q.id);
+for(const n of [1,2,3,4,8,9,10,11,12,14,15]) for(const id of g(`on7-${n}`)) only(id,a=>isSci(a)&&same(val(a),val(bolds(ask(id))[0])));
+// Między kolejnymi potęgami 10.
+for(const id of g('on7-5')){const v=val(bolds(ask(id))[0]);only(id,a=>{const [,lo,hi]=txt(a).replace(/−/g,'-').match(/^10\^(-?\d+) i 10\^(-?\d+)$/).map(Number);return hi===lo+1&&10**lo<v&&v<10**hi;});}
+// Porządkowanie rosnąco.
+for(const id of g('on7-6')){const [x,y,z]=bolds(ask(id)).map(val),v={x,y,z};only(id,a=>{const [p,,q2,,r]=txt(a).split(' ');return v[p]<v[q2]&&v[q2]<v[r];});}
+// Zasłonięte czynniki: decyduje wykładnik.
+const ex=a=>+txt(a).replace(/−/g,'-').match(/10\^(-?\d+)/)[1];
+for(const [id,best] of [['on7-7a',Math.max],['on7-7b',Math.min],['on7-7c',Math.min]]){const e=ask(id).answers.map(ex);assert.equal(e.indexOf(best(...e)),ask(id).correct,id);assert.equal(new Set(e).size,4,id);}
+assert(1e-3>9.9e-4);assert.equal(txt(selected('on7-7d')),'a > b');
+// Prawda/fałsz.
+for(const id of g('on7-13')){const [,a,b]=ask(id).q.match(/I\. (.*?)<br>II\. (.*?)<\/div>/);const holds=s=>{const [l,r]=s.split(' = ').map(val);return same(l,r);};assert.equal(pick(id),truth(holds(a),holds(b)),id);}
+// Zadania tekstowe.
+for(const [id,v,sci] of [['on7-16a',3e2/4e-3,1],['on7-16b',8e-5/2e-6,0],['on7-16c',1.4e9/3.5e6,0],['on7-16d',6e-5/1e-7,1],['on7-17a',500*1e-4,1],['on7-17b',5.97e24+7.35e22,1],['on7-17c',2e16/8e9,1],['on7-17d',3e-6-1.2e-7,1]]) only(id,a=>(!sci||isSci(a))&&same(val(a),v));
+console.log('PASS: grade 7 scientific calculations — all 68 answer keys computed independently');
 }
 
 // Klasa 4: sprytne dodawanie — każdy klucz liczony z treści zadania.

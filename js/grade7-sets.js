@@ -265,3 +265,103 @@ export const scientificQuestions7 = [
  q('ne7-16c',`Ziarenko maku waży około ${sci(5,-4)} g. Ile waży <b>1000</b> takich ziarenek?`, ['5 g','0,5 g','0,05 g','50 g'],1,`${sci(5,-4)} g = 0,0005 g, a 1000 · 0,0005 g = <b>0,5 g</b>. Inaczej: ${e10(3)} · ${e10(-4)} = ${e10(-1)}, więc 5 · ${e10(-1)} g = 0,5 g.`),
  q('ne7-16d',`Słoń afrykański waży około ${sci(6,3)} kg, a mrówka około ${sci(3,-6)} kg. <b>Ile razy</b> słoń jest cięższy od mrówki?`, [sci(2,3),sci(2,-3),sci(18,-3),sci(2,9)],3,`6 : 3 = 2 oraz ${e10(3)} : ${e10(-6)} = ${e10(9)}, bo 3 − (−6) = 9. Słoń jest <b>${sci(2,9)}</b> razy, czyli 2 miliardy razy cięższy.`),
 ];
+
+// Klasa 7: obliczenia w notacji wykładniczej — działania, poprawianie wyniku do postaci a · 10ⁿ, porządkowanie i zadania tekstowe.
+// Zadania są w kolejności od najłatwiejszych do najtrudniejszych (`ordered: true` w scenariuszu).
+const B = (a, n) => `(${sci(a, n)})`;
+const ops = (e) => `Oblicz i wynik zapisz w notacji wykładniczej: <b>${e}</b>.`;
+const between = (v) => `Między którymi dwiema kolejnymi potęgami liczby 10 leży liczba <b>${v}</b>?`;
+const pw = (a, b) => `${e10(a)} i ${e10(b)}`;
+const xyz = (x, y, z) => `Ustaw liczby w kolejności rosnącej.<div class="task-statements"><i>x</i> = <b>${x}</b>, <i>y</i> = <b>${y}</b>, <i>z</i> = <b>${z}</b></div>`;
+const lt = (s) => s.split(' ').map(c => c === '<' ? '&lt;' : `<i>${c}</i>`).join(' ');
+const dot = (n) => `● · ${e10(n)}`;
+const HIDE = 'Pierwsze czynniki liczb zapisanych w notacji wykładniczej zasłonięto (●).';
+const FIX = 'Pierwszy czynnik musi być nie mniejszy niż 1 i mniejszy od 10';
+
+export const scientificCalcQuestions7 = [
+ // Dodawanie — te same wykładniki
+ q('on7-1a',ops(`${sci('2,1',6)} + ${sci('3,5',6)}`), [sci('5,6',6),sci('5,6',12),sci('7,35',12),sci(56,5)],0,`Wykładniki są równe, więc dodajemy tylko pierwsze czynniki: 2,1 + 3,5 = 5,6. Potęga ${e10(6)} zostaje bez zmian: <b>${sci('5,6',6)}</b>. Przy dodawaniu wykładników się nie dodaje.`),
+ q('on7-1b',ops(`${sci('4,3',-5)} + ${sci('1,4',-5)}`), [sci('5,7',-10),sci('5,7',-5),sci('5,7',5),sci('6,02',-10)],1,`4,3 + 1,4 = 5,7, a potęga ${e10(-5)} zostaje: <b>${sci('5,7',-5)}</b>. Wykładnik −10 to błąd: przy dodawaniu wykładników się nie dodaje.`),
+ q('on7-1c',ops(`${sci('3,25',9)} + ${sci('6,5',9)}`), [sci('9,75',18),sci('97,5',8),sci('9,75',9),sci('9,75',10)],2,`3,25 + 6,5 = 9,75, a potęga ${e10(9)} zostaje: <b>${sci('9,75',9)}</b>. ${sci('97,5',8)} ma tę samą wartość, ale 97,5 jest większe od 10.`),
+ q('on7-1d',ops(`${sci('1,6',-2)} + ${sci('2,2',-2)}`), [sci('3,8',-4),sci('3,52',-4),sci('3,8',2),sci('3,8',-2)],3,`1,6 + 2,2 = 3,8, a potęga ${e10(-2)} zostaje: <b>${sci('3,8',-2)}</b>.`),
+ // Odejmowanie — te same wykładniki
+ q('on7-2a',ops(`${sci('9,8',7)} − ${sci('4,5',7)}`), [sci('5,3',0),sci('5,3',14),sci('1,43',8),sci('5,3',7)],3,`9,8 − 4,5 = 5,3, a potęga ${e10(7)} zostaje: <b>${sci('5,3',7)}</b>. Wykładników nie odejmujemy — dlatego ${sci('5,3',0)} to błąd.`),
+ q('on7-2b',ops(`${sci('7,8',-4)} − ${sci('2,3',-4)}`), [sci('5,5',-4),sci('5,5',0),sci('5,5',-8),sci('5,5',4)],0,`7,8 − 2,3 = 5,5, a potęga ${e10(-4)} zostaje: <b>${sci('5,5',-4)}</b>.`),
+ q('on7-2c',ops(`${sci('6,75',11)} − ${sci('2,5',11)}`), [sci('4,25',0),sci('4,25',11),sci('42,5',10),sci('9,25',11)],1,`6,75 − 2,5 = 4,25, a potęga ${e10(11)} zostaje: <b>${sci('4,25',11)}</b>. ${sci('9,25',11)} to suma, a nie różnica.`),
+ q('on7-2d',ops(`${sci(5,-8)} − ${sci('1,2',-8)}`), [sci('3,8',-16),sci('3,8',0),sci('3,8',-8),sci('6,2',-8)],2,`5 − 1,2 = 3,8, a potęga ${e10(-8)} zostaje: <b>${sci('3,8',-8)}</b>.`),
+ // Mnożenie bez poprawiania
+ q('on7-3a',ops(`${B(2,5)} · ${B(4,3)}`), [sci(8,15),sci(6,8),sci(8,8),sci(8,2)],2,`Mnożymy osobno liczby i potęgi: 2 · 4 = 8 oraz ${e10(5)} · ${e10(3)} = ${e10(8)}. Wynik: <b>${sci(8,8)}</b>. ${e10(15)} to pomnożone wykładniki.`),
+ q('on7-3b',ops(`${B(3,-4)} · ${B(3,9)}`), [sci(9,-36),sci(6,5),sci(9,13),sci(9,5)],3,`3 · 3 = 9 oraz ${e10(-4)} · ${e10(9)} = ${e10(5)}, bo −4 + 9 = 5. Wynik: <b>${sci(9,5)}</b>.`),
+ q('on7-3c',ops(`${B('1,2',6)} · ${B(4,2)}`), [sci('4,8',8),sci('4,8',12),sci('5,2',8),sci(48,7)],0,`1,2 · 4 = 4,8 oraz ${e10(6)} · ${e10(2)} = ${e10(8)}. Wynik: <b>${sci('4,8',8)}</b>. 5,2 to suma 1,2 + 4, a nie iloczyn.`),
+ q('on7-3d',ops(`${B('2,5',-3)} · ${B(3,-4)}`), [sci('7,5',12),sci('7,5',-7),sci('7,5',-1),sci('5,5',-7)],1,`2,5 · 3 = 7,5 oraz ${e10(-3)} · ${e10(-4)} = ${e10(-7)}, bo −3 + (−4) = −7. Wynik: <b>${sci('7,5',-7)}</b>.`),
+ // Dzielenie bez poprawiania
+ q('on7-4a',ops(`${B('9,6',8)} : ${B(3,2)}`), [sci('3,2',4),sci('3,2',6),sci('3,2',10),sci('6,6',6)],1,`Dzielimy osobno liczby i potęgi: 9,6 : 3 = 3,2 oraz ${e10(8)} : ${e10(2)} = ${e10(6)}. Wynik: <b>${sci('3,2',6)}</b>. ${e10(4)} to podzielone wykładniki.`),
+ q('on7-4b',ops(`${B(8,-2)} : ${B(2,5)}`), [sci(4,3),sci(6,-7),sci(4,-7),sci(4,7)],2,`8 : 2 = 4 oraz ${e10(-2)} : ${e10(5)} = ${e10(-7)}, bo −2 − 5 = −7. Wynik: <b>${sci(4,-7)}</b>.`),
+ q('on7-4c',ops(`${B('6,3',12)} : ${B('2,1',4)}`), [sci(3,3),sci(3,16),sci('4,2',8),sci(3,8)],3,`6,3 : 2,1 = 3 oraz ${e10(12)} : ${e10(4)} = ${e10(8)}. Wynik: <b>${sci(3,8)}</b>. ${e10(3)} to podzielone wykładniki.`),
+ q('on7-4d',ops(`${B('7,2',-3)} : ${B('1,2',-9)}`), [sci(6,6),sci(6,-12),sci(6,-6),sci(6,3)],0,`7,2 : 1,2 = 6 oraz ${e10(-3)} : ${e10(-9)} = ${e10(6)}, bo −3 − (−9) = −3 + 9 = 6. Wynik: <b>${sci(6,6)}</b>.`),
+ // Między kolejnymi potęgami liczby 10
+ q('on7-5a',between('4800'), [pw(2,3),pw(3,4),pw(4,5),pw(-4,-3)],1,`4800 = ${sci('4,8',3)}, a 1 ≤ 4,8 &lt; 10. Zatem ${e10(3)} = 1000 &lt; 4800 &lt; 10 000 = ${e10(4)}: <b>${pw(3,4)}</b>.`),
+ q('on7-5b',between('0,0006'), [pw(-3,-2),pw(-5,-4),pw(-4,-3),pw(3,4)],2,`0,0006 = ${sci(6,-4)}. Zatem ${e10(-4)} = 0,0001 &lt; 0,0006 &lt; 0,001 = ${e10(-3)}: <b>${pw(-4,-3)}</b>.`),
+ q('on7-5c',between('52 000 000'), [pw(6,7),pw(8,9),pw(5,6),pw(7,8)],3,`52 000 000 = ${sci('5,2',7)}. Zatem ${e10(7)} = 10 000 000 &lt; 52 000 000 &lt; 100 000 000 = ${e10(8)}: <b>${pw(7,8)}</b>.`),
+ q('on7-5d',between('0,035'), [pw(-2,-1),pw(-3,-2),pw(1,2),pw(-1,0)],0,`0,035 = ${sci('3,5',-2)}. Zatem ${e10(-2)} = 0,01 &lt; 0,035 &lt; 0,1 = ${e10(-1)}: <b>${pw(-2,-1)}</b>.`),
+ // Porządkowanie rosnąco
+ q('on7-6a',xyz(sci('4,1',12),sci('9,5',11),sci('1,2',13)), [lt('x < y < z'),lt('y < x < z'),lt('z < x < y'),lt('y < z < x')],1,`Najpierw porównujemy wykładniki: 11 &lt; 12 &lt; 13. Zatem <b>${lt('y < x < z')}</b>. Duży pierwszy czynnik 9,5 nie wystarczy, gdy wykładnik jest mniejszy.`),
+ q('on7-6b',xyz(sci(6,-8),sci(2,-7),sci(8,-9)), [lt('z < x < y'),lt('x < y < z'),lt('y < x < z'),lt('z < y < x')],0,`Porównujemy wykładniki: −9 &lt; −8 &lt; −7. Zatem <b>${lt('z < x < y')}</b>. Bez notacji: 0,000000008 &lt; 0,00000006 &lt; 0,0000002.`),
+ q('on7-6c',xyz(sci('3,5',9),sci('3,05',9),sci('5,3',8)), [lt('x < y < z'),lt('y < z < x'),lt('z < y < x'),lt('z < x < y')],2,`<i>z</i> ma najmniejszy wykładnik (8), więc jest najmniejsza. <i>x</i> i <i>y</i> mają wykładnik 9, a 3,05 &lt; 3,5. Zatem <b>${lt('z < y < x')}</b>.`),
+ q('on7-6d',xyz(sci(7,-5),sci('2,4',-4),sci('7,5',-5)), [lt('y < x < z'),lt('z < x < y'),lt('x < y < z'),lt('x < z < y')],3,`<i>y</i> ma największy wykładnik (−4 &gt; −5), więc jest największa. <i>x</i> i <i>z</i> mają wykładnik −5, a 7 &lt; 7,5. Zatem <b>${lt('x < z < y')}</b>.`),
+ // Zasłonięte pierwsze czynniki
+ q('on7-7a',`${HIDE} Która liczba jest <b>na pewno największa</b>?`, [dot(7),dot(6),dot(8),dot(9)],3,`${FIX}, więc o kolejności decyduje wykładnik. Nawet 9,99 · ${e10(8)} jest mniejsze od 1 · ${e10(9)}. Największa jest <b>${dot(9)}</b>.`),
+ q('on7-7b',`${HIDE} Która liczba jest <b>na pewno najmniejsza</b>?`, [dot(-3),dot(2),dot(-5),dot(-4)],2,`${FIX}, więc o kolejności decyduje wykładnik. Najmniejszy jest −5: <b>${dot(-5)}</b> to mniej niż 0,0001, a każda z pozostałych liczb jest od 0,0001 nie mniejsza.`),
+ q('on7-7c',`${HIDE} Która liczba jest <b>na pewno najmniejsza</b>?`, [dot(-6),dot(-7),dot(-2),dot(-1)],1,`${FIX}, więc o kolejności decyduje wykładnik. Najmniejszy jest −7, więc najmniejsza jest <b>${dot(-7)}</b>.`),
+ q('on7-7d',`Liczba <i>a</i> = <b>${dot(-3)}</b> jest zapisana w notacji wykładniczej, ale jej pierwszy czynnik zasłonięto. Liczba <i>b</i> = <b>${sci('9,9',-4)}</b>. Co na pewno wiadomo?`, ['<i>a</i> &gt; <i>b</i>','<i>a</i> &lt; <i>b</i>','<i>a</i> = <i>b</i>','Nie da się tego ustalić'],0,`Najmniejsza możliwa wartość <i>a</i> to 1 · ${e10(-3)} = 0,001, a <i>b</i> = 0,00099. Zatem na pewno <b><i>a</i> &gt; <i>b</i></b>.`),
+ // Dodawanie z poprawianiem wyniku
+ q('on7-8a',ops(`${sci('6,4',5)} + ${sci('5,8',5)}`), [sci('12,2',5),sci('1,22',6),sci('1,22',10),sci('1,22',5)],1,`6,4 + 5,8 = 12,2, czyli ${sci('12,2',5)}. Ale 12,2 jest większe od 10: 12,2 = ${sci('1,22',1)}, więc wynik to <b>${sci('1,22',6)}</b>.`),
+ q('on7-8b',ops(`${sci('8,5',-3)} + ${sci('3,9',-3)}`), [sci('1,24',-2),sci('1,24',-4),sci('12,4',-3),sci('1,24',-6)],0,`8,5 + 3,9 = 12,4, czyli ${sci('12,4',-3)}. 12,4 = ${sci('1,24',1)}, a −3 + 1 = −2, więc wynik to <b>${sci('1,24',-2)}</b>.`),
+ q('on7-8c',ops(`${sci('7,25',10)} + ${sci('4,75',10)}`), [sci(12,10),sci('1,2',9),sci('1,2',11),sci('1,2',20)],2,`7,25 + 4,75 = 12, czyli ${sci(12,10)}. 12 = ${sci('1,2',1)}, więc wynik to <b>${sci('1,2',11)}</b>. Przecinek przesunął się w lewo, więc wykładnik rośnie.`),
+ q('on7-8d',ops(`${sci('9,6',-7)} + ${sci('5,4',-7)}`), [sci('1,5',-8),sci(15,-7),sci('1,5',-14),sci('1,5',-6)],3,`9,6 + 5,4 = 15, czyli ${sci(15,-7)}. 15 = ${sci('1,5',1)}, a −7 + 1 = −6, więc wynik to <b>${sci('1,5',-6)}</b>.`),
+ // Odejmowanie z poprawianiem wyniku
+ q('on7-9a',ops(`${sci('3,1',-6)} − ${sci('2,7',-6)}`), [sci('0,4',-6),sci(4,-5),sci(4,-7),sci(4,0)],2,`3,1 − 2,7 = 0,4, czyli ${sci('0,4',-6)}. Ale 0,4 jest mniejsze od 1: 0,4 = ${sci(4,-1)}, a −6 + (−1) = −7. Wynik: <b>${sci(4,-7)}</b>.`),
+ q('on7-9b',ops(`${sci('2,05',8)} − ${sci('1,8',8)}`), [sci('2,5',7),sci('2,5',9),sci('0,25',8),sci('3,85',8)],0,`2,05 − 1,8 = 0,25, czyli ${sci('0,25',8)}. 0,25 = ${sci('2,5',-1)}, więc wynik to <b>${sci('2,5',7)}</b>. Przecinek przesunął się w prawo, więc wykładnik maleje.`),
+ q('on7-9c',ops(`${sci('5,3',4)} − ${sci('4,9',4)}`), [sci(4,5),sci('0,4',4),sci(4,0),sci(4,3)],3,`5,3 − 4,9 = 0,4, czyli ${sci('0,4',4)} = 4000. 0,4 = ${sci(4,-1)}, więc wynik to <b>${sci(4,3)}</b>.`),
+ q('on7-9d',ops(`${sci(6,-10)} − ${sci('5,2',-10)}`), [sci(8,-9),sci(8,-11),sci('0,8',-10),sci(8,-20)],1,`6 − 5,2 = 0,8, czyli ${sci('0,8',-10)}. 0,8 = ${sci(8,-1)}, a −10 + (−1) = −11. Wynik: <b>${sci(8,-11)}</b>.`),
+ // Mnożenie z poprawianiem wyniku
+ q('on7-10a',ops(`${B(7,6)} · ${B('1,5',4)}`), [sci('1,05',10),sci('10,5',10),sci('1,05',11),sci('1,05',24)],2,`7 · 1,5 = 10,5 oraz ${e10(6)} · ${e10(4)} = ${e10(10)}, czyli ${sci('10,5',10)}. 10,5 = ${sci('1,05',1)}, więc wynik to <b>${sci('1,05',11)}</b>.`),
+ q('on7-10b',ops(`${B('0,6',-5)} · ${B('0,4',9)}`), [sci('2,4',3),sci('0,24',4),sci('2,4',5),sci('2,4',-45)],0,`0,6 · 0,4 = 0,24 oraz ${e10(-5)} · ${e10(9)} = ${e10(4)}, czyli ${sci('0,24',4)}. 0,24 = ${sci('2,4',-1)}, więc wynik to <b>${sci('2,4',3)}</b> = 2400.`),
+ q('on7-10c',ops(`${B(5,-3)} · ${B(8,-6)}`), [sci(4,-10),sci(40,-9),sci(4,18),sci(4,-8)],3,`5 · 8 = 40 oraz ${e10(-3)} · ${e10(-6)} = ${e10(-9)}, czyli ${sci(40,-9)}. 40 = ${sci(4,1)}, a −9 + 1 = −8. Wynik: <b>${sci(4,-8)}</b>.`),
+ q('on7-10d',ops(`${B('2,5',7)} · ${B('0,2',-3)}`), [sci(5,5),sci(5,3),sci('0,5',4),sci('2,7',4)],1,`2,5 · 0,2 = 0,5 oraz ${e10(7)} · ${e10(-3)} = ${e10(4)}, czyli ${sci('0,5',4)}. 0,5 = ${sci(5,-1)}, więc wynik to <b>${sci(5,3)}</b> = 5000.`),
+ // Dzielenie z poprawianiem wyniku
+ q('on7-11a',ops(`${B('2,4',-3)} : ${B(6,5)}`), [sci(4,-9),sci(4,-7),sci('0,4',-8),sci(4,2)],0,`2,4 : 6 = 0,4 oraz ${e10(-3)} : ${e10(5)} = ${e10(-8)}, czyli ${sci('0,4',-8)}. 0,4 = ${sci(4,-1)}, więc wynik to <b>${sci(4,-9)}</b>.`),
+ q('on7-11b',ops(`${B('6,3',-4)} : ${B('0,3',5)}`), [sci(21,-9),sci('2,1',-8),sci('2,1',-10),sci('2,1',1)],1,`6,3 : 0,3 = 21 oraz ${e10(-4)} : ${e10(5)} = ${e10(-9)}, czyli ${sci(21,-9)}. 21 = ${sci('2,1',1)}, a −9 + 1 = −8. Wynik: <b>${sci('2,1',-8)}</b>.`),
+ q('on7-11c',ops(`${B('1,8',12)} : ${B(9,4)}`), [sci(2,9),sci('0,2',8),sci(2,7),sci(2,3)],2,`1,8 : 9 = 0,2 oraz ${e10(12)} : ${e10(4)} = ${e10(8)}, czyli ${sci('0,2',8)}. 0,2 = ${sci(2,-1)}, więc wynik to <b>${sci(2,7)}</b>.`),
+ q('on7-11d',ops(`${B(9,-5)} : ${B('0,3',-8)}`), [sci(30,3),sci(3,3),sci(3,-12),sci(3,4)],3,`9 : 0,3 = 30 oraz ${e10(-5)} : ${e10(-8)} = ${e10(3)}, bo −5 − (−8) = 3. Mamy ${sci(30,3)}, a 30 = ${sci(3,1)}, więc wynik to <b>${sci(3,4)}</b>. ${sci(3,3)} to błąd 9 : 0,3 = 3.`),
+ // Potęgowanie
+ q('on7-12a',ops(p(B(3,4),2)), [sci(9,16),sci(6,8),sci(9,6),sci(9,8)],3,`Do kwadratu podnosimy oba czynniki: 3² = 9 oraz ${p(`(${e10(4)})`,2)} = ${e10(8)}. Wynik: <b>${sci(9,8)}</b>. 6 to 3 · 2, a nie 3².`),
+ q('on7-12b',ops(p(B(2,-3),3)), [sci(8,-9),sci(6,-9),sci(8,-27),sci(8,0)],0,`2³ = 8 oraz ${p(`(${e10(-3)})`,3)} = ${e10(-9)}, bo −3 · 3 = −9. Wynik: <b>${sci(8,-9)}</b>.`),
+ q('on7-12c',ops(p(B('0,5',-3),2)), [sci('0,25',-6),sci('2,5',-5),sci('2,5',-7),sci('2,5',9)],2,`0,5² = 0,25 oraz ${p(`(${e10(-3)})`,2)} = ${e10(-6)}, czyli ${sci('0,25',-6)}. 0,25 = ${sci('2,5',-1)}, więc wynik to <b>${sci('2,5',-7)}</b>.`),
+ q('on7-12d',ops(p(B(4,5),3)), [sci(64,15),sci('6,4',16),sci(12,15),sci('6,4',8)],1,`4³ = 64 oraz ${p(`(${e10(5)})`,3)} = ${e10(15)}, czyli ${sci(64,15)}. 64 = ${sci('6,4',1)}, więc wynik to <b>${sci('6,4',16)}</b>.`),
+ // Prawda czy fałsz — reguły działań
+ judge('on7-13a',`${sci(2,5)} + ${sci(3,5)} = ${sci(5,10)}`,`${B(2,5)} · ${B(3,5)} = ${sci(6,10)}`,'FP',`I: przy dodawaniu potęga ${e10(5)} zostaje: 2 + 3 = 5, więc suma to ${sci(5,5)} — <b>fałsz</b>. II: 2 · 3 = 6 i ${e10(5)} · ${e10(5)} = ${e10(10)} — <b>prawda</b>.`),
+ judge('on7-13b',`${B(6,8)} : ${B(2,4)} = ${sci(3,4)}`,`${sci(7,6)} − ${sci(2,6)} = ${sci(5,0)}`,'PF',`I: 6 : 2 = 3 i ${e10(8)} : ${e10(4)} = ${e10(4)} — <b>prawda</b>. II: przy odejmowaniu potęga ${e10(6)} zostaje, więc różnica to ${sci(5,6)}, a nie 5 — <b>fałsz</b>.`),
+ judge('on7-13c',`${p(B(3,-2),2)} = ${sci(9,-4)}`,`${sci('4,5',7)} + ${sci('5,5',7)} = ${sci(1,8)}`,'PP',`I: 3² = 9 i ${p(`(${e10(-2)})`,2)} = ${e10(-4)} — <b>prawda</b>. II: 4,5 + 5,5 = 10, a ${sci(10,7)} = ${sci(1,8)} — <b>prawda</b>.`),
+ judge('on7-13d',`${B(5,4)} · ${B(4,3)} = ${sci(2,7)}`,`${sci(9,-5)} − ${sci(3,-5)} = ${sci(6,0)}`,'FF',`I: 5 · 4 = 20, więc iloczyn to ${sci(20,7)} = ${sci(2,8)} — <b>fałsz</b>. II: różnica to ${sci(6,-5)}, a nie 6 — <b>fałsz</b>.`),
+ // Dodawanie i odejmowanie — różne wykładniki
+ q('on7-14a',ops(`${sci(4,5)} + ${sci(3,4)}`), [sci(7,9),sci(7,5),sci('4,3',5),sci(43,4)],2,`Wykładniki są różne, więc najpierw je wyrównujemy: ${sci(4,5)} = ${sci(40,4)}. Teraz 40 + 3 = 43, czyli ${sci(43,4)} = <b>${sci('4,3',5)}</b>. Nie wolno dodać 4 + 3 = 7.`),
+ q('on7-14b',ops(`${sci('2,5',-3)} + ${sci(6,-4)}`), [sci('8,5',-7),sci('3,1',-3),sci('8,5',-4),sci('3,1',-4)],1,`Wyrównujemy wykładniki: ${sci('2,5',-3)} = ${sci(25,-4)}. Teraz 25 + 6 = 31, czyli ${sci(31,-4)} = <b>${sci('3,1',-3)}</b>. Sprawdzenie: 0,0025 + 0,0006 = 0,0031.`),
+ q('on7-14c',ops(`${sci(5,8)} − ${sci(4,7)}`), [sci(1,1),sci(1,8),sci('4,6',7),sci('4,6',8)],3,`Wyrównujemy wykładniki: ${sci(5,8)} = ${sci(50,7)}. Teraz 50 − 4 = 46, czyli ${sci(46,7)} = <b>${sci('4,6',8)}</b>. Odejmowanie 5 − 4 bez wyrównania daje błędne ${sci(1,8)}.`),
+ q('on7-14d',ops(`${sci('1,2',-5)} − ${sci(8,-7)}`), [sci('1,12',-5),sci('1,12',-7),sci(4,-6),sci('11,2',-6)],0,`Wyrównujemy wykładniki: ${sci('1,2',-5)} = ${sci(120,-7)}. Teraz 120 − 8 = 112, czyli ${sci(112,-7)} = <b>${sci('1,12',-5)}</b>.`),
+ // Ułamki
+ q('on7-15a',ops(f(sci('5,6',12),sci(7,4))), [sci('0,8',8),sci(8,8),sci(8,16),sci(8,7)],3,`Kreska ułamkowa to dzielenie: 5,6 : 7 = 0,8 oraz ${e10(12)} : ${e10(4)} = ${e10(8)}, czyli ${sci('0,8',8)}. 0,8 = ${sci(8,-1)}, więc wynik to <b>${sci(8,7)}</b>.`),
+ q('on7-15b',ops(f(`${B(4,6)} · ${B(3,-2)}`,sci(6,3))), [sci(2,1),sci(2,7),sci(2,-1),sci(2,11)],0,`Licznik: 4 · 3 = 12 i ${e10(6)} · ${e10(-2)} = ${e10(4)}, czyli ${sci(12,4)}. Dzielimy: 12 : 6 = 2 i ${e10(4)} : ${e10(3)} = ${e10(1)}. Wynik: <b>${sci(2,1)}</b> = 20.`),
+ q('on7-15c',ops(f(sci(3,5),`${B(2,-3)} · ${B(3,2)}`)), [sci('0,5',6),sci(5,3),sci(5,5),sci(5,7)],2,`Mianownik: 2 · 3 = 6 i ${e10(-3)} · ${e10(2)} = ${e10(-1)}, czyli ${sci(6,-1)}. Dzielimy: 3 : 6 = 0,5 i ${e10(5)} : ${e10(-1)} = ${e10(6)}, czyli ${sci('0,5',6)} = <b>${sci(5,5)}</b>.`),
+ q('on7-15d',ops(f(`${B('2,4',-5)} · ${B(5,8)}`,`${B(4,-2)} · ${B(3,7)}`)), [sci(1,2),sci(1,-2),sci(12,-2),sci(1,8)],1,`Licznik: 2,4 · 5 = 12 i ${e10(-5)} · ${e10(8)} = ${e10(3)}. Mianownik: 4 · 3 = 12 i ${e10(-2)} · ${e10(7)} = ${e10(5)}. Dzielimy: 12 : 12 = 1 i ${e10(3)} : ${e10(5)} = ${e10(-2)}. Wynik: <b>${sci(1,-2)}</b>.`),
+ // Ile razy?
+ q('on7-16a',`Wieża Eiffla ma wysokość około <b>${sci(3,2)}</b> m, a mrówka ma długość około <b>${sci(4,-3)}</b> m. Ile razy wysokość wieży jest większa od długości mrówki? Wynik podaj w notacji wykładniczej.`, [sci('7,5',-1),sci('7,5',5),sci('1,2',0),sci('7,5',4)],3,`Dzielimy: 3 : 4 = 0,75 oraz ${e10(2)} : ${e10(-3)} = ${e10(5)}, czyli ${sci('0,75',5)} = <b>${sci('7,5',4)}</b> = 75 000 razy.`),
+ q('on7-16b',`Włos ludzki ma grubość około <b>0,00008</b> m, a bakteria pałeczka okrężnicy ma długość około <b>${sci(2,-6)}</b> m. Ile razy grubość włosa jest większa od długości bakterii?`, ['4','40','400','4000'],1,`0,00008 = ${sci(8,-5)}. Dzielimy: 8 : 2 = 4 oraz ${e10(-5)} : ${e10(-6)} = ${e10(1)}. Wynik: ${sci(4,1)} = <b>40</b> razy.`),
+ q('on7-16c',`Średnica Słońca wynosi około <b>${sci('1,4',9)}</b> m, a średnica Księżyca około <b>${sci('3,5',6)}</b> m. Ile razy średnica Słońca jest większa od średnicy Księżyca?`, ['400','40','4000','40 000'],0,`1,4 : 3,5 = 0,4 oraz ${e10(9)} : ${e10(6)} = ${e10(3)}. Wynik: ${sci('0,4',3)} = <b>400</b> razy. Słońce jest też około 400 razy dalej od Ziemi niż Księżyc — dlatego na niebie wyglądają na podobnie duże.`),
+ q('on7-16d',`Ziarenko pyłku sosny ma średnicę około <b>${sci(6,-5)}</b> m, a wirus grypy — około <b>${sci(1,-7)}</b> m. Ile razy ziarenko pyłku jest większe od wirusa? Wynik podaj w notacji wykładniczej.`, [sci(6,-12),sci(6,1),sci(6,2),sci(6,3)],2,`6 : 1 = 6 oraz ${e10(-5)} : ${e10(-7)} = ${e10(2)}, bo −5 − (−7) = 2. Wynik: <b>${sci(6,2)}</b> = 600 razy. ${e10(-12)} to dodane wykładniki.`),
+ // Zadania tekstowe z działaniami
+ q('on7-17a',`Kartka papieru ma grubość około <b>${sci(1,-4)}</b> m. Jaką grubość ma ryza, czyli <b>500</b> kartek? Wynik podaj w notacji wykładniczej.`, [sci(5,-2),sci(5,-6),sci(5,2),sci(5,-3)],0,`500 = ${sci(5,2)}. Mnożymy: 5 · 1 = 5 oraz ${e10(2)} · ${e10(-4)} = ${e10(-2)}. Wynik: <b>${sci(5,-2)}</b> m = 5 cm.`),
+ q('on7-17b',`Masa Ziemi wynosi około <b>${sci('5,97',24)}</b> kg, a masa Księżyca — około <b>${sci('7,35',22)}</b> kg. Ile wynosi suma tych mas? Wynik podaj w notacji wykładniczej.`, [sci('1,332',25),sci('6,0435',24),sci('1,332',47),sci('6,0435',22)],1,`Wyrównujemy wykładniki: ${sci('5,97',24)} = ${sci(597,22)}. Teraz 597 + 7,35 = 604,35, czyli ${sci('604,35',22)} = <b>${sci('6,0435',24)}</b> kg. Dodawanie 5,97 + 7,35 bez wyrównania wykładników to błąd.`),
+ q('on7-17c',`Szacuje się, że na Ziemi żyje około <b>${sci(2,16)}</b> mrówek i około <b>${sci(8,9)}</b> ludzi. Ile mrówek przypada na jednego człowieka? Wynik podaj w notacji wykładniczej.`, [sci(4,-7),sci('2,5',7),sci('2,5',6),sci('2,5',26)],2,`Dzielimy liczbę mrówek przez liczbę ludzi: 2 : 8 = 0,25 oraz ${e10(16)} : ${e10(9)} = ${e10(7)}, czyli ${sci('0,25',7)} = <b>${sci('2,5',6)}</b>, czyli 2,5 miliona mrówek. ${sci(4,-7)} to dzielenie w odwrotną stronę.`),
+ q('on7-17d',`Wirus ma długość około <b>${sci('1,2',-7)}</b> m, a bakteria — około <b>${sci(3,-6)}</b> m. <b>O ile</b> metrów bakteria jest dłuższa od wirusa? Wynik podaj w notacji wykładniczej.`, [sci('1,8',-6),sci('2,88',-7),sci('2,5',1),sci('2,88',-6)],3,`„O ile” to różnica. Wyrównujemy wykładniki: ${sci('1,2',-7)} = ${sci('0,12',-6)}. Teraz 3 − 0,12 = 2,88, więc różnica to <b>${sci('2,88',-6)}</b> m. ${sci('2,5',1)} = 25 odpowiada na pytanie „ile razy”.`),
+];
