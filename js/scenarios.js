@@ -6,7 +6,7 @@ import { algebraExamQuestions } from './algebra-exam-sets.js';
 import { powerExamQuestions } from './power-exam-sets.js';
 import { powerQuestions7, samePowerQuestions7, scientificQuestions7, scientificCalcQuestions7 } from './grade7-sets.js';
 import { axisQuestions } from './axis-sets.js';
-import { geometryQuestions5, angleQuestions5, measureQuestions5 } from './geometry5-sets.js';
+import { geometryQuestions5, angleQuestions5, measureQuestions5, triangleQuestions5 } from './geometry5-sets.js';
 import { algebraQuestions8, multiplicationQuestions8, equationQuestions8 } from './algebra-sets.js';
 import { grade4Questions, axisQuestions4, additionQuestions4, estimationQuestions4, smartAdditionQuestions4, smartSubtractionQuestions4, reviewQuestions4, wordProblemQuestions4 } from './grade4-sets.js';
 
@@ -107,6 +107,7 @@ export const SCENARIOS = [
  {id:'lines-5', grade:5, section:'Figury geometryczne', title:'Płaszczyzna, proste, półproste, odcinki', description:'Prosta, półprosta i odcinek, zapis ⊥ i ∥, punkty na prostej, proste równoległe i prostopadłe (także w kratce), liczenie odcinków i prostych.', questions:geometryQuestions5, ordered:true, award:{password:'Geometria powtórzona, wiedza świetnie utrwalona!', pluses:2}},
  {id:'angles-5', grade:5, section:'Figury geometryczne', title:'Kąty', description:'Rodzaje kątów, nazwy, porównywanie, kąty na zegarze, kąty przyległe i wierzchołkowe, kąty między drogami i kąty wielokąta.', questions:angleQuestions5, ordered:true, award:{password:'Quiz o kątach zakończony – każdy uczeń wyszkolony!', pluses:2}},
  {id:'measure-angles-5', grade:5, section:'Figury geometryczne', title:'Mierzenie kątów', description:'Ostry, prosty, rozwarty czy wklęsły? Kątomierz z dwiema skalami, obrót wskazówek zegara, kąty zaznaczone łukami, trzy proste i podział kąta na części.', questions:measureQuestions5, ordered:true, award:{password:'Kąt ostry czy rozwarty? Ten quiz jest tego warty!', pluses:2}},
+ {id:'triangles-5', grade:5, section:'Figury geometryczne', title:'Trójkąty', description:'Rodzaje trójkątów, suma kątów, z jakich odcinków zbudujesz trójkąt, kąty z rysunków (także przyległe i wierzchołkowe), trójkąty równoramienne, obwody i zadania tekstowe.', questions:triangleQuestions5, ordered:true, award:{password:'Trzy boki, trzy kąty – znam na wylot trójkąty!', pluses:3}},
  // Klasa 8: za milion zawsze 3 plusy, a hasło to nazwa zwierzęcia (inna w każdym zestawie).
  // Klasa 8 też ma działy (jak w podręczniku), a zestawy egzaminacyjne mają dział „Przygotowanie do egzaminu”.
  {id:'diagrams', grade:8, section:'Statystyka i prawdopodobieństwo', title:'Diagramy i wykresy', description:'Nowe zadania w stylu egzaminu ósmoklasisty. Każde z innym wykresem.', questions:diagramQuestions, award:{password:'FLAMING', pluses:3}},

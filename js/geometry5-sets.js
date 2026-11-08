@@ -325,3 +325,129 @@ export const measureQuestions5 = [
  q('mk5-14c','Kąt prosty podzielono na dwa kąty. Jeden z nich jest <b>dwa razy większy</b> od drugiego. Ile stopni ma większy z nich?',['30°','60°','45°','70°'],1,'90° dzielimy na 3 równe części: 90° : 3 = 30°. Mniejszy kąt ma 30°, a większy 2 · 30° = <b>60°</b>.'),
  q('mk5-14d','Kąt pełny podzielono na trzy kąty: α, β i γ. Kąty α i β są równe, a γ = 100°. Ile stopni ma kąt α?',['100°','80°','260°','130°'],3,'Razem mają 360°. α + β = 360° − 100° = 260°, a skoro są równe, to α = 260° : 2 = <b>130°</b>.'),
 ];
+
+// Klasa 5, dział „Figury geometryczne”: trójkąty — nazwy i rodzaje, suma kątów, warunek trójkąta (także w różnych
+// jednostkach), kąty z rysunku, kąt przyległy i wierzchołkowy, trójkąty równoramienne, obwody i zadania tekstowe.
+// Od łatwych do trudnych (`ordered`). Wierzchołki i podpisy boków mają współrzędne w data-*, test mierzy na nich boki i kąty.
+const TRK = ['ostrokątny', 'prostokątny', 'rozwartokątny', 'taki trójkąt nie istnieje'];
+const dirOf = (v, p) => Math.atan2(-(p[1] - v[1]), p[0] - v[0]) * 180 / Math.PI;
+// Trójkąt ABC o kątach A i B przy boku AB, obrócony o `rot` stopni i dopasowany do rysunku. `ext`: przedłużenia boków,
+// np. {E: ['B', 'A']} — półprosta z B w kierunku od A. `arcs`: [wierzchołek, punkt, punkt, nazwa, podpis] — mniejszy kąt.
+// `sides`: [punkt, punkt, podpis]. `solid`: przedłużenia rysowane linią ciągłą (proste przecinające się w wierzchołku).
+function triangle({A, B, rot = 0, ext = {}, arcs = [], sides = [], solid = false, desc}) {
+ const c = Math.sin(rad(B)) / Math.sin(rad(A + B)), m = {A: [0, 0], B: [1, 0], C: [c * Math.cos(rad(A)), c * Math.sin(rad(A))]};
+ for (const [k, [from, away]] of Object.entries(ext)) { const [p, a] = [m[from], m[away]], d = Math.hypot(p[0] - a[0], p[1] - a[1]); const e = solid ? 0.36 : 0.42; m[k] = [p[0] + (p[0] - a[0]) / d * e, p[1] + (p[1] - a[1]) / d * e]; }
+ const turn = ([x, y]) => [x * Math.cos(rad(rot)) - y * Math.sin(rad(rot)), x * Math.sin(rad(rot)) + y * Math.cos(rad(rot))];
+ const all = Object.fromEntries(Object.entries(m).map(([k, p]) => [k, turn(p)])), xs = Object.values(all).map((p) => p[0]), ys = Object.values(all).map((p) => p[1]);
+ const pad = 36, s = Math.min((W - 2 * pad) / (Math.max(...xs) - Math.min(...xs)), (H - 2 * pad) / (Math.max(...ys) - Math.min(...ys)));
+ const ox = (W - s * (Math.max(...xs) + Math.min(...xs))) / 2, oy = (H + s * (Math.max(...ys) + Math.min(...ys))) / 2;
+ const P = Object.fromEntries(Object.entries(all).map(([k, [x, y]]) => [k, [r1(ox + s * x), r1(oy - s * y)]]));
+ const g = [(P.A[0] + P.B[0] + P.C[0]) / 3, (P.A[1] + P.B[1] + P.C[1]) / 3];
+ let svg = Object.entries(ext).map(([k, [from]]) => `<path d="M${P[from][0]} ${P[from][1]}L${P[k][0]} ${P[k][1]}" stroke="#f3f5ff" stroke-width="2"${solid ? '' : ' stroke-dasharray="7 6"'}/>`).join('');
+ svg += `<polygon data-tri="ABC" points="${[P.A, P.B, P.C].map((p) => p.join(',')).join(' ')}" fill="#263051" stroke="#f3f5ff" stroke-width="2.5"/>`;
+ for (const [v, a, b, name, label] of arcs) {
+  let from = dirOf(P[v], P[a]), span = ((dirOf(P[v], P[b]) - from) % 360 + 360) % 360;
+  if (span > 180) { from = dirOf(P[v], P[b]); span = 360 - span; }
+  span = Math.abs(span - 90) < 0.3 ? 90 : r1(span);
+  svg += arc(name, P[v], r1(from), span, label, span < 45 ? 40 : 28);
+ }
+ for (const [a, b, label] of sides) {
+  // Podpis na zewnątrz boku, prostopadle do niego; odsunięty o pół szerokości napisu, żeby nie nachodził na linię.
+  const mid = [(P[a][0] + P[b][0]) / 2, (P[a][1] + P[b][1]) / 2], L = Math.hypot(P[b][0] - P[a][0], P[b][1] - P[a][1]);
+  let n = [-(P[b][1] - P[a][1]) / L, (P[b][0] - P[a][0]) / L];
+  if (n[0] * (mid[0] - g[0]) + n[1] * (mid[1] - g[1]) < 0) n = [-n[0], -n[1]];
+  const off = 8 + Math.abs(n[0]) * label.length * 4.4 + Math.abs(n[1]) * 9, l = [mid[0] + n[0] * off, mid[1] + n[1] * off];
+  svg += `<text data-side="${P[a]};${P[b]}" data-len="${label}" x="${r1(l[0])}" y="${r1(l[1] + 5)}" text-anchor="middle" fill="#f3f5ff" font-family="Arial, sans-serif" font-size="15">${label}</text>`;
+ }
+ return fig(svg, desc);
+}
+const deg3 = (a, b, c) => [a, b, 180 - a - b];
+const angleOf = (opp, s1, s2) => Math.acos((s1 * s1 + s2 * s2 - opp * opp) / (2 * s1 * s2)) * 180 / Math.PI;
+// Trójkąt o bokach AB = c, BC = a, AC = b.
+const bySides = (a, b, c) => ({A: angleOf(a, b, c), B: angleOf(b, a, c)});
+const kindQ = (id, svg, answers, correct, explain) => q(id, `${svg}Jaki to trójkąt? Wybierz dwa określenia.`, answers, correct, explain);
+const triQ = (id, svg, ask, answers, correct, explain) => q(id, `${svg}${ask}`, answers, correct, explain);
+const SAME = 'Kąty oznaczone tą samą literą są równe.';
+const truthT = (id, ctx, a, b, t, explain) => q(id, `${ctx} Oceń prawdziwość zdań.<div class="task-statements">I. ${a}<br>II. ${b}</div>Wybierz ocenę zdań (P — prawda, F — fałsz).`, ['I: P, II: P', 'I: P, II: F', 'I: F, II: P', 'I: F, II: F'], ['PP', 'PF', 'FP', 'FF'].indexOf(t), explain);
+
+export const triangleQuestions5 = [
+ // Nazwy i rodzaje trójkątów
+ q('tr5-1a','Ile wynosi suma miar kątów <b>każdego</b> trójkąta?',['180°','90°','360°','zależy od trójkąta'],0,'Kąty każdego trójkąta mają razem <b>180°</b> — tyle, co kąt półpełny. 360° to suma kątów czworokąta.'),
+ q('tr5-1b','Trójkąt, który ma <b>dwa boki równej długości</b>, to trójkąt:',['różnoboczny','równoramienny','prostokątny','rozwartokątny'],1,'Dwa równe boki to <b>ramiona</b>, a taki trójkąt to trójkąt <b>równoramienny</b>. Trzeci bok nazywamy podstawą.'),
+ q('tr5-1c','Trójkąt, który ma <b>jeden kąt prosty</b>, to trójkąt:',['ostrokątny','rozwartokątny','prostokątny','równoboczny'],2,'Kąt prosty ma 90°. Trójkąt z kątem prostym to trójkąt <b>prostokątny</b>.'),
+ q('tr5-1d','Jak nazywamy bok trójkąta prostokątnego, który leży <b>naprzeciwko kąta prostego</b>?',['ramię','podstawa','przyprostokątna','przeciwprostokątna'],3,'Boki tworzące kąt prosty to przyprostokątne, a bok naprzeciwko kąta prostego to <b>przeciwprostokątna</b> — najdłuższy bok tego trójkąta.'),
+ // Rodzaj trójkąta po kątach
+ q('tr5-2a','Kąty trójkąta mają <b>35°, 65° i 80°</b>. Jaki to trójkąt?',TRK,0,'35° + 65° + 80° = 180°, więc taki trójkąt istnieje. Wszystkie kąty są mniejsze od 90°, więc trójkąt jest <b>ostrokątny</b>.'),
+ q('tr5-2b','Kąty trójkąta mają <b>27°, 63° i 90°</b>. Jaki to trójkąt?',TRK,1,'27° + 63° + 90° = 180°, więc taki trójkąt istnieje. Ma kąt prosty, więc jest <b>prostokątny</b>.'),
+ q('tr5-2c','Kąty trójkąta mają <b>20°, 45° i 115°</b>. Jaki to trójkąt?',TRK,2,'20° + 45° + 115° = 180°, więc taki trójkąt istnieje. Kąt 115° jest rozwarty, więc trójkąt jest <b>rozwartokątny</b>.'),
+ q('tr5-2d','Kąty trójkąta mają <b>60°, 70° i 90°</b>. Jaki to trójkąt?',TRK,3,'60° + 70° + 90° = 220°, a kąty trójkąta muszą mieć razem 180°. <b>Taki trójkąt nie istnieje.</b>'),
+ // Jaki to trójkąt? Dwa określenia
+ kindQ('tr5-3a',triangle({A: 90, B: 45, rot: 0, arcs: [['A', 'B', 'C', 'prosty']], sides: [['A', 'B', '4 cm'], ['A', 'C', '4 cm']], desc: 'Trójkąt z kątem prostym, boki przy kącie prostym mają po 4 cm'}),
+  ['równoramienny i prostokątny','równoboczny i ostrokątny','różnoboczny i prostokątny','równoramienny i ostrokątny'],0,'Dwa boki mają po 4 cm — trójkąt jest <b>równoramienny</b>. Kwadracik oznacza kąt prosty — trójkąt jest <b>prostokątny</b>.'),
+ kindQ('tr5-3b',triangle({A: 30, B: 30, arcs: [['C', 'A', 'B', '120°', '120°']], sides: [['A', 'C', '5 cm'], ['B', 'C', '5 cm']], desc: 'Trójkąt o dwóch bokach po 5 cm i kącie 120° między nimi'}),
+  ['równoramienny i ostrokątny','równoramienny i rozwartokątny','różnoboczny i rozwartokątny','równoboczny i rozwartokątny'],1,'Dwa boki mają po 5 cm — trójkąt jest <b>równoramienny</b>. Kąt 120° jest rozwarty — trójkąt jest <b>rozwartokątny</b>.'),
+ kindQ('tr5-3c',triangle({...bySides(3, 4, 5), rot: 0, arcs: [['C', 'A', 'B', 'prosty']], sides: [['B', 'C', '3 cm'], ['A', 'C', '4 cm'], ['A', 'B', '5 cm']], desc: 'Trójkąt z kątem prostym o bokach 3 cm, 4 cm i 5 cm'}),
+  ['równoramienny i prostokątny','różnoboczny i ostrokątny','różnoboczny i prostokątny','różnoboczny i rozwartokątny'],2,'Każdy bok ma inną długość (3 cm, 4 cm, 5 cm) — trójkąt jest <b>różnoboczny</b>. Ma kąt prosty — jest <b>prostokątny</b>.'),
+ kindQ('tr5-3d',triangle({A: 60, B: 60, rot: 8, sides: [['A', 'B', '6 cm'], ['B', 'C', '6 cm'], ['A', 'C', '6 cm']], desc: 'Trójkąt o trzech bokach po 6 cm'}),
+  ['równoramienny i prostokątny','różnoboczny i ostrokątny','równoramienny i rozwartokątny','równoboczny i ostrokątny'],3,'Wszystkie boki mają po 6 cm — trójkąt jest <b>równoboczny</b>. Każdy jego kąt ma 180° : 3 = 60°, więc jest <b>ostrokątny</b>.'),
+ // Warunek trójkąta
+ q('tr5-4a','Z których odcinków <b>można</b> zbudować trójkąt?',['5 cm, 7 cm, 10 cm','3 cm, 4 cm, 8 cm','2 cm, 6 cm, 9 cm','4 cm, 5 cm, 9 cm'],0,'Dwa krótsze odcinki muszą razem być <b>dłuższe</b> od najdłuższego. 5 + 7 = 12 > 10 — <b>można</b>. W pozostałych: 3 + 4 = 7 < 8, 2 + 6 = 8 < 9, a 4 + 5 = 9 — tyle samo, co trzeci odcinek, więc odcinki położą się na jednej prostej.'),
+ q('tr5-4b','Z których odcinków <b>można</b> zbudować trójkąt?',['6 m, 6 m, 13 m','8 cm, 9 cm, 16 cm','1 dm, 2 dm, 4 dm','10 km, 3 km, 6 km'],1,'Sprawdzamy, czy dwa krótsze odcinki są razem dłuższe od najdłuższego: 8 + 9 = 17 > 16 — <b>można</b>. Pozostałe: 6 + 6 = 12 < 13, 1 + 2 = 3 < 4, 3 + 6 = 9 < 10.'),
+ q('tr5-4c','Z których odcinków <b>można</b> zbudować trójkąt?',['2,5 cm, 3,5 cm, 6 cm','1,2 m, 1,8 m, 3,1 m','4,5 km, 2,5 km, 3 km','0,5 dm, 1 dm, 2 dm'],2,'2,5 + 3 = 5,5 > 4,5 — <b>można</b>. Pozostałe: 2,5 + 3,5 = 6 (tyle, co trzeci bok), 1,2 + 1,8 = 3 < 3,1, 0,5 + 1 = 1,5 < 2.'),
+ q('tr5-4d','Z których odcinków <b>nie można</b> zbudować trójkąta?',['7 cm, 7 cm, 7 cm','3 m, 4 m, 5 m','6 dm, 10 dm, 5 dm','12 cm, 5 cm, 6 cm'],3,'5 + 6 = 11, a to mniej niż 12 — krótsze odcinki „nie sięgną” do siebie, więc trójkąta <b>nie da się</b> zbudować. W pozostałych: 7 + 7 > 7, 3 + 4 > 5, 5 + 6 > 10.'),
+ // Trzeci kąt — z treści
+ q('tr5-5a','Dwa kąty trójkąta mają <b>47° i 68°</b>. Ile stopni ma trzeci kąt?',['65°','75°','115°','245°'],0,'Kąty trójkąta mają razem 180°. 47° + 68° = 115°, więc trzeci kąt ma 180° − 115° = <b>65°</b>.'),
+ q('tr5-5b','Dwa kąty trójkąta mają <b>90° i 34°</b>. Ile stopni ma trzeci kąt?',['46°','56°','66°','146°'],1,'90° + 34° = 124°. Trzeci kąt: 180° − 124° = <b>56°</b>.'),
+ q('tr5-5c','Dwa kąty trójkąta mają <b>25° i 38°</b>. Ile stopni ma trzeci kąt?',['63°','127°','117°','107°'],2,'25° + 38° = 63°. Trzeci kąt: 180° − 63° = <b>117°</b>. 63° to suma dwóch danych kątów, a nie trzeci kąt.'),
+ q('tr5-5d','Dwa kąty trójkąta mają <b>112° i 29°</b>. Ile stopni ma trzeci kąt?',['49°','141°','29°','39°'],3,'112° + 29° = 141°. Trzeci kąt: 180° − 141° = <b>39°</b>.'),
+ // Trzeci kąt — z rysunku
+ triQ('tr5-6a',triangle({A: 58, B: 47, rot: 6, arcs: [['A', 'B', 'C', '58°', '58°'], ['B', 'A', 'C', '47°', '47°'], ['C', 'A', 'B', 'α', 'α']], desc: 'Trójkąt z kątami 58°, 47° i α'}),'Ile stopni ma kąt α?',['75°','85°','105°','65°'],0,'α = 180° − 58° − 47° = <b>75°</b>.'),
+ triQ('tr5-6b',triangle({A: 32, B: 90, rot: -4, arcs: [['A', 'B', 'C', '32°', '32°'], ['B', 'A', 'C', 'prosty'], ['C', 'A', 'B', 'γ', 'γ']], desc: 'Trójkąt prostokątny z kątem 32° i kątem γ'}),'Ile stopni ma kąt γ?',['32°','58°','68°','148°'],1,'Kwadracik oznacza kąt prosty — 90°. γ = 180° − 90° − 32° = <b>58°</b>.'),
+ triQ('tr5-6c',triangle({A: 28, B: 39, rot: 10, arcs: [['A', 'B', 'C', '28°', '28°'], ['B', 'A', 'C', '39°', '39°'], ['C', 'A', 'B', 'β', 'β']], desc: 'Trójkąt z kątami 28°, 39° i rozwartym kątem β'}),'Ile stopni ma kąt β?',['67°','103°','113°','123°'],2,'β = 180° − 28° − 39° = <b>113°</b>. Kąt jest rozwarty, więc musi mieć więcej niż 90°.'),
+ triQ('tr5-6d',triangle({A: 64, B: 64, rot: -8, arcs: [['A', 'B', 'C', '64°', '64°'], ['B', 'A', 'C', '64°', '64°'], ['C', 'A', 'B', 'δ', 'δ']], desc: 'Trójkąt z dwoma kątami po 64° i kątem δ'}),'Ile stopni ma kąt δ?',['64°','116°','62°','52°'],3,'δ = 180° − 64° − 64° = <b>52°</b>.'),
+ // Obwody
+ q('tr5-7a','Oblicz obwód trójkąta równobocznego o boku <b>7 cm</b>.',['21 cm','14 cm','49 cm','28 cm'],0,'Trójkąt równoboczny ma trzy równe boki: 3 · 7 cm = <b>21 cm</b>.'),
+ q('tr5-7b','Obwód trójkąta równobocznego wynosi <b>36 cm</b>. Ile ma jego bok?',['18 cm','12 cm','9 cm','108 cm'],1,'Obwód to trzy równe boki, więc bok = 36 cm : 3 = <b>12 cm</b>.'),
+ q('tr5-7c','Ramię trójkąta równoramiennego ma <b>9 cm</b>, a podstawa <b>5 cm</b>. Oblicz obwód.',['14 cm','19 cm','23 cm','27 cm'],2,'Trójkąt ma dwa ramiona i podstawę: 9 cm + 9 cm + 5 cm = <b>23 cm</b>.'),
+ q('tr5-7d','Podstawa trójkąta równoramiennego ma <b>8 cm</b>, a jego obwód wynosi <b>22 cm</b>. Ile ma ramię?',['14 cm','8 cm','11 cm','7 cm'],3,'Na dwa ramiona zostaje 22 cm − 8 cm = 14 cm. Jedno ramię: 14 cm : 2 = <b>7 cm</b>.'),
+ // Czy taki trójkąt istnieje?
+ q('tr5-8a','Który trójkąt <b>nie istnieje</b>?',['prostokątny i równoboczny','prostokątny i równoramienny','rozwartokątny i równoramienny','ostrokątny i różnoboczny'],0,'Trójkąt równoboczny ma wszystkie kąty po 60°, więc nie może mieć kąta prostego. Trójkąt <b>prostokątny i równoboczny</b> nie istnieje.'),
+ q('tr5-8b','Który trójkąt <b>istnieje</b>?',['rozwartokątny i prostokątny','równoramienny i rozwartokątny','rozwartokątny i równoboczny','o dwóch kątach prostych'],1,'Np. trójkąt o kątach 30°, 30° i 120° jest <b>równoramienny i rozwartokątny</b>. Kąt rozwarty i kąt prosty (albo dwa kąty proste) dałyby razem 180° lub więcej, a równoboczny ma kąty po 60°.'),
+ q('tr5-8c','Który trójkąt <b>nie istnieje</b>?',['ostrokątny i równoramienny','prostokątny i różnoboczny','o dwóch kątach rozwartych','równoboczny i ostrokątny'],2,'Dwa kąty rozwarte mają razem więcej niż 180°, a wszystkie trzy kąty trójkąta mają razem dokładnie 180°. Trójkąt <b>o dwóch kątach rozwartych</b> nie istnieje.'),
+ q('tr5-8d','Które zdanie jest <b>prawdziwe</b>?',['Każdy trójkąt równoramienny jest równoboczny.','Trójkąt prostokątny może mieć kąt rozwarty.','Trójkąt może mieć dwa kąty proste.','Każdy trójkąt równoboczny jest równoramienny.'],3,'Trójkąt równoboczny ma trzy równe boki, więc ma też dwa równe boki — <b>każdy trójkąt równoboczny jest równoramienny</b>. Odwrotnie nie: trójkąt 5 cm, 5 cm, 3 cm jest równoramienny, ale nie równoboczny.'),
+ // Prawda czy fałsz
+ truthT('tr5-9a','Jeden z kątów trójkąta ma 45°, a drugi 70°.','Ten trójkąt jest ostrokątny.','Ten trójkąt jest równoramienny.','PF','Trzeci kąt: 180° − 45° − 70° = 65°. I: kąty 45°, 70°, 65° są ostre — <b>prawda</b>. II: żadne dwa kąty nie są równe, więc trójkąt nie jest równoramienny — <b>fałsz</b>.'),
+ truthT('tr5-9b','Jeden z kątów trójkąta ma 40°, a drugi jest o 30° większy.','Ten trójkąt jest ostrokątny.','Ten trójkąt jest równoramienny.','PP','Drugi kąt: 40° + 30° = 70°, trzeci: 180° − 40° − 70° = 70°. I: wszystkie kąty ostre — <b>prawda</b>. II: dwa kąty po 70° — trójkąt jest równoramienny — <b>prawda</b>.'),
+ truthT('tr5-9c','Jeden z kątów trójkąta ma 25°, a drugi 65°.','Ten trójkąt jest rozwartokątny.','Ten trójkąt jest prostokątny.','FP','Trzeci kąt: 180° − 25° − 65° = 90°. I: nie ma kąta rozwartego — <b>fałsz</b>. II: ma kąt prosty — <b>prawda</b>.'),
+ truthT('tr5-9d','Jeden z kątów trójkąta ma 30°, a drugi też 30°.','Ten trójkąt jest ostrokątny.','Ten trójkąt jest równoboczny.','FF','Trzeci kąt: 180° − 30° − 30° = 120° — rozwarty. I: <b>fałsz</b>. II: trójkąt równoboczny ma kąty po 60° — <b>fałsz</b> (ten jest równoramienny).'),
+ // Trójkąt równoramienny z rysunku
+ triQ('tr5-10a',triangle({A: 63, B: 63, rot: 18, arcs: [['C', 'A', 'B', '54°', '54°'], ['A', 'B', 'C', 'α', 'α']], sides: [['A', 'C', '4'], ['B', 'C', '4']], desc: 'Trójkąt o dwóch bokach długości 4, kąt między nimi 54°, kąt α przy trzecim boku'}),'Ile stopni ma kąt α?',['63°','54°','126°','72°'],0,'Dwa boki mają długość 4, więc trójkąt jest równoramienny, a kąty przy podstawie są równe. Na nie zostaje 180° − 54° = 126°, czyli α = 126° : 2 = <b>63°</b>.'),
+ triQ('tr5-10b',triangle({A: 45, B: 45, rot: -12, arcs: [['C', 'A', 'B', 'prosty'], ['B', 'A', 'C', 'α', 'α']], sides: [['A', 'C', '5'], ['B', 'C', '5']], desc: 'Trójkąt prostokątny o bokach przy kącie prostym długości 5 i 5; kąt α'}),'Ile stopni ma kąt α?',['90°','45°','60°','30°'],1,'Trójkąt jest prostokątny i równoramienny, więc dwa pozostałe kąty są równe: (180° − 90°) : 2 = <b>45°</b>.'),
+ triQ('tr5-10c',triangle({A: 70, B: 70, rot: -15, arcs: [['A', 'B', 'C', '70°', '70°'], ['C', 'A', 'B', 'α', 'α']], sides: [['A', 'C', '6'], ['B', 'C', '6']], desc: 'Trójkąt o dwóch bokach długości 6; kąt 70° przy trzecim boku; kąt α między bokami długości 6'}),'Ile stopni ma kąt α?',['70°','110°','40°','55°'],2,'Trójkąt jest równoramienny, więc oba kąty przy podstawie mają 70°. α = 180° − 70° − 70° = <b>40°</b>.'),
+ triQ('tr5-10d',triangle({A: 40, B: 40, rot: 10, arcs: [['C', 'A', 'B', '100°', '100°'], ['A', 'B', 'C', 'α', 'α']], sides: [['A', 'C', '3'], ['B', 'C', '3']], desc: 'Trójkąt o dwóch bokach długości 3, kąt między nimi 100°, kąt α przy trzecim boku'}),'Ile stopni ma kąt α?',['80°','100°','50°','40°'],3,'Kąty przy podstawie trójkąta równoramiennego są równe: (180° − 100°) : 2 = 80° : 2 = <b>40°</b>.'),
+ // Kąt przyległy przy przedłużonym boku
+ triQ('tr5-11a',triangle({A: 70, B: 50, ext: {E: ['B', 'A']}, arcs: [['B', 'E', 'C', '130°', '130°'], ['B', 'A', 'C', 'β', 'β']], desc: 'Trójkąt z przedłużonym bokiem; kąt zewnętrzny 130° i kąt β wewnątrz trójkąta przy tym samym wierzchołku'}),'Ile stopni ma kąt β?',['50°','130°','40°','60°'],0,'Kąt β i kąt 130° są przyległe — razem mają 180°. β = 180° − 130° = <b>50°</b>.'),
+ triQ('tr5-11b',triangle({A: 48, B: 65, ext: {E: ['B', 'A']}, arcs: [['A', 'B', 'C', '48°', '48°'], ['B', 'E', 'C', '115°', '115°'], ['C', 'A', 'B', 'γ', 'γ']], desc: 'Trójkąt z przedłużonym bokiem; kąt 48°, kąt zewnętrzny 115° i kąt γ'}),'Ile stopni ma kąt γ?',['65°','67°','57°','77°'],1,'Kąt przyległy do kąta 115° ma 180° − 115° = 65°. Wtedy γ = 180° − 48° − 65° = <b>67°</b>.'),
+ triQ('tr5-11c',triangle({A: 35, B: 55, ext: {E: ['B', 'A']}, arcs: [['C', 'A', 'B', 'prosty'], ['B', 'E', 'C', '125°', '125°'], ['A', 'B', 'C', 'α', 'α']], desc: 'Trójkąt prostokątny z przedłużonym bokiem; kąt zewnętrzny 125° i kąt α'}),'Ile stopni ma kąt α?',['55°','125°','35°','45°'],2,'Kąt przyległy do kąta 125° ma 180° − 125° = 55°. Trzeci kąt jest prosty, więc α = 180° − 90° − 55° = <b>35°</b>.'),
+ triQ('tr5-11d',triangle({A: 50, B: 80, rot: 5, ext: {E: ['B', 'A']}, arcs: [['A', 'B', 'C', 'α', 'α'], ['C', 'A', 'B', 'α', 'α'], ['B', 'E', 'C', '100°', '100°']], desc: 'Trójkąt z przedłużonym bokiem; kąt zewnętrzny 100° i dwa równe kąty α'}),`${SAME} Ile stopni ma kąt α?`,['40°','80°','100°','50°'],3,'Kąt przyległy do kąta 100° ma 80°. Na dwa kąty α zostaje 180° − 80° = 100°, więc α = 100° : 2 = <b>50°</b>.'),
+ // Trzeci bok, różne jednostki
+ q('tr5-12a','Dwa boki trójkąta mają <b>7 cm i 12 cm</b>. Jaką długość może mieć trzeci bok?',['15 cm','5 cm','19 cm','4 cm'],0,'Trzeci bok musi być dłuższy od różnicy (12 − 7 = 5 cm) i krótszy od sumy (12 + 7 = 19 cm) dwóch pozostałych. Pasuje tylko <b>15 cm</b>.'),
+ q('tr5-12b','Dwa boki trójkąta mają <b>20 cm i 8 cm</b>. Jaką długość może mieć trzeci bok?',['12 cm','25 cm','28 cm','30 cm'],1,'Trzeci bok musi być dłuższy niż 20 − 8 = 12 cm i krótszy niż 20 + 8 = 28 cm. Pasuje tylko <b>25 cm</b>; przy 12 cm i 28 cm odcinki położyłyby się na jednej prostej.'),
+ q('tr5-12c','Z których odcinków <b>można</b> zbudować trójkąt?',['1 m, 40 cm, 5 dm','2 m, 90 cm, 11 dm','3 m, 150 cm, 20 dm','1 km, 300 m, 600 m'],2,'Najpierw zamieniamy na te same jednostki. 3 m = 300 cm, 20 dm = 200 cm, a 150 + 200 = 350 > 300 — <b>można</b>. Pozostałe: 40 + 50 = 90 < 100 cm, 90 + 110 = 200 cm = 2 m, 300 + 600 = 900 < 1000 m.'),
+ q('tr5-12d','Podstawa trójkąta równoramiennego ma <b>12 cm</b>. Jaką długość może mieć jego ramię?',['3 cm','5 cm','6 cm','7 cm'],3,'Dwa ramiona muszą być razem dłuższe od podstawy: 2 · ramię > 12 cm, czyli ramię > 6 cm. Pasuje tylko <b>7 cm</b> (7 + 7 = 14 > 12).'),
+ // Obwody — zadania tekstowe
+ q('tr5-13a','Ramię trójkąta równoramiennego ma <b>9 cm</b> i jest o <b>3 cm dłuższe</b> od podstawy. Oblicz obwód.',['24 cm','21 cm','30 cm','27 cm'],0,'Podstawa jest krótsza od ramienia o 3 cm: 9 − 3 = 6 cm. Obwód: 9 + 9 + 6 = <b>24 cm</b>.'),
+ q('tr5-13b','Podstawa trójkąta równoramiennego ma <b>10 cm</b> i jest o <b>4 cm dłuższa</b> od każdego z ramion. Oblicz obwód.',['38 cm','22 cm','30 cm','16 cm'],1,'Ramię jest krótsze od podstawy o 4 cm: 10 − 4 = 6 cm. Obwód: 10 + 6 + 6 = <b>22 cm</b>.'),
+ q('tr5-13c','Obwód trójkąta równoramiennego wynosi <b>30 cm</b>, a ramię ma <b>11 cm</b>. Ile ma podstawa?',['19 cm','9,5 cm','8 cm','10 cm'],2,'Dwa ramiona mają razem 2 · 11 = 22 cm. Podstawa: 30 − 22 = <b>8 cm</b>.'),
+ q('tr5-13d','Trójkąt równoboczny o boku <b>8 cm</b> ma taki sam obwód jak trójkąt równoramienny o podstawie <b>6 cm</b>. Ile ma ramię trójkąta równoramiennego?',['8 cm','6 cm','18 cm','9 cm'],3,'Obwód trójkąta równobocznego: 3 · 8 = 24 cm. Na dwa ramiona zostaje 24 − 6 = 18 cm, więc ramię ma 18 : 2 = <b>9 cm</b>.'),
+ // Kąt wierzchołkowy przy wierzchołku trójkąta
+ triQ('tr5-14a',triangle({A: 62, B: 70, rot: -80, ext: {E: ['C', 'A'], F: ['C', 'B']}, solid: true, arcs: [['A', 'B', 'C', '62°', '62°'], ['C', 'E', 'F', '48°', '48°'], ['B', 'A', 'C', 'β', 'β']], desc: 'Dwie proste przecinają się w wierzchołku trójkąta; kąt 48° po drugiej stronie wierzchołka, kąt 62° i kąt β'}),'Ile stopni ma kąt β?',['70°','80°','60°','132°'],0,'Kąt 48° i kąt trójkąta przy górnym wierzchołku są <b>wierzchołkowe</b>, więc równe. β = 180° − 62° − 48° = <b>70°</b>.'),
+ triQ('tr5-14b',triangle({A: 70, B: 70, rot: 95, ext: {E: ['C', 'A'], F: ['C', 'B']}, solid: true, arcs: [['A', 'B', 'C', 'α', 'α'], ['B', 'A', 'C', 'α', 'α'], ['C', 'E', 'F', '40°', '40°']], desc: 'Dwie proste przecinają się w wierzchołku trójkąta; kąt 40° po drugiej stronie wierzchołka i dwa równe kąty α'}),`${SAME} Ile stopni ma kąt α?`,['40°','70°','140°','35°'],1,'Kąt trójkąta przy górnym wierzchołku jest wierzchołkowy do kąta 40°, więc też ma 40°. Na dwa kąty α zostaje 180° − 40° = 140°, czyli α = <b>70°</b>.'),
+ triQ('tr5-14c',triangle({A: 90, B: 55, rot: -100, ext: {E: ['C', 'A'], F: ['C', 'B']}, solid: true, arcs: [['A', 'B', 'C', 'prosty'], ['C', 'E', 'F', '35°', '35°'], ['B', 'A', 'C', 'δ', 'δ']], desc: 'Dwie proste przecinają się w wierzchołku trójkąta prostokątnego; kąt 35° po drugiej stronie wierzchołka i kąt δ'}),'Ile stopni ma kąt δ?',['35°','145°','55°','45°'],2,'Kąt trójkąta przy wierzchołku, w którym przecinają się proste, jest wierzchołkowy do kąta 35°. δ = 180° − 90° − 35° = <b>55°</b>.'),
+ triQ('tr5-14d',triangle({A: 58, B: 48, rot: 75, ext: {E: ['C', 'A'], F: ['C', 'B']}, solid: true, arcs: [['A', 'B', 'C', '58°', '58°'], ['C', 'E', 'F', '74°', '74°'], ['B', 'A', 'C', 'γ', 'γ']], desc: 'Dwie proste przecinają się w wierzchołku trójkąta; kąt 74° po drugiej stronie wierzchołka, kąt 58° i kąt γ'}),'Ile stopni ma kąt γ?',['58°','74°','122°','48°'],3,'Kąt trójkąta przy górnym wierzchołku jest wierzchołkowy do kąta 74°, więc ma 74°. γ = 180° − 58° − 74° = <b>48°</b>.'),
+ // Zadania z kilkoma krokami
+ q('tr5-15a','Jeden z kątów trójkąta ma <b>35°</b>, a drugi jest <b>dwa razy większy</b>. Ile stopni ma trzeci kąt?',['75°','70°','110°','105°'],0,'Drugi kąt: 2 · 35° = 70°. Trzeci: 180° − 35° − 70° = <b>75°</b>.'),
+ q('tr5-15b','W trójkącie prostokątnym jeden kąt ostry jest <b>dwa razy większy</b> od drugiego. Ile stopni ma <b>mniejszy</b> z nich?',['45°','30°','60°','90°'],1,'Kąty ostre mają razem 180° − 90° = 90°. To 3 równe części (mniejszy kąt — jedna, większy — dwie): 90° : 3 = <b>30°</b>. Większy ma 60°.'),
+ q('tr5-15c','W trójkącie równoramiennym kąt między ramionami jest <b>3 razy większy</b> od każdego z kątów przy podstawie. Ile stopni ma kąt między ramionami?',['36°','72°','108°','135°'],2,'Kąty przy podstawie to po jednej części, kąt między ramionami — 3 części. Razem 5 równych części: 180° : 5 = 36°. Kąt między ramionami: 3 · 36° = <b>108°</b>.'),
+ q('tr5-15d','Jeden bok trójkąta jest o <b>3 cm krótszy</b> od drugiego i o <b>4 cm krótszy</b> od trzeciego. Obwód wynosi <b>22 cm</b>. Ile ma <b>najdłuższy</b> bok?',['5 cm','8 cm','7 cm','9 cm'],3,'Gdyby dwa dłuższe boki skrócić o 3 cm i 4 cm, zostałyby trzy boki równe najkrótszemu: 22 − 3 − 4 = 15 cm, 15 : 3 = 5 cm. Boki: 5, 8 i 9 cm. Najdłuższy ma <b>9 cm</b>.'),
+];

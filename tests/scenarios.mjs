@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import {SCENARIOS, makeRound, restoreRound} from '../js/scenarios.js';
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.title), ['Zegary, kalendarz i jednostki długości', 'Oś liczbowa', 'Dodawanie i odejmowanie', 'Szacowanie', 'Sprytne dodawanie', 'Sprytne odejmowanie', 'Powtórzenie: dodawanie i odejmowanie', 'Jak rozwiązywać zadania tekstowe']);
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności', 'Liczby pierwsze i złożone', 'Potęgowanie', 'Cyfry rzymskie', 'Kolejność wykonywania działań', 'Płaszczyzna, proste, półproste, odcinki', 'Kąty', 'Mierzenie kątów']);
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.section), ['Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Figury geometryczne', 'Figury geometryczne', 'Figury geometryczne']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności', 'Liczby pierwsze i złożone', 'Potęgowanie', 'Cyfry rzymskie', 'Kolejność wykonywania działań', 'Płaszczyzna, proste, półproste, odcinki', 'Kąty', 'Mierzenie kątów', 'Trójkąty']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.section), ['Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Figury geometryczne', 'Figury geometryczne', 'Figury geometryczne', 'Figury geometryczne']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
  'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Procenty — zadania egzaminacyjne', 'Potęgi', 'Potęgi o tych samych podstawach', 'Notacja wykładnicza', 'Obliczenia w notacji wykładniczej', 'Potęgi — zadania egzaminacyjne',
 ]);
@@ -15,9 +15,9 @@ assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.section), ['Procenty'
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
  'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Wyrażenia algebraiczne', 'Mnożenie sum algebraicznych', 'Równania', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne', 'Wyrażenia algebraiczne — zadania egzaminacyjne', 'Potęgi — zadania egzaminacyjne',
 ]);
-assert.equal(SCENARIOS.length,35);
+assert.equal(SCENARIOS.length,36);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,1263);
+assert.equal(new Set(all.map(q=>q.id)).size,1323);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -1081,4 +1081,55 @@ assert.equal(pick('ae-3817'),truth([[-1,-2],[-0.5,-3]].every(([x,y])=>y<0),[[-1,
 // Klasa IIIa: dziewczęta 2/3, chłopcy 1/3 — dwa razy więcej dziewcząt.
 {const g=2/3,b=1/3;assert(same(g,2*b)&&!(b>g)&&!same(g,2/3*b)&&!same(b/g,1/3));assert.equal(ask('ae-4596').correct,2);}
 console.log('PASS: grade 8 algebra exam tasks — all 22 answer keys checked');
+}
+// Klasa 5: trójkąty — boki i kąty mierzone na rysunkach, reszta liczona niezależnie z treści.
+{
+const tr=SCENARIOS.find(s=>s.id==='triangles-5');
+assert.equal(tr.grade,5);assert.equal(tr.section,'Figury geometryczne');assert.equal(tr.ordered,true);
+assert.deepEqual(tr.award,{password:'Trzy boki, trzy kąty – znam na wylot trójkąty!',pluses:3});
+assert.equal(tr.questions.length,60);assert.equal(new Set(tr.questions.map(q=>q.sourceGroup)).size,15);
+assert.deepEqual([0,1,2,3].map(i=>tr.questions.filter(q=>q.correct===i).length),[15,15,15,15]);
+const only=(id,ok)=>assert.deepEqual(ask(id).answers.filter(ok),[selected(id)],id);
+const html=id=>ask(id).q, xy=s=>s.split(',').map(Number), deg=a=>parseFloat(a), near=(a,b)=>Math.abs(a-b)<0.5;
+const ids=g=>tr.questions.filter(q=>q.sourceGroup===g).map(q=>q.id);
+const dirDeg=(v,p)=>Math.atan2(-(p[1]-v[1]),p[0]-v[0])*180/Math.PI;
+const ccw=(v,a,b)=>((dirDeg(v,b)-dirDeg(v,a))%360+360)%360;
+const arcs=id=>{const r={};for(const m of html(id).matchAll(/data-arc="([^"]+)" data-v="([^"]+)" data-a="([^"]+)" data-b="([^"]+)"/g))(r[m[1]]??=[]).push(ccw(xy(m[2]),xy(m[3]),xy(m[4])));return r;};
+const tri=id=>html(id).match(/data-tri="ABC" points="([^"]+)"/)[1].split(' ').map(xy);
+const len=(p,q)=>Math.hypot(p[0]-q[0],p[1]-q[1]);
+const inner=P=>P.map((v,i)=>{const a=P[(i+1)%3],b=P[(i+2)%3],d=ccw(v,a,b);return Math.min(d,360-d);});
+for(const q of tr.questions) if(q.q.includes('data-tri')){
+ const P=tri(q.id), I=inner(P);assert(near(I[0]+I[1]+I[2],180),q.id);
+ // Każdy łuk z liczbą ma tyle stopni, ile podpis; kwadracik — 90°; łuk wewnątrz trójkąta to jeden z jego kątów; ta sama litera — ta sama miara.
+ for(const [n,ds] of Object.entries(arcs(q.id))){for(const d of ds){if(n==='prosty')assert(near(d,90),q.id);else if(/°$/.test(n))assert(near(d,deg(n)),q.id+' '+n);}assert(ds.every(d=>near(d,ds[0])),q.id+' '+n);}
+ // Podpisy boków: równe liczby ⇔ równe odcinki, długości proporcjonalne do rysunku.
+ const S=[...q.q.matchAll(/data-side="([^;]+);([^"]+)" data-len="([\d,]+)/g)].map(m=>[len(xy(m[1]),xy(m[2])),deg(m[3])]);
+ for(const [p,a] of S) for(const [r,b] of S) assert(Math.abs(p/a-r/b)<0.02*p/a,q.id);
+}
+// Rodzaj trójkąta z rysunku: boki i kąty zmierzone na współrzędnych.
+for(const id of ids('tr5-3')){const P=tri(id),L=[0,1,2].map(i=>len(P[i],P[(i+1)%3])),I=inner(P),eq=[0,1,2].filter(i=>Math.abs(L[i]-L[(i+1)%3])<1).length;
+ const kind=`${eq===3?'równoboczny':eq?'równoramienny':'różnoboczny'} i ${I.some(d=>near(d,90))?'prostokątny':I.some(d=>d>90.5)?'rozwartokątny':'ostrokątny'}`;only(id,a=>a===kind);}
+// Rodzaj po kątach z treści.
+const T=['ostrokątny','prostokątny','rozwartokątny','taki trójkąt nie istnieje'];
+for(const id of ids('tr5-2')){const k=html(id).match(/<b>(\d+)°, (\d+)° i (\d+)°<\/b>/).slice(1).map(Number),sum=k[0]+k[1]+k[2];only(id,a=>a===(sum!==180?T[3]:k.includes(90)?T[1]:k.some(d=>d>90)?T[2]:T[0]));}
+// Warunek trójkąta (zamiana jednostek na cm).
+const U={mm:0.1,cm:1,dm:10,m:100,km:100000};
+const ok=a=>{const s=a.split(', ').map(x=>{const [n,u]=x.split(' ');return deg(n.replace(',','.'))*U[u];}).sort((x,y)=>x-y);return s[0]+s[1]>s[2]+1e-9;};
+for(const id of [...ids('tr5-4'),'tr5-12c']) only(id,a=>html(id).includes('<b>nie można</b>')?!ok(a):ok(a));
+only('tr5-12a',a=>ok(`7 cm, 12 cm, ${a}`));only('tr5-12b',a=>ok(`20 cm, 8 cm, ${a}`));only('tr5-12d',a=>ok(`${a}, ${a}, 12 cm`));
+// Trzeci kąt z treści.
+for(const id of ids('tr5-5')){const [x,y]=html(id).match(/<b>(\d+)° i (\d+)°<\/b>/).slice(1).map(Number);only(id,a=>deg(a)===180-x-y);}
+// Kąt z rysunku: szukany łuk (litera) zmierzony na rysunku.
+for(const g of ['tr5-6','tr5-10','tr5-11','tr5-14']) for(const id of ids(g)){const L=html(id).match(/kąt ([αβγδ])\?/)[1];only(id,a=>near(deg(a),arcs(id)[L][0]));}
+only('tr5-7a',a=>deg(a)===3*7);only('tr5-7b',a=>3*deg(a)===36);only('tr5-7c',a=>deg(a)===9+9+5);only('tr5-7d',a=>2*deg(a)+8===22);
+assert.deepEqual(ids('tr5-8').map(id=>ask(id).correct),[0,1,2,3]);
+const third=(x,y)=>[x,y,180-x-y], acute=k=>k.every(d=>d<90), iso=k=>new Set(k).size<3;
+{const k=third(45,70);assert.equal(pick('tr5-9a'),truth(acute(k),iso(k)));}
+{const k=third(40,70);assert.equal(pick('tr5-9b'),truth(acute(k),iso(k)));}
+{const k=third(25,65);assert.equal(pick('tr5-9c'),truth(k.some(d=>d>90),k.includes(90)));}
+{const k=third(30,30);assert.equal(pick('tr5-9d'),truth(acute(k),k.every(d=>d===60)));}
+only('tr5-13a',a=>deg(a)===9+9+(9-3));only('tr5-13b',a=>deg(a)===10+2*(10-4));only('tr5-13c',a=>deg(a)===30-2*11);only('tr5-13d',a=>2*deg(a)+6===3*8);
+only('tr5-15a',a=>deg(a)===180-35-70);only('tr5-15b',a=>2*deg(a)+deg(a)===90);only('tr5-15c',a=>{const x=deg(a)/3;return x+x+deg(a)===180;});
+only('tr5-15d',a=>{const x=deg(a)-4;return x+(x+3)+deg(a)===22;});
+console.log('PASS: grade 5 triangles — all 60 answer keys measured on drawings or computed');
 }
