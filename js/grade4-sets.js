@@ -622,3 +622,174 @@ export const wordProblemQuestions4 = [
  q('zt4-22b',`${SQUIRRELS} Ile orzechów miała na początku Szara?`,['18','22','30','14'],0,'Liczymy od końca. Szara ma 20 orzechów, w tym 6 od Rudej, a wcześniej oddała 4. Na początku: 20 − 6 + 4 = <b>18</b>.'),
  q('zt4-22c',`${SQUIRRELS} Która wiewiórka zebrała najwięcej orzechów?`,['Szara','Ruda','Mała','Wszystkie tyle samo'],1,'Na początku Ruda miała 20 + 6 − 2 = 24, Szara 20 − 6 + 4 = 18, a Mała 20 − 4 + 2 = 18. Najwięcej zebrała <b>Ruda</b>.'),
 ];
+
+// Klasa 4, dział III: tabliczka mnożenia — iloczyn i czynniki, zero i jedynka, zmiana kolejności,
+// „razy więcej” i „o ile więcej”, okienka, brakujące cyfry i zadania tekstowe. Od łatwych do trudnych.
+const HEN = 'Kura waży 3 kg, a indyk 8 kg.';
+const CRAYONS = 'Ewa ma trzy pudełka z kredkami. W pierwszym jest 6 kredek, w drugim 3 razy więcej niż w pierwszym, a w trzecim o 3 kredki więcej niż w pierwszym.';
+const AGES = 'Kasia ma 8 lat. Jej tata jest 5 razy starszy od niej, a mama 4 razy starsza od Kasi.';
+const CHESTNUTS = 'Staś ma 7 kasztanów. Igor ma 4 razy więcej kasztanów niż Staś, a Wojtek o 7 kasztanów więcej niż Staś.';
+const FILL = (s) => `Jaką liczbę trzeba wpisać w okienko?<div class="task-statements">${s}</div>`;
+const DIGIT = (s) => `Jaką cyfrę trzeba wpisać w pierwsze okienko?<div class="task-statements">${s}</div>`;
+export const multiplicationQuestions4 = [
+ // Dodawanie jednakowych składników
+ q('tm4-1a','Które mnożenie zastępuje dodawanie 7 + 7 + 7 + 7?',['4 · 7','7 · 7','4 + 7','3 · 7'],0,'Cztery razy dodajemy 7, więc 7 + 7 + 7 + 7 = <b>4 · 7</b> = 28.'),
+ q('tm4-1b','Które dodawanie ma taki sam wynik jak 3 · 8?',['3 + 8','8 + 8','8 + 8 + 8','3 + 3 + 3'],2,'3 · 8 to trzy razy po 8: <b>8 + 8 + 8</b> = 24.'),
+ // Proste iloczyny
+ q('tm4-2a','Ile wynosi 6 · 3?',['9','24','15','18'],3,'6 · 3 to sześć razy po 3: 3 + 3 + 3 + 3 + 3 + 3 = <b>18</b>.'),
+ q('tm4-2b','Ile wynosi 5 · 8?',['13','40','45','35'],1,'5 · 8 to pięć razy po 8: <b>40</b>. 13 to wynik dodawania 5 + 8.'),
+ q('tm4-2c','Ile wynosi 4 · 7?',['28','11','24','32'],0,'4 · 7 to cztery razy po 7: 7 + 7 + 7 + 7 = <b>28</b>.'),
+ // Zero i jedynka w mnożeniu
+ q('tm4-3a','Ile wynosi 9 · 0?',['9','1','0','90'],2,'Wynikiem mnożenia przez 0 jest zawsze <b>0</b>.'),
+ q('tm4-3b','Ile wynosi 1 · 8?',['1','0','9','8'],3,'Mnożenie przez 1 nie zmienia liczby: 1 · 8 = <b>8</b>.'),
+ q('tm4-3c','Każde z 5 dzieci ma jednego kota i ani jednego psa. Ile psów mają te dzieci razem?',['5','0','1','10'],1,'Każde dziecko ma 0 psów: 5 · 0 = <b>0</b>. Kotów jest 5 · 1 = 5.'),
+ // Zmiana kolejności czynników
+ q('tm4-4a','Które mnożenie ma taki sam wynik jak 8 · 6?',['8 · 8','6 · 6','6 · 8','8 + 6'],2,'Gdy zmienimy kolejność liczb w mnożeniu, wynik się nie zmieni: 8 · 6 = <b>6 · 8</b> = 48.'),
+ q('tm4-4b','Wiadomo, że 7 · 9 = 63. Ile wynosi 9 · 7?',['63','72','16','56'],0,'Zmiana kolejności czynników nie zmienia wyniku: 9 · 7 = <b>63</b>.'),
+ // Iloczyn i czynniki
+ q('tm4-5a','W działaniu 9 · 4 = 36 liczba 36 to:',['czynnik','iloczyn','składnik','suma'],1,'Wynik mnożenia to <b>iloczyn</b>, a liczby 9 i 4 to czynniki.'),
+ q('tm4-5b','Ile wynosi iloczyn liczb 7 i 6?',['13','1','42','48'],2,'Iloczyn to wynik mnożenia: 7 · 6 = <b>42</b>. 13 to suma tych liczb.'),
+ q('tm4-5c','Jeden czynnik to 5, a iloczyn to 45. Ile wynosi drugi czynnik?',['40','50','8','9'],3,'5 · ? = 45. Z tabliczki mnożenia: 5 · 9 = 45, więc drugi czynnik to <b>9</b>.'),
+ // Proste zadania tekstowe
+ q('tm4-6a','Ile nóg ma razem 7 kotów?',['11','28','21','14'],1,'Kot ma 4 nogi: 7 · 4 = <b>28</b>.'),
+ q('tm4-6b','Ile kosztuje 9 zeszytów po 4 zł?',['36 zł','13 zł','32 zł','45 zł'],0,'9 · 4 zł = <b>36 zł</b>.'),
+ // Trudniejsze przykłady z tabliczki
+ q('tm4-7a','Ile wynosi 7 · 8?',['54','48','56','63'],2,'7 · 8 = <b>56</b>. Pomaga: 5 · 8 = 40, a 2 · 8 = 16, razem 56.'),
+ q('tm4-7b','Ile wynosi 6 · 9?',['56','45','63','54'],3,'6 · 9 = <b>54</b>. Pomaga: 6 · 10 = 60, a o jedno 6 mniej to 54.'),
+ q('tm4-7c','Ile wynosi 8 · 8?',['64','56','72','16'],0,'8 · 8 = <b>64</b>. 16 to wynik dodawania 8 + 8.'),
+ q('tm4-7d','Ile wynosi 7 · 7?',['42','49','56','14'],1,'7 · 7 = <b>49</b>.'),
+ // Razy więcej
+ q('tm4-8a','Ola ma 6 lat, a jej mama jest 5 razy starsza. Ile lat ma mama?',['11','25','35','30'],3,'5 razy więcej niż 6: 5 · 6 = <b>30</b>. 11 wychodzi, gdy doda się 6 + 5 — to byłoby „o 5 więcej”.'),
+ q('tm4-8b','Kuba ma 4 kulki, a Tomek 3 razy więcej. Ile kulek ma Tomek?',['7','9','12','16'],2,'3 razy więcej niż 4: 3 · 4 = <b>12</b>. 7 to „o 3 więcej”.'),
+ // Okienka
+ q('tm4-9a',FILL(`7 · ${BOX} = 49`),['6','7','8','42'],1,'7 · 7 = 49, więc w okienku jest <b>7</b>.'),
+ q('tm4-9b',FILL(`${BOX} · 8 = 72`),['9','8','64','80'],0,'9 · 8 = 72, więc w okienku jest <b>9</b>.'),
+ q('tm4-9c',FILL(`6 · ${BOX} = 48`),['7','9','42','8'],3,'6 · 8 = 48, więc w okienku jest <b>8</b>.'),
+ // Ten sam wynik
+ q('tm4-10a','Które działanie ma taki sam wynik jak 4 · 9?',['6 · 6','5 · 7','4 + 9','8 · 4'],0,'4 · 9 = 36 i <b>6 · 6</b> = 36. Pozostałe: 5 · 7 = 35, 4 + 9 = 13, 8 · 4 = 32.'),
+ q('tm4-10b','Które działanie ma taki sam wynik jak 8 · 3?',['4 · 5','7 · 3','8 + 3','6 · 4'],3,'8 · 3 = 24 i <b>6 · 4</b> = 24. Pozostałe: 4 · 5 = 20, 7 · 3 = 21, 8 + 3 = 11.'),
+ q('tm4-10c','Które działanie ma taki sam wynik jak 2 · 9?',['2 + 9','3 · 6','4 · 4','5 · 3'],1,'2 · 9 = 18 i <b>3 · 6</b> = 18. Pozostałe: 2 + 9 = 11, 4 · 4 = 16, 5 · 3 = 15.'),
+ // Gdy nie pamiętasz wyniku
+ q('tm4-11a','Wiadomo, że 5 · 7 = 35. Ile wynosi 6 · 7?',['36','41','42','40'],2,'6 · 7 to o jedno 7 więcej niż 5 · 7: 35 + 7 = <b>42</b>.'),
+ q('tm4-11b','Wiadomo, że 10 · 8 = 80. Ile wynosi 9 · 8?',['72','79','70','88'],0,'9 · 8 to o jedno 8 mniej niż 10 · 8: 80 − 8 = <b>72</b>. 79 wychodzi, gdy odejmie się 1 zamiast 8.'),
+ q('tm4-11c','Wiadomo, że 12 · 5 = 60. Ile wynosi 13 · 5?',['61','70','73','65'],3,'13 · 5 to o jedno 5 więcej niż 12 · 5: 60 + 5 = <b>65</b>.'),
+ // „O ile więcej” czy „ile razy więcej”?
+ q('tm4-12a','Liczba o 5 większa od 9 to 14. A jaka liczba jest 5 razy większa od 9?',['14','4','59','45'],3,'„5 razy większa” to mnożenie: 5 · 9 = <b>45</b>. „O 5 większa” to dodawanie: 9 + 5 = 14.'),
+ q('tm4-12b','Które zdanie jest prawdziwe?',['Liczba 3 razy większa od 6 to 9.','Liczba o 3 większa od 6 to 18.','Liczba 3 razy większa od 6 to 18.','Liczba o 3 większa od 6 to 63.'],2,'3 razy większa od 6: 3 · 6 = <b>18</b>. O 3 większa od 6: 6 + 3 = 9.'),
+ // Liczba jako iloczyn
+ q('tm4-13a','Którym iloczynem NIE można zapisać liczby 24?',['3 · 8','4 · 6','2 · 12','3 · 7'],3,'3 · 8 = 24, 4 · 6 = 24, 2 · 12 = 24, ale <b>3 · 7</b> = 21.'),
+ q('tm4-13b','Który iloczyn jest równy 30?',['5 · 5','4 · 8','3 · 10','6 · 6'],2,'<b>3 · 10</b> = 30. Pozostałe: 5 · 5 = 25, 4 · 8 = 32, 6 · 6 = 36.'),
+ q('tm4-13c','Którą liczbę można zapisać jako iloczyn dwóch jednakowych liczb?',['48','49','50','45'],1,'<b>49</b> = 7 · 7. Liczby 48, 50 i 45 nie są wynikami mnożenia liczby przez samą siebie (6 · 6 = 36, 7 · 7 = 49, 8 · 8 = 64).'),
+ // Brakujące cyfry
+ q('tm4-14a',DIGIT(`3 · ${BOX} = ${BOX}7`),['7','9','2','6'],1,'Szukamy wyniku z tabliczki mnożenia przez 3, który kończy się cyfrą 7: 3 · 9 = 27. W pierwsze okienko wpisujemy <b>9</b>.'),
+ q('tm4-14b',DIGIT(`7 · ${BOX} = ${BOX}1`),['3','1','2','7'],0,'Szukamy wyniku z tabliczki mnożenia przez 7, który kończy się cyfrą 1: 7 · 3 = 21. W pierwsze okienko wpisujemy <b>3</b>.'),
+ q('tm4-14c',DIGIT(`9 · ${BOX} = ${BOX}2`),['2','7','9','8'],3,'Szukamy wyniku z tabliczki mnożenia przez 9, który kończy się cyfrą 2: 9 · 8 = 72. W pierwsze okienko wpisujemy <b>8</b>.'),
+ // Kilka działań po kolei
+ q('tm4-15a','Liczbę 6 pomnóż przez 7. Od wyniku odejmij 30, a to, co wyjdzie, pomnóż przez 4. Jaki wynik otrzymasz?',['12','48','52','168'],1,'6 · 7 = 42, 42 − 30 = 12, 12 · 4 = <b>48</b>.'),
+ q('tm4-15b','Liczbę 9 pomnóż przez 6. Od wyniku odejmij 44, a to, co wyjdzie, pomnóż przez 8. Jaki wynik otrzymasz?',['10','432','80','72'],2,'9 · 6 = 54, 54 − 44 = 10, 10 · 8 = <b>80</b>.'),
+ // Kury i indyki
+ q('tm4-16a',`${HEN} Ile ważą razem 4 kury i 2 indyki?`,['44 kg','22 kg','28 kg','17 kg'],2,'Kury: 4 · 3 kg = 12 kg, indyki: 2 · 8 kg = 16 kg. Razem 12 + 16 = <b>28 kg</b>.'),
+ q('tm4-16b',`${HEN} Ile ważą razem 5 kur i 6 indyków?`,['55 kg','63 kg','66 kg','11 kg'],1,'Kury: 5 · 3 kg = 15 kg, indyki: 6 · 8 kg = 48 kg. Razem 15 + 48 = <b>63 kg</b>.'),
+ q('tm4-16c',`${HEN} Ile ważą razem 7 indyków i 9 kur?`,['83 kg','72 kg','88 kg','99 kg'],0,'Indyki: 7 · 8 kg = 56 kg, kury: 9 · 3 kg = 27 kg. Razem 56 + 27 = <b>83 kg</b>.'),
+ // Mnożymy dwa razy
+ q('tm4-17a','W zgrzewce jest 6 butelek soku. Kupiono 4 zgrzewki, a każda butelka kosztowała 3 zł. Ile zapłacono za cały sok?',['24 zł','72 zł','18 zł','13 zł'],1,'Butelek: 4 · 6 = 24. Koszt: 24 · 3 zł = <b>72 zł</b>. 24 zł to liczba butelek, a nie cena.'),
+ q('tm4-17b','W pudełku są 4 rzędy po 5 czekoladek. Ile czekoladek jest w 3 takich pudełkach?',['12','20','60','15'],2,'W jednym pudełku: 4 · 5 = 20. W trzech: 3 · 20 = <b>60</b>.'),
+ // Kredki: razy więcej i o ile więcej
+ q('tm4-18a',`${CRAYONS} Ile kredek jest w trzecim pudełku?`,['18','36','3','9'],3,'W trzecim jest o 3 więcej niż w pierwszym: 6 + 3 = <b>9</b>. 18 to drugie pudełko (3 · 6).'),
+ q('tm4-18b',`${CRAYONS} Ile kredek jest razem we wszystkich pudełkach?`,['27','42','33','24'],2,'Pierwsze: 6, drugie: 3 · 6 = 18, trzecie: 6 + 3 = 9. Razem 6 + 18 + 9 = <b>33</b>.'),
+ // Wiek
+ q('tm4-19a',`${AGES} O ile lat tata jest starszy od mamy?`,['1 rok','8 lat','9 lat','72 lata'],1,'Tata: 5 · 8 = 40 lat, mama: 4 · 8 = 32 lata. Różnica: 40 − 32 = <b>8 lat</b>. 1 rok wychodzi, gdy odejmie się 5 − 4.'),
+ q('tm4-19b',`${AGES} Ile lat mają razem tata i mama?`,['72','9','17','64'],0,'Tata: 5 · 8 = 40 lat, mama: 4 · 8 = 32 lata. Razem 40 + 32 = <b>72</b>.'),
+ // Razy więcej, a potem o ile więcej
+ q('tm4-20a','W bloku 5 osób ma papugę, a 7 razy więcej osób ma kota. O ile więcej osób ma kota niż papugę?',['35','12','30','2'],2,'Kota ma 7 · 5 = 35 osób. O tyle więcej: 35 − 5 = <b>30</b>. 35 to liczba osób z kotem, a nie różnica.'),
+ q('tm4-20b','W sadzie rosną 4 grusze, a jabłoni jest 6 razy więcej. Ile drzew rośnie razem w sadzie?',['24','10','14','28'],3,'Jabłoni: 6 · 4 = 24. Razem z gruszami: 24 + 4 = <b>28</b>. 24 to same jabłonie.'),
+ // Kasztany
+ q('tm4-21a',`${CHESTNUTS} Ile kasztanów mają razem wszyscy chłopcy?`,['42','35','63','49'],3,'Staś: 7, Igor: 4 · 7 = 28, Wojtek: 7 + 7 = 14. Razem 7 + 28 + 14 = <b>49</b>.'),
+ q('tm4-21b',`${CHESTNUTS} O ile więcej kasztanów ma Igor niż Wojtek?`,['21','14','3','11'],1,'Igor: 4 · 7 = 28, Wojtek: 7 + 7 = 14. Różnica: 28 − 14 = <b>14</b>. 21 wychodzi, gdy zapomni się, że Wojtek ma o 7 więcej niż Staś.'),
+ // Ile zostało na resztę?
+ q('tm4-22a','Tomek ma 50 kart z piłkarzami, koszykarzami i tenisistami. Kart z piłkarzami jest 6, kart z koszykarzami 4 razy więcej, a reszta to karty z tenisistami. Ile kart z tenisistami ma Tomek?',['20','26','40','44'],0,'Koszykarze: 4 · 6 = 24. Piłkarze i koszykarze: 6 + 24 = 30. Tenisiści: 50 − 30 = <b>20</b>.'),
+ q('tm4-22b','W bukiecie jest 70 kwiatów: tulipany, róże i stokrotki. Tulipanów jest 8, róż 5 razy więcej, a reszta to stokrotki. Ile jest stokrotek?',['30','22','57','62'],1,'Róże: 5 · 8 = 40. Tulipany i róże: 8 + 40 = 48. Stokrotki: 70 − 48 = <b>22</b>.'),
+ // Zadanie na mistrza
+ q('tm4-23a','W bloku mieszka 30 rodzin. W każdej jest jedno, dwoje albo troje dzieci. Rodzin z jednym dzieckiem jest tyle samo, co rodzin z trojgiem dzieci. Ile dzieci mieszka w tym bloku?',['30','90','45','60'],3,'Połączmy w pary rodzinę z jednym dzieckiem i rodzinę z trojgiem: para ma 1 + 3 = 4 dzieci, czyli po 2 na rodzinę. Rodziny z dwojgiem też mają po 2. Jest więc tak, jakby każda z 30 rodzin miała 2 dzieci: 30 · 2 = <b>60</b>.'),
+ q('tm4-23b','Na straganie stoi 20 koszyków. W każdym są 1, 2 albo 3 melony. Koszyków z jednym melonem jest tyle samo, co koszyków z trzema melonami. Ile melonów jest na straganie?',['40','60','20','30'],0,'Koszyk z 1 melonem i koszyk z 3 melonami mają razem 4, czyli po 2 na koszyk. Koszyki z 2 melonami też mają po 2. Jest tak, jakby w każdym z 20 koszyków były 2 melony: 20 · 2 = <b>40</b>.'),
+];
+
+// Klasa 4, dział III: tabliczka dzielenia — dzielna, dzielnik i iloraz, zero i jedynka, sprawdzanie mnożeniem,
+// „razy mniej” i „ile razy więcej”, okienka, zadania tekstowe i zadania z przerwami. Od łatwych do trudnych.
+const PAGES = 'Kasia przeczytała 40 stron, a Bartek 5 stron.';
+const PIRATES = 'Ośmiu piratów dzieli łup po równo: 64 dukaty, 40 pereł i 24 rubiny.';
+const GIFT = 'Ela, Ola i Iga zbierają na prezent dla babci. Ela zebrała 56 zł, Ola o 8 zł mniej niż Ela, a Iga 8 razy mniej niż Ela.';
+const DIVISIBLE = (n) => `Którą z liczb można podzielić przez ${n} przy użyciu tabliczki mnożenia?`;
+export const divisionQuestions4 = [
+ // Dzielimy po równo
+ q('td4-1a','Dzielimy 12 jabłek po równo na 3 talerze. Ile jabłek będzie na każdym talerzu?',['4','3','9','15'],0,'12 : 3 = <b>4</b>, bo 3 · 4 = 12.'),
+ q('td4-1b','Pakujemy 18 cukierków po 6 do torebek. Ile torebek otrzymamy?',['12','3','24','6'],1,'18 : 6 = <b>3</b>, bo 3 · 6 = 18.'),
+ // Proste ilorazy
+ q('td4-2a','Ile wynosi 20 : 4?',['4','6','5','16'],2,'20 : 4 = <b>5</b>, bo 5 · 4 = 20.'),
+ q('td4-2b','Ile wynosi 27 : 3?',['8','24','7','9'],3,'27 : 3 = <b>9</b>, bo 9 · 3 = 27.'),
+ q('td4-2c','Ile wynosi 16 : 2?',['8','14','6','18'],0,'16 : 2 = <b>8</b>, bo 8 · 2 = 16.'),
+ // Zero i jedynka w dzieleniu
+ q('td4-3a','Ile wynosi 0 : 6?',['6','0','1','Nie można obliczyć'],1,'Zero podzielone przez liczbę różną od zera daje <b>0</b>. Gdy 6 piratów dzieli 0 dukatów, każdy dostaje 0.'),
+ q('td4-3b','Ile wynosi 8 : 8?',['0','8','1','16'],2,'Liczba podzielona przez samą siebie daje <b>1</b>.'),
+ q('td4-3c','Którego dzielenia NIE można wykonać?',['0 : 5','5 : 1','5 : 5','5 : 0'],3,'Przez zero nie można dzielić, więc <b>5 : 0</b> nie ma wyniku. Pozostałe: 0 : 5 = 0, 5 : 1 = 5, 5 : 5 = 1.'),
+ q('td4-3d','Ile wynosi 9 : 1?',['9','1','0','10'],0,'Dzielenie przez 1 nie zmienia liczby: 9 : 1 = <b>9</b>.'),
+ // Mnożenie i dzielenie
+ q('td4-4a','Wiadomo, że 6 · 8 = 48. Ile wynosi 48 : 6?',['42','8','6','54'],1,'Skoro 6 · 8 = 48, to 48 : 6 = <b>8</b> (i 48 : 8 = 6).'),
+ q('td4-4b','Które dzielenie wynika z mnożenia 7 · 4 = 28?',['28 : 4 = 8','4 : 28 = 7','28 : 7 = 4','28 : 7 = 3'],2,'Z 7 · 4 = 28 wynikają dwa dzielenia: <b>28 : 7 = 4</b> oraz 28 : 4 = 7.'),
+ // Dzielna, dzielnik, iloraz
+ q('td4-5a','W działaniu 42 : 7 = 6 liczba 42 to:',['dzielnik','iloraz','czynnik','dzielna'],3,'Liczba, którą dzielimy, to <b>dzielna</b>. 7 to dzielnik, a 6 to iloraz.'),
+ q('td4-5b','Dzielna to 36, a dzielnik to 4. Ile wynosi iloraz?',['9','32','40','8'],0,'Iloraz to wynik dzielenia: 36 : 4 = <b>9</b>.'),
+ q('td4-5c','Iloraz to 7, a dzielnik to 8. Ile wynosi dzielna?',['1','56','15','63'],1,'? : 8 = 7. Sprawdzamy mnożeniem: 7 · 8 = <b>56</b>, więc 56 : 8 = 7.'),
+ // Tygodnie
+ q('td4-6a','Ile tygodni to 28 dni?',['3','21','4','35'],2,'Tydzień ma 7 dni: 28 : 7 = <b>4</b>.'),
+ q('td4-6b','Wakacje trwały 63 dni. Ile to tygodni?',['7','8','56','9'],3,'Tydzień ma 7 dni: 63 : 7 = <b>9</b>.'),
+ // Trudniejsze przykłady z tabliczki
+ q('td4-7a','Ile wynosi 56 : 8?',['7','6','8','9'],0,'56 : 8 = <b>7</b>, bo 7 · 8 = 56.'),
+ q('td4-7b','Ile wynosi 63 : 9?',['9','7','6','8'],1,'63 : 9 = <b>7</b>, bo 7 · 9 = 63.'),
+ q('td4-7c','Ile wynosi 72 : 8?',['8','7','9','6'],2,'72 : 8 = <b>9</b>, bo 9 · 8 = 72.'),
+ q('td4-7d','Ile wynosi 54 : 6?',['8','6','7','9'],3,'54 : 6 = <b>9</b>, bo 9 · 6 = 54.'),
+ // Sprawdzanie wyniku dzielenia
+ q('td4-8a','Którym mnożeniem sprawdzimy, że 45 : 5 = 9?',['45 · 5 = 225','9 · 5 = 45','45 · 9 = 405','5 · 5 = 25'],1,'Wynik dzielenia mnożymy przez dzielnik i powinniśmy dostać dzielną: <b>9 · 5 = 45</b>.'),
+ q('td4-8b','Które dzielenie jest wykonane błędnie?',['32 : 4 = 8','42 : 6 = 7','48 : 8 = 7','36 : 9 = 4'],2,'Sprawdzenie: 7 · 8 = 56, a nie 48. Działanie <b>48 : 8 = 7</b> jest błędne — powinno być 48 : 8 = 6.'),
+ // Okienka
+ q('td4-9a',FILL(`${BOX} : 6 = 7`),['1','13','42','48'],2,'Szukamy dzielnej: 7 · 6 = <b>42</b>. Sprawdzenie: 42 : 6 = 7.'),
+ q('td4-9b',FILL(`40 : ${BOX} = 5`),['35','45','200','8'],3,'40 podzielone przez ile daje 5? 5 · 8 = 40, więc w okienku jest <b>8</b>.'),
+ q('td4-9c',FILL(`24 : ${BOX} = 3`),['8','21','27','72'],0,'24 podzielone przez ile daje 3? 3 · 8 = 24, więc w okienku jest <b>8</b>.'),
+ // Co da się podzielić?
+ q('td4-10a',DIVISIBLE(7),['24','42','36','48'],1,'W tabliczce mnożenia przez 7 jest <b>42</b> = 6 · 7, więc 42 : 7 = 6. Liczb 24, 36 i 48 tam nie ma.'),
+ q('td4-10b',DIVISIBLE(6),['26','32','54','44'],2,'W tabliczce mnożenia przez 6 jest <b>54</b> = 9 · 6, więc 54 : 6 = 9.'),
+ q('td4-10c',DIVISIBLE(9),['38','46','52','45'],3,'W tabliczce mnożenia przez 9 jest <b>45</b> = 5 · 9, więc 45 : 9 = 5.'),
+ // Razy mniej
+ q('td4-11a','Tata ma 36 lat, a Zosia jest od niego 4 razy młodsza. Ile lat ma Zosia?',['9','32','40','8'],0,'4 razy mniej niż 36: 36 : 4 = <b>9</b>. 32 to „o 4 mniej”.'),
+ q('td4-11b','Mama upiekła 30 pierników, a babcia 5 razy mniej. Ile pierników upiekła babcia?',['25','6','35','150'],1,'5 razy mniej niż 30: 30 : 5 = <b>6</b>. 25 to „o 5 mniej”.'),
+ // Ile razy więcej?
+ q('td4-12a','W koszyku są 24 śliwki i 6 gruszek. Ile razy więcej jest śliwek niż gruszek?',['18 razy','30 razy','4 razy','3 razy'],2,'Ile razy więcej — dzielimy: 24 : 6 = <b>4</b>. 18 to odpowiedź na pytanie „o ile więcej?”.'),
+ q('td4-12b','Ola ma 8 lat, a jej babcia 64 lata. Ile razy babcia jest starsza od Oli?',['56 razy','9 razy','7 razy','8 razy'],3,'64 : 8 = <b>8</b>. Babcia jest 8 razy starsza (a o 56 lat starsza).'),
+ // Ile razy mniej, o ile więcej
+ q('td4-13a',`${PAGES} Ile razy mniej stron przeczytał Bartek?`,['8 razy','35 razy','45 razy','5 razy'],0,'40 : 5 = <b>8</b>. Bartek przeczytał 8 razy mniej stron.'),
+ q('td4-13b',`${PAGES} O ile więcej stron przeczytała Kasia?`,['8','35','45','200'],1,'„O ile więcej” — odejmujemy: 40 − 5 = <b>35</b>. 8 to odpowiedź na pytanie „ile razy więcej?”.'),
+ // Kawałki taśmy
+ q('td4-14a','Taśmę o długości 48 cm tniemy na kawałki po 8 cm. Ile kawałków powstanie?',['8','40','6','56'],2,'48 : 8 = <b>6</b> kawałków.'),
+ q('td4-14b','Taśmę o długości 48 cm tniemy na 6 równych kawałków. Jaką długość ma jeden kawałek?',['6 cm','42 cm','54 cm','8 cm'],3,'48 cm : 6 = <b>8 cm</b>.'),
+ // Które działanie pasuje?
+ q('td4-15a','Którą sytuację opisuje działanie 30 : 5?',['30 zł dzielimy po równo na 5 osób','Do 30 zł dokładamy 5 zł','Każda z 5 osób ma 30 zł','Z 30 zł wydajemy 5 zł'],0,'Dzielenie po równo na 5 osób: <b>30 : 5</b> = 6 zł dla każdej. Pozostałe to 30 + 5, 5 · 30 i 30 − 5.'),
+ q('td4-15b','Igor ma 24 kulki. Przy którym zdaniu liczbę kulek Adama obliczymy działaniem 24 : 6?',['Adam ma o 6 kulek mniej.','Adam ma 6 razy mniej kulek.','Adam ma 6 razy więcej kulek.','Adam ma o 6 kulek więcej.'],1,'„6 razy mniej” to dzielenie przez 6: 24 : 6 = 4. <b>Adam ma 6 razy mniej kulek.</b>'),
+ // Piraci
+ q('td4-16a',`${PIRATES} Ile pereł dostanie każdy pirat?`,['8','32','5','48'],2,'40 : 8 = <b>5</b> pereł.'),
+ q('td4-16b',`${PIRATES} Ile wszystkich skarbów (dukatów, pereł i rubinów razem) dostanie każdy pirat?`,['13','16','128','11'],1,'Dukaty: 64 : 8 = 8, perły: 40 : 8 = 5, rubiny: 24 : 8 = 3. Razem 8 + 5 + 3 = <b>16</b>. 128 to cały łup.'),
+ // Najpierw jedna sztuka
+ q('td4-17a','5 jednakowych długopisów kosztuje 20 zł. Ile kosztuje 8 takich długopisów?',['28 zł','25 zł','32 zł','100 zł'],2,'Jeden długopis: 20 zł : 5 = 4 zł. Osiem: 8 · 4 zł = <b>32 zł</b>.'),
+ q('td4-17b','Za 3 jednakowe soki zapłacono 12 zł. Ile kosztuje 7 takich soków?',['16 zł','21 zł','36 zł','28 zł'],3,'Jeden sok: 12 zł : 3 = 4 zł. Siedem: 7 · 4 zł = <b>28 zł</b>.'),
+ // Najpierw odejmij, potem podziel
+ q('td4-18a','Karolina miała 50 klocków. 2 klocki się zgubiły, a z pozostałych zbudowała 6 jednakowych domków. Zużyła wszystkie te klocki. Z ilu klocków jest jeden domek?',['8','42','56','6'],0,'Zostało 50 − 2 = 48 klocków. Jeden domek: 48 : 6 = <b>8</b>.'),
+ q('td4-18b','Krawcowa miała 40 m wstążki. 13 m zużyła na zasłonę, a resztę pocięła na 9 równych kawałków. Ile metrów ma jeden kawałek?',['4 m','3 m','27 m','31 m'],1,'Zostało 40 − 13 = 27 m. Jeden kawałek: 27 m : 9 = <b>3 m</b>.'),
+ // Dwa kroki: razy więcej i razy mniej
+ q('td4-19a','Na deser jest 8 jabłek, 3 razy więcej śliwek niż jabłek oraz gruszki. Gruszek jest 2 razy mniej niż jabłek. Ile razy więcej jest śliwek niż gruszek?',['20 razy','3 razy','6 razy','2 razy'],2,'Śliwki: 3 · 8 = 24, gruszki: 8 : 2 = 4. Ile razy więcej: 24 : 4 = <b>6</b>. 20 to odpowiedź na pytanie „o ile więcej?”.'),
+ q('td4-19b','Ania ma 6 naklejek. Basia ma 4 razy więcej naklejek niż Ania, a Celina 3 razy mniej niż Basia. Ile naklejek ma Celina?',['2','18','21','8'],3,'Basia: 4 · 6 = 24. Celina: 24 : 3 = <b>8</b>. 2 wychodzi, gdy podzieli się naklejki Ani zamiast Basi.'),
+ // Prezent dla babci
+ q('td4-20a',`${GIFT} Ile pieniędzy zebrała Iga?`,['7 zł','48 zł','6 zł','64 zł'],0,'8 razy mniej niż Ela: 56 zł : 8 = <b>7 zł</b>. 6 zł wychodzi, gdy podzieli się pieniądze Oli zamiast Eli.'),
+ q('td4-20b',`${GIFT} Ile pieniędzy zebrały razem?`,['104 zł','111 zł','112 zł','120 zł'],1,'Ela: 56 zł, Ola: 56 − 8 = 48 zł, Iga: 56 : 8 = 7 zł. Razem 56 + 48 + 7 = <b>111 zł</b>.'),
+ // Uwaga na przerwy!
+ q('td4-21a','Słupki stoją w równych odstępach. Pierwszy słupek oznacza start, a dziesiąty metę. Zawodniczka biegła cały czas tak samo szybko i do piątego słupka dobiegła w 24 sekundy. Ile sekund trwał cały bieg?',['48','60','30','54'],3,'Od pierwszego do piątego słupka są 4 odstępy: 24 : 4 = 6 sekund na odstęp. Od startu do mety jest 9 odstępów: 9 · 6 = <b>54</b> sekundy. 60 wychodzi, gdy policzy się słupki zamiast odstępów.'),
+ q('td4-21b','Zegar wybija godzinę czwartą 4 uderzeniami w równych odstępach. Od pierwszego do ostatniego uderzenia mija 6 sekund. Ile sekund minie od pierwszego do ostatniego uderzenia, gdy zegar wybije godzinę dziesiątą (10 uderzeń)?',['18','15','20','24'],0,'Przy 4 uderzeniach są 3 przerwy: 6 : 3 = 2 sekundy. Przy 10 uderzeniach jest 9 przerw: 9 · 2 = <b>18</b> sekund. 15 wychodzi, gdy liczy się uderzenia zamiast przerw.'),
+];

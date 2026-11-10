@@ -8,7 +8,7 @@ import { powerQuestions7, samePowerQuestions7, scientificQuestions7, scientificC
 import { axisQuestions } from './axis-sets.js';
 import { geometryQuestions5, angleQuestions5, measureQuestions5, triangleQuestions5 } from './geometry5-sets.js';
 import { algebraQuestions8, multiplicationQuestions8, equationQuestions8 } from './algebra-sets.js';
-import { grade4Questions, axisQuestions4, additionQuestions4, estimationQuestions4, smartAdditionQuestions4, smartSubtractionQuestions4, reviewQuestions4, wordProblemQuestions4 } from './grade4-sets.js';
+import { grade4Questions, axisQuestions4, additionQuestions4, estimationQuestions4, smartAdditionQuestions4, smartSubtractionQuestions4, reviewQuestions4, wordProblemQuestions4, multiplicationQuestions4, divisionQuestions4 } from './grade4-sets.js';
 
 // Każdy wpis ma trwałe ID: zapis gry odtwarza dokładnie te same pytania.
 const q = (id, text, answers, correct, explain) => ({ id, sourceGroup: id.replace(/[a-z]+$/, ''), q: text, answers, correct, explain });
@@ -98,6 +98,8 @@ export const SCENARIOS = [
  {id:'smart-subtraction-4', grade:4, section:'Dodawanie i odejmowanie', title:'Sprytne odejmowanie', description:'Po kawałku, powiększanie obu liczb, odejmowanie przez dodawanie, reszta z banknotu, lata i zadania tekstowe.', questions:smartSubtractionQuestions4, ordered:true, award:{password:'Minusy pokonane, punkty pozbierane!', pluses:2}},
  {id:'review-2-4', grade:4, section:'Dodawanie i odejmowanie', title:'Powtórzenie: dodawanie i odejmowanie', description:'Cały dział II: zapis i porównywanie liczb, oś liczbowa, szacowanie, sposoby liczenia, tabelka ○ − ■, prawda czy fałsz i zadania tekstowe.', questions:reviewQuestions4, ordered:true, award:{password:'Powtórka zaliczona, wiedza utrwalona!', pluses:4}},
  {id:'word-problems-4', grade:4, section:'Mnożenie i dzielenie', title:'Jak rozwiązywać zadania tekstowe', description:'Które działanie wybrać? Zakupy i reszta, „o tyle więcej, o tyle mniej”, wiek i wzrost, przystanki, banknoty i monety, liczenie od końca.', questions:wordProblemQuestions4, ordered:true, award:{password:'Kto treść rozumie, ten wszystko umie!', pluses:2}},
+ {id:'multiplication-table-4', grade:4, section:'Mnożenie i dzielenie', title:'Tabliczka mnożenia', description:'Iloczyn i czynniki, zero i jedynka, zmiana kolejności, „razy więcej” czy „o ile więcej”, okienka, brakujące cyfry i zadania tekstowe.', questions:multiplicationQuestions4, ordered:true, award:{password:'Razy dwa, razy trzy – mistrzem mnożenia jesteś ty!', pluses:2}},
+ {id:'division-table-4', grade:4, section:'Mnożenie i dzielenie', title:'Tabliczka dzielenia', description:'Dzielna, dzielnik i iloraz, zero i jedynka, sprawdzanie mnożeniem, „razy mniej” i „ile razy więcej”, okienka, piraci i zadania tekstowe.', questions:divisionQuestions4, ordered:true, award:{password:'Przez zero nie dzielę, a o dzieleniu wiem wiele!', pluses:2}},
  // Klasa 5 ma działy jak w podręczniku: I. Liczby naturalne, II. Figury geometryczne.
  {id:'divisibility', grade:5, section:'Liczby naturalne', title:'Podzielność i wielokrotności', description:'Cechy podzielności przez 2, 3, 4, 5, 9 i 10 oraz wielokrotności liczb.', questions:divisibilityQuestions},
  {id:'primes', grade:5, section:'Liczby naturalne', title:'Liczby pierwsze i złożone', description:'Dzielniki, liczby pierwsze i złożone, rozkład na czynniki pierwsze.', questions:primeQuestions},
