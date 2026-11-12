@@ -4,7 +4,7 @@ import { divisibilityQuestions, powerQuestions, romanQuestions, primeQuestions, 
 import { percentExamQuestions } from './percent-exam-sets.js';
 import { algebraExamQuestions } from './algebra-exam-sets.js';
 import { powerExamQuestions } from './power-exam-sets.js';
-import { powerQuestions7, samePowerQuestions7, scientificQuestions7, scientificCalcQuestions7 } from './grade7-sets.js';
+import { powerQuestions7, samePowerQuestions7, scientificQuestions7, scientificCalcQuestions7, squareRootQuestions7 } from './grade7-sets.js';
 import { axisQuestions } from './axis-sets.js';
 import { geometryQuestions5, angleQuestions5, measureQuestions5, triangleQuestions5 } from './geometry5-sets.js';
 import { algebraQuestions8, multiplicationQuestions8, equationQuestions8 } from './algebra-sets.js';
@@ -134,6 +134,7 @@ export const SCENARIOS = [
  {id:'scientific-7', grade:7, section:'Potęgi', title:'Notacja wykładnicza', description:'Duże i małe liczby w postaci a · 10ⁿ, potęgi liczby 10 o wykładniku ujemnym, kosmiczne odległości, zamiana jednostek, porównywanie i działania.', questions:scientificQuestions7, ordered:true, award:{password:'NOTACJA', pluses:1}},
  {id:'scientific-calc-7', grade:7, section:'Potęgi', title:'Obliczenia w notacji wykładniczej', description:'Dodawanie, odejmowanie, mnożenie, dzielenie i potęgowanie w notacji wykładniczej, poprawianie wyniku do postaci a · 10ⁿ, porządkowanie liczb i zadania „ile razy?” z kosmosu i przyrody.', questions:scientificCalcQuestions7, ordered:true, award:{password:'Dodaję, odejmuję, notację zapisuję!', pluses:2}},
  {id:'power-exam-7', grade:7, section:'Potęgi', title:'Potęgi — zadania egzaminacyjne', description:'Zadania z egzaminów ósmoklasisty i gimnazjalnych oraz materiałów CKE w oryginalnym brzmieniu. Mnożenie, dzielenie i porównywanie potęg, potęga potęgi, liczby ujemne do potęgi, P/F i uzupełnianie zdań.', questions:powerExamQuestions, ordered:true, award:{password:'Potęgi opanowane, miliony wygrane!', pluses:3}},
+ {id:'square-root-7', grade:7, section:'Pierwiastki', title:'Pierwiastek kwadratowy', description:'Pierwiastki z liczb naturalnych, ułamków zwykłych, dziesiętnych i liczb mieszanych, bok i obwód kwadratu z pola, (√a)² i √a², między którymi liczbami naturalnymi, prawda czy fałsz, działania i zadania tekstowe.', questions:squareRootQuestions7, ordered:true, award:{password:'Pierwiastek wyciągnięty, milion już zgarnięty!', pluses:2}},
 ];
 function shuffle(items, random) {
  const result = [...items];

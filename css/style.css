@@ -169,6 +169,9 @@ main { position: fixed; inset: 56px 0 0 0; }
 .nowrap { white-space: nowrap; }
 .frac { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; font-size: .78em; line-height: 1.05; margin: 0 .12em; }
 .frac > span:first-child { border-bottom: 1.5px solid currentColor; padding: 0 .15em; }
+.sqrt { display: inline-flex; align-items: stretch; white-space: nowrap; margin: 0 .05em; }
+.sqrt::before { content: '√'; align-self: flex-end; line-height: 1.1; }
+.sqrt > span { border-top: 1.5px solid currentColor; padding: .08em .12em 0 .08em; display: inline-flex; align-items: center; }
 sup { font-size: .65em; line-height: 0; }
 
 .answers { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 26px; }

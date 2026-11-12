@@ -4,20 +4,20 @@ assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.title), ['Zegary, kal
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności', 'Liczby pierwsze i złożone', 'Potęgowanie', 'Cyfry rzymskie', 'Kolejność wykonywania działań', 'Płaszczyzna, proste, półproste, odcinki', 'Kąty', 'Mierzenie kątów', 'Trójkąty']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.section), ['Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Figury geometryczne', 'Figury geometryczne', 'Figury geometryczne', 'Figury geometryczne']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
- 'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Procenty — zadania egzaminacyjne', 'Potęgi', 'Potęgi o tych samych podstawach', 'Notacja wykładnicza', 'Obliczenia w notacji wykładniczej', 'Potęgi — zadania egzaminacyjne',
+ 'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Procenty — zadania egzaminacyjne', 'Potęgi', 'Potęgi o tych samych podstawach', 'Notacja wykładnicza', 'Obliczenia w notacji wykładniczej', 'Potęgi — zadania egzaminacyjne', 'Pierwiastek kwadratowy',
 ]);
 // Klasy 4, 7 i 8 są podzielone na działy.
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.section), ['Zaczynamy przygodę z matematyką', ...Array(6).fill('Dodawanie i odejmowanie'), ...Array(3).fill('Mnożenie i dzielenie')]);
 // Klasa 8: każdy zestaw ma 3 plusy, a hasła (nazwy zwierząt) się nie powtarzają.
 {const g8=SCENARIOS.filter(s=>s.grade===8);assert(g8.every(s=>s.award&&s.award.pluses===3),'grade 8: 3 pluses');assert.equal(new Set(g8.map(s=>s.award.password)).size,g8.length);}
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.section), ['Statystyka i prawdopodobieństwo', 'Statystyka i prawdopodobieństwo', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu']);
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.section), ['Procenty', 'Procenty', 'Procenty', 'Procenty', 'Potęgi', 'Potęgi', 'Potęgi', 'Potęgi', 'Potęgi']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.section), ['Procenty', 'Procenty', 'Procenty', 'Procenty', 'Potęgi', 'Potęgi', 'Potęgi', 'Potęgi', 'Potęgi', 'Pierwiastki']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
  'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Wyrażenia algebraiczne', 'Mnożenie sum algebraicznych', 'Równania', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne', 'Wyrażenia algebraiczne — zadania egzaminacyjne', 'Potęgi — zadania egzaminacyjne',
 ]);
-assert.equal(SCENARIOS.length,38);
+assert.equal(SCENARIOS.length,39);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,1430);
+assert.equal(new Set(all.map(q=>q.id)).size,1494);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -1203,4 +1203,44 @@ only('tr5-13a',a=>deg(a)===9+9+(9-3));only('tr5-13b',a=>deg(a)===10+2*(10-4));on
 only('tr5-15a',a=>deg(a)===180-35-70);only('tr5-15b',a=>2*deg(a)+deg(a)===90);only('tr5-15c',a=>{const x=deg(a)/3;return x+x+deg(a)===180;});
 only('tr5-15d',a=>{const x=deg(a)-4;return x+(x+3)+deg(a)===22;});
 console.log('PASS: grade 5 triangles — all 60 answer keys measured on drawings or computed');
+}
+
+// Klasa 7, dział „Pierwiastki”: pierwiastek kwadratowy — każdy klucz liczony niezależnie (Math.sqrt), poprawna odpowiedź jedyna o dobrej wartości.
+{
+const sq=SCENARIOS.find(s=>s.id==='square-root-7');
+assert.equal(sq.grade,7);assert.equal(sq.section,'Pierwiastki');assert.equal(sq.ordered,true);
+assert.deepEqual(sq.award,{password:'Pierwiastek wyciągnięty, milion już zgarnięty!',pluses:2});
+assert.equal(sq.questions.length,64);assert.equal(new Set(sq.questions.map(q=>q.sourceGroup)).size,16);
+assert.deepEqual(SCENARIOS.filter(s=>s.questions===sq.questions).map(s=>s.grade),[7]);
+assert.deepEqual([0,1,2,3].map(i=>sq.questions.filter(q=>q.correct===i).length),[16,16,16,16]);
+const num=html=>{if(html.includes("sqrt"))return NaN;const t=html.replace(/(\d*)<span class="frac"><span>(\d+)<\/span><span>(\d+)<\/span><\/span>/g,(_,w,a,b)=>String((+w||0)+a/b)).replace(/<[^>]+>/g,'').replace(/ (cm|m|dm|mm|km)$/,'').replace(/\s/g,'').replace('−','-').replace(',','.');return /^-?\d+(\.\d+)?(e-?\d+)?$/.test(t)?+t:NaN;};
+const close=(a,b)=>Math.abs(a-b)<1e-9;
+const only=(id,ok)=>{const q=ask(id);assert.deepEqual(q.answers.filter(ok),[q.answers[q.correct]],id);};
+const r=Math.sqrt, sqv=x=>x*x;
+const V={
+ 'pk7-1a':r(64),'pk7-1b':r(121),'pk7-1c':r(196),'pk7-1d':r(169),
+ 'pk7-2a':r(81),'pk7-2b':r(144),'pk7-2c':r(225),'pk7-2d':r(400),
+ 'pk7-3a':sqv(6),'pk7-3b':sqv(11),'pk7-3c':sqv(0.5),'pk7-3d':sqv(1.3),
+ 'pk7-4a':sqv(r(23)),'pk7-4b':r(41**2),'pk7-4c':r(17)*r(17),'pk7-4d':r(0.7**2),
+ 'pk7-5a':r(4900),'pk7-5b':r(1600),'pk7-5c':r(250000),'pk7-5d':r(1e6),
+ 'pk7-6a':r(25/64),'pk7-6b':r(49/81),'pk7-6c':r(1/36),'pk7-6d':r(16/169),
+ 'pk7-7a':r(0.49),'pk7-7b':r(0.0009),'pk7-7c':r(1.69),'pk7-7d':r(0.0121),
+ 'pk7-8a':r(25)+r(49)+r(81),'pk7-8b':r(144)-r(64)+r(9),'pk7-8c':r(100)-r(36)*r(4),'pk7-8d':r(225)/r(25)+r(16),
+ 'pk7-10a':r(2+7/9),'pk7-10b':r(1+13/36),'pk7-10c':r(6+1/4),'pk7-10d':r(1+24/25),
+ 'pk7-11a':4*r(196),'pk7-11b':4*r(1.21),'pk7-11c':4*r(0.25),'pk7-11d':4*r(2.25),
+ 'pk7-12a':r(4*9),'pk7-12b':r(0.4*3.6),'pk7-12c':r(2*32),'pk7-12d':r(0.9*10),
+ 'pk7-14a':4*r(900),'pk7-14b':r(0.09)*100,'pk7-14c':r(1600)/r(64),'pk7-14d':4*r(625),
+ 'pk7-15a':r(0.04)*r(2500),'pk7-15b':4*r(0.36)-0.5*r(64),'pk7-15c':r(1.44)+r(0.25)*r(100),'pk7-15d':(r(0.81)-r(0.49))*r(400),
+ 'pk7-16a':r(1+7/9)-r((2/3)**2)+r(1/9),'pk7-16b':r(2.25)-r(1/4)*r(36),'pk7-16c':(r(3+1/16)-r(9/16))*r(0.64),'pk7-16d':r(5+1/16)/r(9/64)-r(49),
+};
+for(const [id,v] of Object.entries(V)) only(id,a=>close(num(a),v));
+for(const [id,n] of [['pk7-13a',55],['pk7-13b',90],['pk7-13c',20],['pk7-13d',130]]) only(id,a=>{const [lo,hi]=a.split(' i ').map(Number);return hi===lo+1&&lo<r(n)&&r(n)<hi;});
+assert.equal(pick('pk7-9a'),truth(close(r(9+16),r(9)+r(16)),close(r(4*25),r(4)*r(25))));
+assert.equal(pick('pk7-9b'),truth(close(r(36/4),r(36)/r(4)),close(r(100-64),r(100)-r(64))));
+assert.equal(pick('pk7-9c'),truth(close(r(0.09),0.3),close(r(2.25),1.5)));
+assert.equal(pick('pk7-9d'),truth(close(r(0.4),0.2),close(r(1+9/16),1.75)));
+assert.equal(Object.keys(V).length+8,64);
+// Od łatwych do trudnych: grupy w pliku w kolejności 1…16.
+assert.deepEqual([...new Set(sq.questions.map(q=>q.sourceGroup))],Array.from({length:16},(_,i)=>`pk7-${i+1}`));
+console.log('PASS: grade 7 square roots — all 64 answer keys computed independently');
 }

@@ -365,3 +365,96 @@ export const scientificCalcQuestions7 = [
  q('on7-17c',`Szacuje się, że na Ziemi żyje około <b>${sci(2,16)}</b> mrówek i około <b>${sci(8,9)}</b> ludzi. Ile mrówek przypada na jednego człowieka? Wynik podaj w notacji wykładniczej.`, [sci(4,-7),sci('2,5',7),sci('2,5',6),sci('2,5',26)],2,`Dzielimy liczbę mrówek przez liczbę ludzi: 2 : 8 = 0,25 oraz ${e10(16)} : ${e10(9)} = ${e10(7)}, czyli ${sci('0,25',7)} = <b>${sci('2,5',6)}</b>, czyli 2,5 miliona mrówek. ${sci(4,-7)} to dzielenie w odwrotną stronę.`),
  q('on7-17d',`Wirus ma długość około <b>${sci('1,2',-7)}</b> m, a bakteria — około <b>${sci(3,-6)}</b> m. <b>O ile</b> metrów bakteria jest dłuższa od wirusa? Wynik podaj w notacji wykładniczej.`, [sci('1,8',-6),sci('2,88',-7),sci('2,5',1),sci('2,88',-6)],3,`„O ile” to różnica. Wyrównujemy wykładniki: ${sci('1,2',-7)} = ${sci('0,12',-6)}. Teraz 3 − 0,12 = 2,88, więc różnica to <b>${sci('2,88',-6)}</b> m. ${sci('2,5',1)} = 25 odpowiada na pytanie „ile razy”.`),
 ];
+
+// Klasa 7, dział „Pierwiastki”: pierwiastek kwadratowy. Zadania od najłatwiejszych do najtrudniejszych (ordered).
+const R = (x) => `<span class="sqrt"><span>${x}</span></span>`;
+const neg = (s) => `−${s}`;
+const nat = (n) => `Między którymi kolejnymi liczbami naturalnymi leży liczba <b>${R(n)}</b>?`;
+const side = (pole) => `Pole kwadratu jest równe <b>${pole}</b>. Jaką długość ma bok tego kwadratu?`;
+const perim = (pole) => `Pole kwadratu jest równe <b>${pole}</b>. Ile wynosi obwód tego kwadratu?`;
+const rect = (a, b) => `Prostokąt ma boki długości <b>${a}</b> i <b>${b}</b>. Jaką długość ma bok kwadratu o takim samym polu?`;
+const root = (a) => `Jaką liczbę trzeba wstawić w miejsce <i>a</i>, aby otrzymać równość <b>${R('<i>a</i>')} = ${a}</b>?`;
+const CHECK = 'Pierwiastek kwadratowy z liczby to taka liczba nieujemna, która podniesiona do kwadratu daje tę liczbę.';
+
+export const squareRootQuestions7 = [
+ // Pierwiastki z kwadratów liczb naturalnych
+ q('pk7-1a',calc(R(64)), ['32','8','16','4'],1,`8 · 8 = 64, więc <b>${R(64)} = 8</b>. 32 to 64 : 2 — pierwiastek to nie połowa liczby.`),
+ q('pk7-1b',calc(R(121)), ['11','60,5','12','21'],0,`11 · 11 = 121, więc <b>${R(121)} = 11</b>. 12 · 12 = 144, a 60,5 to połowa liczby 121.`),
+ q('pk7-1c',calc(R(196)), ['98','16','14','13'],2,`14 · 14 = 196, więc <b>${R(196)} = 14</b>. Sprawdzamy: 13 · 13 = 169 i 16 · 16 = 256 — za mało i za dużo.`),
+ q('pk7-1d',calc(R(169)), ['84,5','17','12','13'],3,`13 · 13 = 169, więc <b>${R(169)} = 13</b>. ${CHECK}`),
+ // Bok kwadratu o danym polu
+ q('pk7-2a',side('81 cm²'), ['9 cm','20,25 cm','40,5 cm','18 cm'],0,`Pole kwadratu to <i>a</i> · <i>a</i>. 9 · 9 = 81, więc bok ma <b>9 cm</b>. 20,25 cm to 81 : 4 — tak liczy się bok z obwodu, a nie z pola.`),
+ q('pk7-2b',side('144 m²'), ['36 m','12 m','72 m','14 m'],1,`${R(144)} = 12, bo 12 · 12 = 144. Bok ma <b>12 m</b>.`),
+ q('pk7-2c',side('225 dm²'), ['56,25 dm','25 dm','15 dm','112,5 dm'],2,`${R(225)} = 15, bo 15 · 15 = 225. Bok ma <b>15 dm</b>.`),
+ q('pk7-2d',side('400 mm²'), ['100 mm','200 mm','40 mm','20 mm'],3,`${R(400)} = 20, bo 20 · 20 = 400. Bok ma <b>20 mm</b>. 100 mm to 400 : 4.`),
+ // Jaka liczba pod pierwiastkiem?
+ q('pk7-3a',root(6), ['3','12','36','18'],2,`Pod pierwiastkiem jest kwadrat wyniku: 6² = 6 · 6 = <b>36</b>. Sprawdzenie: ${R(36)} = 6.`),
+ q('pk7-3b',root(11), ['121','22','5,5','111'],0,`<i>a</i> = 11² = <b>121</b>. 22 to 11 · 2, a nie 11 · 11.`),
+ q('pk7-3c',root('0,5'), ['0,05','0,25','1','2,5'],1,`<i>a</i> = 0,5² = 0,5 · 0,5 = <b>0,25</b>. Sprawdzenie: ${R('0,25')} = 0,5.`),
+ q('pk7-3d',root('1,3'), ['2,6','1,9','16,9','1,69'],3,`<i>a</i> = 1,3² = 1,3 · 1,3 = <b>1,69</b>. 2,6 to 1,3 · 2.`),
+ // Pierwiastek i kwadrat się znoszą
+ q('pk7-4a',calc(p(`(${R(23)})`,2)), ['529','46',R(23),'23'],3,`(${R(23)})² = ${R(23)} · ${R(23)}, a to jest liczba, która podniesiona do kwadratu daje 23. Wynik: <b>23</b>. Nie trzeba liczyć 23².`),
+ q('pk7-4b',calc(R(p(41,2))), ['1681','41','82','20,5'],1,`${R(p(41,2))} to liczba nieujemna, której kwadrat jest równy 41². To <b>41</b>. Kwadrat i pierwiastek się znoszą.`),
+ q('pk7-4c',calc(`${R(17)} · ${R(17)}`), ['289','34','17',R(34)],2,`${R(17)} · ${R(17)} = (${R(17)})² = <b>17</b>. 289 to 17 · 17, a 34 to 17 + 17.`),
+ q('pk7-4d',calc(R(p('0,7',2))), ['0,7','0,49','1,4','0,07'],0,`${R(p('0,7',2))} = <b>0,7</b>, bo 0,7 jest liczbą nieujemną, której kwadrat to 0,7². Można też policzyć: 0,7² = 0,49 i ${R('0,49')} = 0,7.`),
+ // Pełne dziesiątki i setki
+ q('pk7-5a',calc(R(4900)), ['700','70','2450','7'],1,`70 · 70 = 4900, więc <b>${R(4900)} = 70</b>. Zera „zabieramy” parami: pod pierwiastkiem są dwa zera, w wyniku zostaje jedno.`),
+ q('pk7-5b',calc(R(1600)), ['400','160','40','800'],2,`40 · 40 = 1600, więc <b>${R(1600)} = 40</b>. 400 · 400 = 160 000 — za dużo.`),
+ q('pk7-5c',calc(R('250 000')), ['500','5000','50','125 000'],0,`500 · 500 = 250 000, więc <b>${R('250 000')} = 500</b>. 25 pod pierwiastkiem daje 5, a z czterech zer zostają dwa.`),
+ q('pk7-5d',calc(R('1 000 000')), ['10 000','100 000','500 000','1000'],3,`1000 · 1000 = 1 000 000, więc <b>${R('1 000 000')} = 1000</b>. Sześć zer pod pierwiastkiem, trzy w wyniku.`),
+ // Ułamki zwykłe
+ q('pk7-6a',calc(R(f(25,64))), [f(5,8),f(25,8),f(5,64),f(5,32)],0,`Pierwiastkujemy licznik i mianownik: ${f(R(25),R(64))} = <b>${f(5,8)}</b>. Sprawdzenie: ${f(5,8)} · ${f(5,8)} = ${f(25,64)}.`),
+ q('pk7-6b',calc(R(f(49,81))), [f(7,81),f(49,9),f(7,9),f(9,7)],2,`${f(R(49),R(81))} = <b>${f(7,9)}</b>. Pierwiastek wyciągamy i z licznika, i z mianownika.`),
+ q('pk7-6c',calc(R(f(1,36))), [f(1,18),f(1,72),f(1,36),f(1,6)],3,`${f(R(1),R(36))} = <b>${f(1,6)}</b>, bo ${f(1,6)} · ${f(1,6)} = ${f(1,36)}. ${f(1,18)} to ${f(1,36)} · 2 — pierwiastek to nie mnożenie przez 2.`),
+ q('pk7-6d',calc(R(f(16,169))), [f(16,13),f(4,13),f(8,13),f(4,169)],1,`${f(R(16),R(169))} = <b>${f(4,13)}</b>, bo 4 · 4 = 16 i 13 · 13 = 169.`),
+ // Ułamki dziesiętne
+ q('pk7-7a',calc(R('0,49')), ['0,07','0,7','0,245','7'],1,`0,7 · 0,7 = 0,49, więc <b>${R('0,49')} = 0,7</b>. 0,07 · 0,07 = 0,0049 — za mało.`),
+ q('pk7-7b',calc(R('0,0009')), ['0,3','0,003','0,03','0,0003'],2,`0,03 · 0,03 = 0,0009, więc <b>${R('0,0009')} = 0,03</b>. Wynik ma dwa razy mniej miejsc po przecinku: 4 → 2.`),
+ q('pk7-7c',calc(R('1,69')), ['1,3','0,13','13','0,845'],0,`1,3 · 1,3 = 1,69, więc <b>${R('1,69')} = 1,3</b>.`),
+ q('pk7-7d',calc(R('0,0121')), ['1,1','0,011','0,0011','0,11'],3,`0,11 · 0,11 = 0,0121, więc <b>${R('0,0121')} = 0,11</b>. Cztery miejsca po przecinku pod pierwiastkiem, dwa w wyniku.`),
+ // Kilka pierwiastków w jednym działaniu
+ q('pk7-8a',calc(`${R(25)} + ${R(49)} + ${R(81)}`), ['155','21','35','19'],1,`5 + 7 + 9 = <b>21</b>. 155 to 25 + 49 + 81 — zapomniany pierwiastek.`),
+ q('pk7-8b',calc(`${R(144)} − ${R(64)} + ${R(9)}`), ['7','1','89','17'],0,`12 − 8 + 3 = <b>7</b>. Dodawanie i odejmowanie wykonujemy po kolei, od lewej: wynik 1 to 12 − (8 + 3).`),
+ q('pk7-8c',calc(`${R(100)} − ${R(36)} · ${R(4)}`), ['8','4','−2','2'],2,`10 − 6 · 2 = 10 − 12 = <b>−2</b>. Mnożenie przed odejmowaniem — 8 to (10 − 6) · 2.`),
+ q('pk7-8d',calc(`${R(225)} : ${R(25)} + ${R(16)}`), ['3',m(1,2,3),'19','7'],3,`15 : 5 + 4 = 3 + 4 = <b>7</b>. ${m(1,2,3)} to 15 : (5 + 4) — dzielenie wykonujemy przed dodawaniem.`),
+ // Prawda czy fałsz
+ pair('pk7-9a',`${R('9 + 16')} = ${R(9)} + ${R(16)}`,`${R('4 · 25')} = ${R(4)} · ${R(25)}`,'FP',`I: ${R(25)} = 5, a 3 + 4 = 7 — <b>fałsz</b>. Pierwiastek z sumy to nie suma pierwiastków. II: ${R(100)} = 10 i 2 · 5 = 10 — <b>prawda</b>.`),
+ pair('pk7-9b',`${R('36 : 4')} = ${R(36)} : ${R(4)}`,`${R('100 − 64')} = ${R(100)} − ${R(64)}`,'PF',`I: ${R(9)} = 3 i 6 : 2 = 3 — <b>prawda</b>. II: ${R(36)} = 6, a 10 − 8 = 2 — <b>fałsz</b>.`),
+ pair('pk7-9c',`${R('0,09')} = 0,3`,`${R(m(2,1,4))} = ${m(1,1,2)}`,'PP',`I: 0,3 · 0,3 = 0,09 — <b>prawda</b>. II: ${m(2,1,4)} = ${f(9,4)}, a ${R(f(9,4))} = ${f(3,2)} = ${m(1,1,2)} — <b>prawda</b>.`),
+ pair('pk7-9d',`${R('0,4')} = 0,2`,`${R(m(1,9,16))} = ${m(1,3,4)}`,'FF',`I: 0,2 · 0,2 = 0,04, a nie 0,4 — <b>fałsz</b>. II: ${m(1,9,16)} = ${f(25,16)}, więc pierwiastek to ${f(5,4)} = ${m(1,1,4)} — <b>fałsz</b>.`),
+ // Liczby mieszane
+ q('pk7-10a',calc(R(m(2,7,9))), [m(1,2,3),f(25,9),m(1,1,3),m(2,1,3)],0,`Najpierw ułamek niewłaściwy: ${m(2,7,9)} = ${f(25,9)}. Potem ${R(f(25,9))} = ${f(5,3)} = <b>${m(1,2,3)}</b>.`),
+ q('pk7-10b',calc(R(m(1,13,36))), [f(49,36),m(1,1,6),m(1,5,6),f(7,36)],1,`${m(1,13,36)} = ${f(49,36)}, więc ${R(f(49,36))} = ${f(7,6)} = <b>${m(1,1,6)}</b>. Sprawdzenie: ${f(7,6)} · ${f(7,6)} = ${f(49,36)}.`),
+ q('pk7-10c',calc(R(m(6,1,4))), [m(3,1,2),m(6,1,2),m(2,1,2),m(1,1,4)],2,`${m(6,1,4)} = ${f(25,4)}, więc ${R(f(25,4))} = ${f(5,2)} = <b>${m(2,1,2)}</b>.`),
+ q('pk7-10d',calc(R(m(1,24,25))), [m(1,1,5),f(49,25),m(2,2,5),m(1,2,5)],3,`${m(1,24,25)} = ${f(49,25)}, więc ${R(f(49,25))} = ${f(7,5)} = <b>${m(1,2,5)}</b>.`),
+ // Obwód kwadratu o danym polu
+ q('pk7-11a',perim('196 cm²'), ['14 cm','49 cm','56 cm','28 cm'],2,`Bok: ${R(196)} = 14 cm. Obwód: 4 · 14 cm = <b>56 cm</b>. 14 cm to sam bok, a 49 cm to 196 : 4.`),
+ q('pk7-11b',perim('1,21 m²'), ['4,4 m','1,1 m','4,84 m','0,3025 m'],0,`Bok: ${R('1,21')} = 1,1 m. Obwód: 4 · 1,1 m = <b>4,4 m</b>.`),
+ q('pk7-11c',perim('0,25 dm²'), ['1 dm','0,5 dm','0,0625 dm','2 dm'],3,`Bok: ${R('0,25')} = 0,5 dm. Obwód: 4 · 0,5 dm = <b>2 dm</b>.`),
+ q('pk7-11d',perim(`${m(2,1,4)} km²`), ['9 km','6 km','1,5 km','3 km'],1,`${m(2,1,4)} = ${f(9,4)}, więc bok: ${R(f(9,4))} = ${f(3,2)} = 1,5 km. Obwód: 4 · 1,5 km = <b>6 km</b>.`),
+ // Kwadrat o polu takim jak prostokąt
+ q('pk7-12a',rect('4 cm','9 cm'), ['6,5 cm','6 cm','13 cm','36 cm'],1,`Pole prostokąta: 4 · 9 = 36 cm². Bok kwadratu: ${R(36)} = <b>6 cm</b>. 6,5 cm to średnia boków — wtedy pole byłoby 42,25 cm².`),
+ q('pk7-12b',rect('0,4 dm','3,6 dm'), ['2 dm','1,44 dm','1,2 dm','12 dm'],2,`Pole: 0,4 · 3,6 = 1,44 dm². Bok kwadratu: ${R('1,44')} = <b>1,2 dm</b>.`),
+ q('pk7-12c',rect('2 m','32 m'), ['8 m','17 m','16 m','34 m'],0,`Pole: 2 · 32 = 64 m². Bok kwadratu: ${R(64)} = <b>8 m</b>.`),
+ q('pk7-12d',rect('0,9 m','10 m'), ['5,45 m','9 m','4,5 m','3 m'],3,`Pole: 0,9 · 10 = 9 m². Bok kwadratu: ${R(9)} = <b>3 m</b>. 9 m to pole, a nie bok.`),
+ // Między którymi liczbami naturalnymi?
+ q('pk7-13a',nat(55), ['27 i 28','5 i 6','7 i 8','6 i 7'],2,`7² = 49 &lt; 55 &lt; 64 = 8², więc ${R(49)} &lt; ${R(55)} &lt; ${R(64)}, czyli <b>7 &lt; ${R(55)} &lt; 8</b>.`),
+ q('pk7-13b',nat(90), ['9 i 10','8 i 9','45 i 46','10 i 11'],0,`9² = 81 &lt; 90 &lt; 100 = 10², więc <b>9 &lt; ${R(90)} &lt; 10</b>.`),
+ q('pk7-13c',nat(20), ['3 i 4','10 i 11','5 i 6','4 i 5'],3,`4² = 16 &lt; 20 &lt; 25 = 5², więc <b>4 &lt; ${R(20)} &lt; 5</b>.`),
+ q('pk7-13d',nat(130), ['12 i 13','11 i 12','65 i 66','10 i 11'],1,`11² = 121 &lt; 130 &lt; 144 = 12², więc <b>11 &lt; ${R(130)} &lt; 12</b>.`),
+ // Zadania tekstowe
+ q('pk7-14a',`Działka w kształcie kwadratu ma powierzchnię <b>900 m²</b>. Ile metrów siatki potrzeba, żeby ogrodzić ją dookoła?`, ['30 m','225 m','60 m','120 m'],3,`Bok działki: ${R(900)} = 30 m. Siatka idzie dookoła, więc liczymy obwód: 4 · 30 m = <b>120 m</b>.`),
+ q('pk7-14b',`Kwadratowa płytka ma pole <b>0,09 m²</b>. Ile centymetrów ma jej bok?`, ['3 cm','30 cm','9 cm','0,3 cm'],1,`Bok: ${R('0,09')} = 0,3 m, a 0,3 m = <b>30 cm</b>.`),
+ q('pk7-14c',`Kwadratowa szachownica składa się z <b>64</b> jednakowych kwadratowych pól, a jej pole jest równe <b>1600 cm²</b>. Jaką długość ma bok jednego pola?`, ['5 cm','25 cm','40 cm','20 cm'],0,`Bok szachownicy: ${R(1600)} = 40 cm, a wzdłuż boku jest ${R(64)} = 8 pól. 40 cm : 8 = <b>5 cm</b>. Inaczej: jedno pole ma 1600 : 64 = 25 cm², a ${R(25)} = 5.`),
+ q('pk7-14d',`Ola obszywa koronką dookoła kwadratową serwetkę o polu <b>625 cm²</b>. Ile centymetrów koronki zużyje?`, ['25 cm','156,25 cm','100 cm','50 cm'],2,`Bok serwetki: ${R(625)} = 25 cm, bo 25 · 25 = 625. Koronka idzie dookoła: 4 · 25 cm = <b>100 cm</b>.`),
+ // Działania z ułamkami dziesiętnymi
+ q('pk7-15a',calc(`${R('0,04')} · ${R(2500)}`), ['100','1','10','0,1'],2,`${R('0,04')} = 0,2 i ${R(2500)} = 50, więc 0,2 · 50 = <b>10</b>.`),
+ q('pk7-15b',calc(`4${R('0,36')} − 0,5${R(64)}`), ['1,6','−1,6','−0,4','2,8'],1,`4 · ${R('0,36')} = 4 · 0,6 = 2,4 oraz 0,5 · ${R(64)} = 0,5 · 8 = 4. Zatem 2,4 − 4 = <b>−1,6</b>.`),
+ q('pk7-15c',calc(`${R('1,44')} + ${R('0,25')} · ${R(100)}`), ['17','1,7','11,2','6,2'],3,`1,2 + 0,5 · 10 = 1,2 + 5 = <b>6,2</b>. Mnożenie przed dodawaniem — 17 to (1,2 + 0,5) · 10.`),
+ q('pk7-15d',calc(`(${R('0,81')} − ${R('0,49')}) · ${R(400)}`), ['4','0,4','40','3,2'],0,`(0,9 − 0,7) · 20 = 0,2 · 20 = <b>4</b>.`),
+ // Trudniejsze działania z ułamkami
+ q('pk7-16a',calc(`${R(m(1,7,9))} − ${R(p(`(${f(2,3)})`,2))} + ${R(f(1,9))}`), [f(1,3),'1',m(2,1,3),f(4,9)],1,`${R(f(16,9))} = ${f(4,3)}, ${R(p(`(${f(2,3)})`,2))} = ${f(2,3)} i ${R(f(1,9))} = ${f(1,3)}. Zatem ${f(4,3)} − ${f(2,3)} + ${f(1,3)} = ${f(3,3)} = <b>1</b>.`),
+ q('pk7-16b',calc(`${R(m(2,1,4))} − ${R(f(1,4))} · ${R(36)}`), ['6',m(1,1,2),'−3',neg(m(1,1,2))],3,`${R(f(9,4))} = ${f(3,2)}, ${R(f(1,4))} = ${f(1,2)} i ${R(36)} = 6. Mnożenie najpierw: ${f(1,2)} · 6 = 3, więc ${f(3,2)} − 3 = <b>${neg(m(1,1,2))}</b>. Wynik 6 to (${f(3,2)} − ${f(1,2)}) · 6.`),
+ q('pk7-16c',calc(`(${R(m(3,1,16))} − ${R(f(9,16))}) · ${R('0,64')}`), ['0,8','1,15','4','0,08'],0,`${m(3,1,16)} = ${f(49,16)}, więc ${R(f(49,16))} = ${f(7,4)}, a ${R(f(9,16))} = ${f(3,4)}. W nawiasie ${f(7,4)} − ${f(3,4)} = 1, a ${R('0,64')} = 0,8. Wynik: 1 · 0,8 = <b>0,8</b>.`),
+ q('pk7-16d',calc(`${R(m(5,1,16))} : ${R(f(9,64))} − ${R(49)}`), ['13','6','−1',f(27,32)],2,`${m(5,1,16)} = ${f(81,16)}, więc ${R(f(81,16))} = ${f(9,4)}, a ${R(f(9,64))} = ${f(3,8)}. Dzielenie: ${f(9,4)} : ${f(3,8)} = ${f(9,4)} · ${f(8,3)} = 6. Potem 6 − 7 = <b>−1</b>.`),
+];
