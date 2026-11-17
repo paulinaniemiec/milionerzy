@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict';
 import {SCENARIOS, makeRound, restoreRound} from '../js/scenarios.js';
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.title), ['Zegary, kalendarz i jednostki długości', 'Oś liczbowa', 'Dodawanie i odejmowanie', 'Szacowanie', 'Sprytne dodawanie', 'Sprytne odejmowanie', 'Powtórzenie: dodawanie i odejmowanie', 'Jak rozwiązywać zadania tekstowe', 'Tabliczka mnożenia', 'Tabliczka dzielenia']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.title), ['Zegary, kalendarz i jednostki długości', 'Oś liczbowa', 'Dodawanie i odejmowanie', 'Szacowanie', 'Sprytne dodawanie', 'Sprytne odejmowanie', 'Powtórzenie: dodawanie i odejmowanie', 'Jak rozwiązywać zadania tekstowe', 'Tabliczka mnożenia', 'Tabliczka dzielenia', 'Sprytne mnożenie']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności', 'Liczby pierwsze i złożone', 'Potęgowanie', 'Cyfry rzymskie', 'Kolejność wykonywania działań', 'Płaszczyzna, proste, półproste, odcinki', 'Kąty', 'Mierzenie kątów', 'Trójkąty']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.section), ['Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Figury geometryczne', 'Figury geometryczne', 'Figury geometryczne', 'Figury geometryczne']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
  'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Procenty — zadania egzaminacyjne', 'Potęgi', 'Potęgi o tych samych podstawach', 'Notacja wykładnicza', 'Obliczenia w notacji wykładniczej', 'Potęgi — zadania egzaminacyjne', 'Pierwiastek kwadratowy',
 ]);
 // Klasy 4, 7 i 8 są podzielone na działy.
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.section), ['Zaczynamy przygodę z matematyką', ...Array(6).fill('Dodawanie i odejmowanie'), ...Array(3).fill('Mnożenie i dzielenie')]);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.section), ['Zaczynamy przygodę z matematyką', ...Array(6).fill('Dodawanie i odejmowanie'), ...Array(4).fill('Mnożenie i dzielenie')]);
 // Klasa 8: każdy zestaw ma 3 plusy, a hasła (nazwy zwierząt) się nie powtarzają.
 {const g8=SCENARIOS.filter(s=>s.grade===8);assert(g8.every(s=>s.award&&s.award.pluses===3),'grade 8: 3 pluses');assert.equal(new Set(g8.map(s=>s.award.password)).size,g8.length);}
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.section), ['Statystyka i prawdopodobieństwo', 'Statystyka i prawdopodobieństwo', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu']);
@@ -15,9 +15,9 @@ assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.section), ['Procenty'
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
  'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Wyrażenia algebraiczne', 'Mnożenie sum algebraicznych', 'Równania', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne', 'Wyrażenia algebraiczne — zadania egzaminacyjne', 'Potęgi — zadania egzaminacyjne',
 ]);
-assert.equal(SCENARIOS.length,39);
+assert.equal(SCENARIOS.length,40);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,1494);
+assert.equal(new Set(all.map(q=>q.id)).size,1573);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -832,6 +832,53 @@ for(const id of ['td4-18a','td4-18b']){const [all,lost,parts]=nums(id);only(id,a
 {has('td4-21a','dziesiąty metę');has('td4-21a','do piątego słupka');const [t]=nums('td4-21a');only('td4-21a',a=>+a===t/(5-1)*(10-1));}
 {const [n,t,m]=nums('td4-21b');only('td4-21b',a=>+a===t/(n-1)*(m-1));}
 console.log('PASS: grade 4 multiplication and division tables — all 107 answer keys computed independently, rounds go from easy to hard');
+}
+
+// Klasa 4, dział III: sprytne mnożenie — klucze liczone z treści, od łatwych do trudnych.
+{
+const sc=SCENARIOS.find(s=>s.id==='smart-multiplication-4');
+assert.equal(sc.grade,4);assert.equal(sc.section,'Mnożenie i dzielenie');assert.equal(sc.ordered,true);
+assert.deepEqual(sc.award,{password:'Zera dopiszę, po kawałku pomnożę – sprytnym mnożeniem wszystko zmożę!',pluses:2});
+assert.deepEqual(SCENARIOS.filter(s=>s.questions===sc.questions).map(s=>s.grade),[4]);
+const groups=[...new Set(sc.questions.map(q=>q.sourceGroup))];
+assert.deepEqual(groups,Array.from({length:22},(_,i)=>`sm4-${i+1}`));assert.equal(sc.questions.length,79);
+{let seed=5;const random=()=>{seed=(1664525*seed+1013904223)>>>0;return seed/4294967296;};
+ for(let i=0;i<500;i++) makeRound(sc,random).forEach((q,k)=>{const v=groups.indexOf(q.sourceGroup);assert(v>=Math.floor(k*22/12)&&v<Math.floor((k+1)*22/12));});}
+{const c=[0,0,0,0];sc.questions.forEach(q=>c[q.correct]++);assert(Math.max(...c)-Math.min(...c)<=1,'A–D '+c);}
+const Q=id=>sc.questions.find(q=>q.id===id);
+const txt=id=>plain(Q(id).q).replace(/(\d) (?=\d)/g,'$1');
+const E=s=>Function('return '+s.replace(/(\d) (?=\d)/g,'$1').replace(/·/g,'*').replace(/−/g,'-').replace(/:/g,'/'))();
+const N=a=>parseInt(a.replace(/(\d) (?=\d)/g,'$1'));
+const only=(id,ok)=>{const q=Q(id);assert.deepEqual(q.answers.filter(ok),[q.answers[q.correct]],id);};
+const expr=id=>Q(id).q.match(/<b>(.*?)<\/b>/)[1];
+const nums=id=>[...txt(id).matchAll(/\d+/g)].map(m=>+m[0]);
+const BOXRE=/<span class="answer-box"[^>]*><\/span>/g;
+for(const g of [1,3,4,7,10,15,20]) for(const id of sc.questions.filter(q=>q.sourceGroup===`sm4-${g}`).map(q=>q.id)) only(id,a=>N(a)===E(expr(id)));
+for(const id of ['sm4-2a','sm4-2b','sm4-2c']) only(id,a=>{const [l,r]=Q(id).q.match(/<div class="task-statements">(.*)<\/div>/)[1].replace(BOXRE,a).split(' = ');return E(l)===E(r);});
+for(const id of ['sm4-5a','sm4-5b','sm4-5c','sm4-5d']) only(id,a=>+a===String(E(expr(id))).match(/0*$/)[0].length);
+for(const id of ['sm4-6a','sm4-6b','sm4-6c','sm4-6d']) only(id,a=>{const [x,y]=a.split(' i ').map(Number);const f=expr(id).split(' · ').map(Number);return f.includes(x)&&f.includes(y)&&(x*y===100||x*y===10);});
+const unit={godzina:60,godziny:60,godzin:60,doba:1440,minuty:1,minut:1};
+const toMin=s=>[...s.matchAll(/(\d+)? ?(godzina|godziny|godzin|doba|minuty|minut)\b/g)].reduce((t,m)=>t+(m[1]?+m[1]:1)*unit[m[2]],0);
+for(const id of ['sm4-8a','sm4-8b','sm4-8c','sm4-8d']) only(id,a=>+a===toMin(expr(id)));
+for(const id of ['sm4-13a','sm4-13b','sm4-13c','sm4-13d']) only(id,a=>+a===60*toMin(expr(id)));
+for(const id of ['sm4-9a','sm4-9b','sm4-9c','sm4-9d']) only(id,a=>!a.includes('−')&&E(a)===E(expr(id))&&a.split(' + ').length===2);
+for(const id of ['sm4-14a','sm4-14b','sm4-14c','sm4-14d']) only(id,a=>a.includes('−')&&E(a)===E(expr(id)));
+for(const id of ['sm4-16a','sm4-16b','sm4-16c','sm4-16d']) only(id,a=>E(a)===E(expr(id))&&/^100?\b/.test(a));
+{const [k,r,o]=nums('sm4-11a');const ola=r*k,ela=k+o;only('sm4-11a',a=>a.startsWith(ola>ela?'Ola':'Ela')&&N(a.split('o ')[1])===Math.abs(ola-ela));}
+{const [b,r,o]=nums('sm4-11b');const ig=r*b,ty=b+o;only('sm4-11b',a=>a.startsWith(ig>ty?'Igor':'Tymek')&&N(a.split('o ')[1])===Math.abs(ig-ty));}
+{const [s,r]=nums('sm4-12a');only('sm4-12a',a=>N(a)===s*r);const [d,n]=nums('sm4-12b');only('sm4-12b',a=>N(a)===d*n);const [c,u]=nums('sm4-12c');only('sm4-12c',a=>N(a)===c*u);}
+for(const id of ['sm4-17a','sm4-17b','sm4-17c']){const [a1,p1,a2,p2]=nums(id);only(id,a=>N(a)===a1*p1+a2*p2);}
+for(const id of ['sm4-18a','sm4-18b','sm4-18c']){const [x,y,z]=nums(id);only(id,a=>N(a)===x*y*z);}
+for(const id of ['sm4-19a','sm4-19b','sm4-19c']){const n=nums(id);assert.equal(n[0]*n[1],n[2]);only(id,a=>+a===n[3]*n[4]);}
+const hm=a=>{const m=a.match(/(\d+) h(?: (\d+) min)?/);return +m[1]*60+(+m[2]||0);};
+{const [m]=nums('sm4-21a');only('sm4-21a',a=>hm(a)===7*m);const [k]=nums('sm4-21c');only('sm4-21c',a=>hm(a)===14*k);}
+{const [m,h]=nums('sm4-21b');const d=7*m-60*h;only('sm4-21b',a=>d>0?a===`Tak, o ${d} minut`:false);}
+// Ktoś nie przyszedł: szukamy liczby na osobę, przy której wszystko się zgadza.
+for(const id of ['sm4-22a','sm4-22b','sm4-22c']){const t=txt(id);const all=+t.match(/(\d+) (dzieciom|zawodnikom|wnuków)/)[1];const extra=+t.match(/o (\d+) (cukierek|naklejkę|pierniki)/)[1];
+ const came=id==='sm4-22c'?+t.match(/tylko (\d+)/)[1]:all-+t.match(/Nie przyszło (\d+)/)[1];
+ const sol=[...Array(100).keys()].filter(x=>x>0&&all*x===came*(x+extra));assert.equal(sol.length,1,id);only(id,a=>+a===all*sol[0]);}
+assert.equal(sc.questions.length,79);
+console.log('PASS: grade 4 smart multiplication — all 79 answer keys computed independently, rounds go from easy to hard');
 }
 
 // Kalkulator wyrażeń algebraicznych do testów klasy 8: zapis z gry (kursywa, potęgi, ułamki, √) → funkcja zmiennych.

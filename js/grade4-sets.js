@@ -793,3 +793,119 @@ export const divisionQuestions4 = [
  q('td4-21a','Słupki stoją w równych odstępach. Pierwszy słupek oznacza start, a dziesiąty metę. Zawodniczka biegła cały czas tak samo szybko i do piątego słupka dobiegła w 24 sekundy. Ile sekund trwał cały bieg?',['48','60','30','54'],3,'Od pierwszego do piątego słupka są 4 odstępy: 24 : 4 = 6 sekund na odstęp. Od startu do mety jest 9 odstępów: 9 · 6 = <b>54</b> sekundy. 60 wychodzi, gdy policzy się słupki zamiast odstępów.'),
  q('td4-21b','Zegar wybija godzinę czwartą 4 uderzeniami w równych odstępach. Od pierwszego do ostatniego uderzenia mija 6 sekund. Ile sekund minie od pierwszego do ostatniego uderzenia, gdy zegar wybije godzinę dziesiątą (10 uderzeń)?',['18','15','20','24'],0,'Przy 4 uderzeniach są 3 przerwy: 6 : 3 = 2 sekundy. Przy 10 uderzeniach jest 9 przerw: 9 · 2 = <b>18</b> sekund. 15 wychodzi, gdy liczy się uderzenia zamiast przerw.'),
 ];
+
+// Klasa 4, dział III: sprytne mnożenie — pełne dziesiątki, setki i tysiące, kolejność czynników, mnożenie „po kawałku”
+// (z dodawaniem i z odejmowaniem), godziny i minuty oraz zadania tekstowe. Od łatwych do trudnych.
+const SMART = (s) => `Oblicz sprytnie: <b>${s}</b>`;
+const PIECES = (s) => `Pomnóż „po kawałku”: <b>${s}</b>`;
+const PIECES_HOW = (s) => `Które działanie pozwala obliczyć <b>${s}</b> „po kawałku”?`;
+const MINUS_HOW = (s) => `Które działanie ma taki sam wynik jak <b>${s}</b>? Skorzystaj z odejmowania.`;
+const MINUS_CALC = (s) => `Oblicz, korzystając z odejmowania: <b>${s}</b>`;
+const FIRST = (s) => `Które liczby warto pomnożyć najpierw, żeby łatwo obliczyć <b>${s}</b>?`;
+const ZEROS = (s) => `Ile zer jest na końcu wyniku działania <b>${s}</b>?`;
+const EASIER = (s) => `Które działanie ma taki sam wynik jak <b>${s}</b>, ale łatwiej je policzyć?`;
+const MINUTES = (s) => `Ile to minut: <b>${s}</b>?`;
+const SECONDS = (s) => `Ile to sekund: <b>${s}</b>?`;
+export const smartMultiplicationQuestions4 = [
+ // Mnożenie przez 10, 100 i 1000
+ q('sm4-1a','Ile wynosi <b>37 · 10</b>?',['370','3700','47','37 000'],0,'Mnożąc przez 10, dopisujemy jedno zero: 37 · 10 = <b>370</b>.'),
+ q('sm4-1b','Ile wynosi <b>100 · 58</b>?',['580','158','5800','58 000'],2,'Mnożąc przez 100, dopisujemy dwa zera: 100 · 58 = <b>5800</b>.'),
+ q('sm4-1c','Ile wynosi <b>1000 · 46</b>?',['4600','46 000','460 000','1046'],1,'Mnożąc przez 1000, dopisujemy trzy zera: 1000 · 46 = <b>46 000</b>.'),
+ q('sm4-1d','Ile wynosi <b>250 · 10</b>?',['25 000','260','250','2500'],3,'Dopisujemy jedno zero do 250: 250 · 10 = <b>2500</b>.'),
+ // Okienka z 10, 100 i 1000
+ q('sm4-2a',FILL(`64 · ${BOX} = 6400`),['10','100','1000','64'],1,'Do 64 dopisano dwa zera, więc mnożyliśmy przez <b>100</b>.'),
+ q('sm4-2b',FILL(`${BOX} · 1000 = 38 000`),['38','380','3800','1000'],0,'Mnożenie przez 1000 dopisuje trzy zera. Gdy je skreślimy z 38 000, zostaje <b>38</b>.'),
+ q('sm4-2c',FILL(`100 · ${BOX} = 72 000`),['72','7200','72 000','720'],3,'Mnożenie przez 100 dopisuje dwa zera. Gdy je skreślimy z 72 000, zostaje <b>720</b>.'),
+ // Pełne setki i tysiące razy liczba jednocyfrowa
+ q('sm4-3a','Ile wynosi <b>300 · 7</b>?',['2100','210','21 000','307'],0,'3 · 7 = 21 i dopisujemy dwa zera: <b>2100</b>.'),
+ q('sm4-3b','Ile wynosi <b>6 · 400</b>?',['240','2400','24 000','406'],1,'6 · 4 = 24 i dopisujemy dwa zera: <b>2400</b>.'),
+ q('sm4-3c','Ile wynosi <b>80 · 9</b>?',['72','7200','720','89'],2,'8 · 9 = 72 i dopisujemy jedno zero: <b>720</b>.'),
+ q('sm4-3d','Ile wynosi <b>9000 · 5</b>?',['4500','450 000','9005','45 000'],3,'9 · 5 = 45 i dopisujemy trzy zera: <b>45 000</b>.'),
+ // Zera w obu czynnikach
+ q('sm4-4a','Ile wynosi <b>400 · 20</b>?',['800','80 000','8000','420'],2,'4 · 2 = 8. W czynnikach są razem trzy zera, więc dopisujemy trzy: <b>8000</b>.'),
+ q('sm4-4b','Ile wynosi <b>700 · 600</b>?',['42 000','420 000','4 200 000','1300'],1,'7 · 6 = 42. W czynnikach są razem cztery zera: <b>420 000</b>.'),
+ q('sm4-4c','Ile wynosi <b>30 · 5000</b>?',['150 000','15 000','1 500 000','5030'],0,'3 · 5 = 15. W czynnikach są razem cztery zera: <b>150 000</b>.'),
+ q('sm4-4d','Ile wynosi <b>900 · 70</b>?',['6300','630 000','970','63 000'],3,'9 · 7 = 63. W czynnikach są razem trzy zera: <b>63 000</b>.'),
+ // Ile zer? Uwaga na pułapkę!
+ q('sm4-5a',ZEROS('500 · 400'),['3','4','5','6'],2,'5 · 4 = 20 — tu jest już jedno zero! Dopisujemy jeszcze cztery: 200 000, czyli razem <b>5</b> zer.'),
+ q('sm4-5b',ZEROS('50 · 80'),['3','2','4','1'],0,'5 · 8 = 40 — jedno zero. Dopisujemy jeszcze dwa: 4000, czyli razem <b>3</b> zera.'),
+ q('sm4-5c',ZEROS('2000 · 5'),['3','4','5','2'],1,'2 · 5 = 10 — jedno zero. Dopisujemy jeszcze trzy: 10 000, czyli razem <b>4</b> zera.'),
+ q('sm4-5d',ZEROS('60 · 300'),['2','4','5','3'],3,'6 · 3 = 18 — bez zera. Dopisujemy trzy zera: 18 000, czyli <b>3</b> zera.'),
+ // Co pomnożyć najpierw?
+ q('sm4-6a',FIRST('2 · 7 · 3 · 5'),['2 i 7','7 i 3','3 i 5','2 i 5'],3,'<b>2 · 5</b> = 10, a przez 10 mnoży się najłatwiej: 10 · 7 · 3 = 10 · 21 = 210.'),
+ q('sm4-6b',FIRST('4 · 7 · 25 · 3'),['4 i 7','7 i 25','4 i 25','25 i 3'],2,'<b>4 · 25</b> = 100. Potem 100 · 7 · 3 = 100 · 21 = 2100.'),
+ q('sm4-6c',FIRST('50 · 9 · 2 · 3'),['50 i 2','9 i 3','50 i 9','2 i 3'],0,'<b>50 · 2</b> = 100. Potem 100 · 9 · 3 = 100 · 27 = 2700.'),
+ q('sm4-6d',FIRST('20 · 6 · 5 · 7'),['20 i 6','6 i 7','20 i 5','5 i 7'],2,'<b>20 · 5</b> = 100. Potem 100 · 6 · 7 = 100 · 42 = 4200.'),
+ // Trzy czynniki — sprytnie
+ q('sm4-7a',SMART('5 · 8 · 2'),['80','70','90','160'],0,'Najpierw 5 · 2 = 10, potem 10 · 8 = <b>80</b>.'),
+ q('sm4-7b',SMART('2 · 17 · 5'),['107','170','34','1700'],1,'Najpierw 2 · 5 = 10, potem 10 · 17 = <b>170</b>.'),
+ q('sm4-7c',SMART('25 · 9 · 4'),['360','225','900','9000'],2,'Najpierw 25 · 4 = 100, potem 100 · 9 = <b>900</b>.'),
+ q('sm4-7d',SMART('50 · 7 · 2'),['350','140','7000','700'],3,'Najpierw 50 · 2 = 100, potem 100 · 7 = <b>700</b>.'),
+ // Godziny na minuty
+ q('sm4-8a',MINUTES('3 godziny'),['180','300','30','120'],0,'Godzina ma 60 minut: 3 · 60 = <b>180</b>.'),
+ q('sm4-8b',MINUTES('5 godzin 20 minut'),['520','300','320','340'],2,'5 · 60 = 300 minut i jeszcze 20 minut: 300 + 20 = <b>320</b>.'),
+ q('sm4-8c',MINUTES('1 doba'),['240','1440','2400','1200'],1,'Doba ma 24 godziny: 24 · 60 = 20 · 60 + 4 · 60 = 1200 + 240 = <b>1440</b>.'),
+ q('sm4-8d',MINUTES('12 godzin'),['120','1200','612','720'],3,'12 · 60 = 10 · 60 + 2 · 60 = 600 + 120 = <b>720</b>.'),
+ // Po kawałku — które działanie?
+ q('sm4-9a',PIECES_HOW('4 · 17'),['4 · 10 + 4 · 7','4 · 10 + 7','4 · 1 + 4 · 7','4 + 10 · 7'],0,'17 = 10 + 7, więc 4 · 17 = <b>4 · 10 + 4 · 7</b> = 40 + 28 = 68. Mnożymy przez 4 oba kawałki.'),
+ q('sm4-9b',PIECES_HOW('6 · 23'),['6 · 20 + 3','6 · 20 + 6 · 3','6 · 2 + 6 · 3','6 + 20 · 3'],1,'23 = 20 + 3, więc 6 · 23 = <b>6 · 20 + 6 · 3</b> = 120 + 18 = 138.'),
+ q('sm4-9c',PIECES_HOW('5 · 38'),['5 · 30 + 8','5 · 3 + 5 · 8','5 · 30 + 5 · 8','5 · 40 + 5 · 2'],2,'38 = 30 + 8, więc 5 · 38 = <b>5 · 30 + 5 · 8</b> = 150 + 40 = 190. Gdyby liczyć od 40, trzeba by odjąć 5 · 2, a nie dodać.'),
+ q('sm4-9d',PIECES_HOW('7 · 16'),['7 · 10 + 6','7 + 10 · 6','7 · 1 + 7 · 6','7 · 10 + 7 · 6'],3,'16 = 10 + 6, więc 7 · 16 = <b>7 · 10 + 7 · 6</b> = 70 + 42 = 112.'),
+ // Po kawałku — oblicz
+ q('sm4-10a',PIECES('3 · 32'),['96','66','69','93'],0,'3 · 30 = 90, 3 · 2 = 6, razem 90 + 6 = <b>96</b>.'),
+ q('sm4-10b',PIECES('5 · 14'),['54','70','45','60'],1,'5 · 10 = 50, 5 · 4 = 20, razem 50 + 20 = <b>70</b>.'),
+ q('sm4-10c',PIECES('6 · 13'),['63','68','78','98'],2,'6 · 10 = 60, 6 · 3 = 18, razem 60 + 18 = <b>78</b>.'),
+ q('sm4-10d',PIECES('4 · 26'),['84','86','100','104'],3,'4 · 20 = 80, 4 · 6 = 24, razem 80 + 24 = <b>104</b>.'),
+ // „Razy więcej” czy „o tyle więcej”?
+ q('sm4-11a','Kasia ma 32 zł. Ola ma 10 razy więcej niż Kasia, a Ela o 100 zł więcej niż Kasia. Która z nich ma więcej pieniędzy i o ile?',['Ela, o 188 zł','Ola, o 90 zł','Ola, o 188 zł','Mają tyle samo'],2,'Ola: 10 · 32 = 320 zł, Ela: 32 + 100 = 132 zł. <b>Ola ma o 188 zł więcej</b> (320 − 132 = 188).'),
+ q('sm4-11b','Bartek ma 45 naklejek. Igor ma 100 razy więcej naklejek niż Bartek, a Tymek o 1000 więcej niż Bartek. Kto ma więcej naklejek i o ile?',['Tymek, o 3455','Igor, o 3455','Igor, o 3545','Tymek, o 955'],1,'Igor: 100 · 45 = 4500, Tymek: 45 + 1000 = 1045. <b>Igor ma o 3455 więcej</b> (4500 − 1045 = 3455).'),
+ // Duże liczby w zadaniach
+ q('sm4-12a','Słoń waży około 5000 kg, a płetwal błękitny jest około 30 razy cięższy. Ile waży płetwal błękitny?',['15 000 kg','150 000 kg','1 500 000 kg','5030 kg'],1,'30 · 5000: 3 · 5 = 15 i cztery zera: <b>150 000 kg</b>.'),
+ q('sm4-12b','Ciężarówka przejeżdża dziennie 400 km. Ile kilometrów przejedzie w 30 dni?',['1200 km','120 000 km','430 km','12 000 km'],3,'30 · 400: 3 · 4 = 12 i trzy zera: <b>12 000 km</b>.'),
+ q('sm4-12c','Bilet do teatru kosztuje 20 zł. Ile zapłaci za bilety 300 uczniów?',['6000 zł','600 zł','60 000 zł','320 zł'],0,'300 · 20: 3 · 2 = 6 i trzy zera: <b>6000 zł</b>.'),
+ // Minuty na sekundy
+ q('sm4-13a',SECONDS('4 minuty'),['240','400','40','140'],0,'Minuta ma 60 sekund: 4 · 60 = <b>240</b>.'),
+ q('sm4-13b',SECONDS('1 godzina'),['60','600','3600','360'],2,'Godzina to 60 minut po 60 sekund: 60 · 60 = <b>3600</b>.'),
+ q('sm4-13c',SECONDS('1 godzina 10 minut'),['3610','4200','3700','7000'],1,'1 godzina 10 minut to 70 minut: 70 · 60 = <b>4200</b>.'),
+ q('sm4-13d',SECONDS('25 minut'),['250','1250','2500','1500'],3,'25 · 60 = 20 · 60 + 5 · 60 = 1200 + 300 = <b>1500</b>.'),
+ // Po kawałku z odejmowaniem — które działanie?
+ q('sm4-14a',MINUS_HOW('5 · 29'),['5 · 30 − 1','5 · 30 − 5 · 1','5 · 20 − 5 · 9','5 · 30 + 5'],1,'29 = 30 − 1, więc 5 · 29 = <b>5 · 30 − 5 · 1</b> = 150 − 5 = 145. Odejmujemy całe 5, a nie tylko 1.'),
+ q('sm4-14b',MINUS_HOW('8 · 19'),['8 · 20 − 8','8 · 20 − 1','8 · 10 − 8 · 9','8 · 20 + 8'],0,'19 ósemek to o jedną ósemkę mniej niż 20 ósemek: <b>8 · 20 − 8</b> = 160 − 8 = 152.'),
+ q('sm4-14c',MINUS_HOW('6 · 48'),['6 · 50 − 2','6 · 40 − 6 · 8','6 · 50 − 6 · 2','6 · 50 + 6 · 2'],2,'48 = 50 − 2, więc 6 · 48 = <b>6 · 50 − 6 · 2</b> = 300 − 12 = 288.'),
+ q('sm4-14d',MINUS_HOW('4 · 97'),['4 · 100 − 3','4 · 100 + 4 · 3','4 · 90 − 4 · 7','4 · 100 − 4 · 3'],3,'97 = 100 − 3, więc 4 · 97 = <b>4 · 100 − 4 · 3</b> = 400 − 12 = 388.'),
+ // Po kawałku z odejmowaniem — oblicz
+ q('sm4-15a',MINUS_CALC('7 · 19'),['133','126','140','137'],0,'7 · 20 = 140, a o jedną siódemkę mniej: 140 − 7 = <b>133</b>.'),
+ q('sm4-15b',MINUS_CALC('4 · 49'),['199','196','204','186'],1,'4 · 50 = 200, a o jedną czwórkę mniej: 200 − 4 = <b>196</b>.'),
+ q('sm4-15c',MINUS_CALC('3 · 98'),['297','304','294','284'],2,'3 · 100 = 300, a 3 · 2 = 6 mniej: 300 − 6 = <b>294</b>.'),
+ q('sm4-15d',MINUS_CALC('6 · 39'),['239','244','236','234'],3,'6 · 40 = 240, a o jedną szóstkę mniej: 240 − 6 = <b>234</b>.'),
+ // Ten sam wynik, łatwiejsze działanie
+ q('sm4-16a',EASIER('4 · 13 · 25'),['100 · 13','29 · 13','4 · 38','17 · 25'],0,'4 · 25 = 100, więc 4 · 13 · 25 = <b>100 · 13</b> = 1300.'),
+ q('sm4-16b',EASIER('2 · 36 · 5'),['7 · 36','10 · 36','2 · 41','38 · 5'],1,'2 · 5 = 10, więc 2 · 36 · 5 = <b>10 · 36</b> = 360.'),
+ q('sm4-16c',EASIER('25 · 8'),['33 · 2','25 · 4 · 4','100 · 2','100 · 8'],2,'8 = 4 · 2, więc 25 · 8 = 25 · 4 · 2 = <b>100 · 2</b> = 200.'),
+ q('sm4-16d',EASIER('50 · 14'),['50 · 10 · 4','64 · 7','100 · 14','100 · 7'],3,'14 = 2 · 7, więc 50 · 14 = 50 · 2 · 7 = <b>100 · 7</b> = 700.'),
+ // Zakupy
+ q('sm4-17a','Kupiono 16 kredek po 3 zł i 28 bloków po 5 zł. Ile zapłacono razem?',['188 zł','52 zł','176 zł','198 zł'],0,'Kredki: 16 · 3 = 48 zł, bloki: 28 · 5 = 140 zł. Razem 48 + 140 = <b>188 zł</b>.'),
+ q('sm4-17b','Do klasy kupiono 14 piłek po 6 zł i 9 skakanek po 19 zł. Ile zapłacono razem?',['48 zł','245 zł','255 zł','265 zł'],2,'Piłki: 14 · 6 = 60 + 24 = 84 zł, skakanki: 9 · 19 = 180 − 9 = 171 zł. Razem 84 + 171 = <b>255 zł</b>.'),
+ q('sm4-17c','Kupiono 12 pudełek farb po 23 zł i 7 pędzli po 4 zł. Ile zapłacono razem?',['276 zł','294 zł','46 zł','304 zł'],3,'Farby: 12 · 23 = 12 · 20 + 12 · 3 = 240 + 36 = 276 zł, pędzle: 7 · 4 = 28 zł. Razem 276 + 28 = <b>304 zł</b>.'),
+ // Trzy liczby w zadaniu — co najpierw?
+ q('sm4-18a','Dla 25 uczniów kupiono po 4 pocztówki. Jedna pocztówka kosztuje 3 zł. Ile kosztowały wszystkie pocztówki?',['100 zł','300 zł','32 zł','75 zł'],1,'Najpierw liczba pocztówek: 25 · 4 = 100. Potem koszt: 100 · 3 zł = <b>300 zł</b>.'),
+ q('sm4-18b','Do 8 klas kupiono po 5 piłek. Jedna piłka kosztuje 20 zł. Ile kosztowały wszystkie piłki?',['800 zł','33 zł','400 zł','160 zł'],0,'Najpierw 5 · 20 zł = 100 zł dla jednej klasy. Dla 8 klas: 8 · 100 zł = <b>800 zł</b>.'),
+ q('sm4-18c','W sadzie jest 50 rzędów po 9 jabłoni. Z każdej jabłoni zebrano 2 skrzynki jabłek. Ile skrzynek zebrano?',['450','61','900','118'],2,'Sprytnie: 50 · 2 = 100, a potem 100 · 9 = <b>900</b> skrzynek.'),
+ // Znasz jeden iloczyn — oblicz drugi
+ q('sm4-19a','Wiadomo, że 12 · 12 = 144. Ile wynosi 12 · 13?',['145','156','169','132'],1,'12 · 13 to o jedno 12 więcej niż 12 · 12: 144 + 12 = <b>156</b>.'),
+ q('sm4-19b','Wiadomo, że 15 · 15 = 225. Ile wynosi 15 · 14?',['224','240','210','196'],2,'15 · 14 to o jedno 15 mniej niż 15 · 15: 225 − 15 = <b>210</b>.'),
+ q('sm4-19c','Wiadomo, że 11 · 13 = 143. Ile wynosi 11 · 14?',['144','157','156','154'],3,'11 · 14 to o jedno 11 więcej niż 11 · 13: 143 + 11 = <b>154</b>.'),
+ // Na mistrza: większe liczby po kawałku
+ q('sm4-20a',PIECES('132 · 3'),['396','369','336','399'],0,'100 · 3 = 300, 30 · 3 = 90, 2 · 3 = 6. Razem 300 + 90 + 6 = <b>396</b>.'),
+ q('sm4-20b',PIECES('214 · 4'),['816','856','846','864'],1,'200 · 4 = 800, 14 · 4 = 56. Razem 800 + 56 = <b>856</b>.'),
+ q('sm4-20c',PIECES('6 · 115'),['660','650','690','615'],2,'6 · 100 = 600, 6 · 15 = 90. Razem 600 + 90 = <b>690</b>.'),
+ q('sm4-20d',PIECES('125 · 8'),['960','1200','1080','1000'],3,'100 · 8 = 800, 25 · 8 = 200. Razem 800 + 200 = <b>1000</b>.'),
+ // Czas w tygodniu
+ q('sm4-21a','Ola gra na pianinie 25 minut dziennie. Ile czasu gra w ciągu tygodnia?',['1 h 75 min','2 h 55 min','2 h 15 min','3 h 5 min'],1,'7 · 25 = 175 minut. 175 = 120 + 55, czyli <b>2 h 55 min</b>.'),
+ q('sm4-21b','Tymek biega 35 minut dziennie. Czy w ciągu tygodnia biega dłużej niż 4 godziny?',['Tak, o 5 minut','Nie, brakuje mu 5 minut','Tak, o 35 minut','Nie, biega dokładnie 4 godziny'],0,'7 · 35 = 210 + 35 = 245 minut. 4 godziny to 240 minut, więc <b>tak, o 5 minut</b>.'),
+ q('sm4-21c','Kuba ćwiczy 20 minut dziennie. Ile czasu ćwiczy w ciągu dwóch tygodni?',['2 h 20 min','4 h 20 min','4 h 40 min','5 h'],2,'Dwa tygodnie to 14 dni: 14 · 20 = 280 minut. 280 = 240 + 40, czyli <b>4 h 40 min</b>. 2 h 20 min to tylko jeden tydzień.'),
+ // Zadanie na mistrza: ktoś nie przyszedł
+ q('sm4-22a','Pan Tomek chciał rozdać po równo cukierki 20 dzieciom. Nie przyszło 4 dzieci, więc każde z pozostałych dostało o 1 cukierek więcej. Ile cukierków rozdał pan Tomek?',['80','64','20','96'],0,'Przyszło 16 dzieci i każde dostało 1 dodatkowy cukierek — to 16 cukierków, które miały dostać 4 nieobecne dzieci. Jedno dziecko miało dostać 16 : 4 = 4 cukierki. Razem 20 · 4 = <b>80</b>.'),
+ q('sm4-22b','Trener chciał rozdać po równo naklejki 30 zawodnikom. Nie przyszło 5 zawodników, więc każdy z pozostałych dostał o 1 naklejkę więcej. Ile naklejek rozdał trener?',['125','150','180','30'],1,'Przyszło 25 zawodników i każdy dostał 1 dodatkową naklejkę — to 25 naklejek nieobecnych. Jeden zawodnik miał dostać 25 : 5 = 5. Razem 30 · 5 = <b>150</b>.'),
+ q('sm4-22c','Babcia upiekła pierniki dla 12 wnuków. Przyjechało tylko 9 wnuków, więc każdy dostał o 2 pierniki więcej. Ile pierników upiekła babcia?',['54','108','36','72'],3,'9 wnuków dostało po 2 dodatkowe pierniki: 9 · 2 = 18 — to pierniki 3 nieobecnych. Jeden wnuk miał dostać 18 : 3 = 6. Razem 12 · 6 = <b>72</b>.'),
+];
