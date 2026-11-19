@@ -909,3 +909,201 @@ export const smartMultiplicationQuestions4 = [
  q('sm4-22b','Trener chciał rozdać po równo naklejki 30 zawodnikom. Nie przyszło 5 zawodników, więc każdy z pozostałych dostał o 1 naklejkę więcej. Ile naklejek rozdał trener?',['125','150','180','30'],1,'Przyszło 25 zawodników i każdy dostał 1 dodatkową naklejkę — to 25 naklejek nieobecnych. Jeden zawodnik miał dostać 25 : 5 = 5. Razem 30 · 5 = <b>150</b>.'),
  q('sm4-22c','Babcia upiekła pierniki dla 12 wnuków. Przyjechało tylko 9 wnuków, więc każdy dostał o 2 pierniki więcej. Ile pierników upiekła babcia?',['54','108','36','72'],3,'9 wnuków dostało po 2 dodatkowe pierniki: 9 · 2 = 18 — to pierniki 3 nieobecnych. Jeden wnuk miał dostać 18 : 3 = 6. Razem 12 · 6 = <b>72</b>.'),
 ];
+
+// Klasa 4, dział III: sprytne dzielenie — przez 10, 100 i 1000, skreślanie zer, dzielenie „po kawałku”
+// (z dodawaniem i z odejmowaniem), godziny i minuty, „razy mniej”, „ile razy więcej” i zadania tekstowe. Od łatwych do trudnych.
+const D_PIECES = (s) => `Podziel „po kawałku”: <b>${s}</b>`;
+const D_PIECES_HOW = (s) => `Które działanie pozwala obliczyć <b>${s}</b> „po kawałku”?`;
+const D_MINUS_HOW = (s) => `Które działanie ma taki sam wynik jak <b>${s}</b>? Skorzystaj z odejmowania.`;
+const D_MINUS_CALC = (s) => `Podziel, korzystając z odejmowania: <b>${s}</b>`;
+const D_SPLIT = (s) => `Jak rozłożyć dzielną, żeby łatwo obliczyć <b>${s}</b>?`;
+const D_CROSS = (s) => `Skreśl zera i oblicz: <b>${s}</b>`;
+const D_HOURS = (s) => `Ile to godzin: <b>${s}</b>?`;
+const D_MINUTES = (s) => `Ile to minut: <b>${s}</b>?`;
+const D_HUNDRED = (s) => `Oblicz <b>${s}</b>. Jaka liczba jest 100 razy mniejsza od wyniku?`;
+const RHYME = (s) => `Rozwiąż zadanie z wierszyka.<div class="task-statements">${s}</div>`;
+const FEET = 'Przyjmij, że 1 stopa to 30 cm, a 1 jard to 3 stopy.';
+const SHELVES = 'Na pierwszej półce stoi 5 jednakowych pudełek kredek, a na drugiej 9 takich pudełek. Na drugiej półce jest o 48 kredek więcej niż na pierwszej.';
+export const smartDivisionQuestions4 = [
+ // Dzielenie przez 10, 100 i 1000
+ q('dz4-1a','Ile wynosi <b>480 : 10</b>?',['48','4800','470','4'],0,'Dzieląc przez 10, skreślamy jedno zero: 480 : 10 = <b>48</b>.'),
+ q('dz4-1b','Ile wynosi <b>7300 : 100</b>?',['730','73','7200','7'],1,'Dzieląc przez 100, skreślamy dwa zera: 7300 : 100 = <b>73</b>.'),
+ q('dz4-1c','Ile wynosi <b>52 000 : 1000</b>?',['520','5200','52','5'],2,'Dzieląc przez 1000, skreślamy trzy zera: 52 000 : 1000 = <b>52</b>.'),
+ q('dz4-1d','Ile wynosi <b>3600 : 10</b>?',['36','3590','3610','360'],3,'Skreślamy jedno zero: 3600 : 10 = <b>360</b>.'),
+ // Okienka z 10, 100 i 1000
+ q('dz4-2a',FILL(`${BOX} : 100 = 64`),['6400','640','64 000','164'],0,'Szukamy dzielnej: 64 · 100 = <b>6400</b>. Sprawdzenie: 6400 : 100 = 64.'),
+ q('dz4-2b',FILL(`9000 : ${BOX} = 9`),['100','1000','10','9'],1,'Z 9000 zostało 9 — skreślono trzy zera, więc dzielimy przez <b>1000</b>.'),
+ q('dz4-2c',FILL(`45 000 : ${BOX} = 450`),['10','1000','100','450'],2,'Z 45 000 zostało 450 — skreślono dwa zera, więc dzielimy przez <b>100</b>.'),
+ // Skreślanie zer
+ q('dz4-3a',D_CROSS('8000 : 200'),['4','400','4000','40'],3,'Skreślamy po dwa zera: 80 : 2 = <b>40</b>.'),
+ q('dz4-3b',D_CROSS('1500 : 30'),['50','5','500','45'],0,'Skreślamy po jednym zerze: 150 : 3 = <b>50</b>.'),
+ q('dz4-3c',D_CROSS('24 000 : 60'),['40','400','4000','4'],1,'Skreślamy po jednym zerze: 2400 : 6 = <b>400</b>.'),
+ q('dz4-3d',D_CROSS('42 000 : 700'),['6','600','60','6000'],2,'Skreślamy po dwa zera: 420 : 7 = <b>60</b>.'),
+ // Pełne setki i tysiące przez liczbę jednocyfrową
+ q('dz4-4a','Ile wynosi <b>5600 : 8</b>?',['70','7000','7','700'],3,'56 : 8 = 7, więc 56 setek : 8 = 7 setek = <b>700</b>.'),
+ q('dz4-4b','Ile wynosi <b>4000 : 8</b>?',['500','50','5000','400'],0,'40 setek : 8 = 5 setek = <b>500</b>. Sprawdzenie: 500 · 8 = 4000.'),
+ q('dz4-4c','Ile wynosi <b>21 000 : 3</b>?',['700','7000','70 000','63 000'],1,'21 tysięcy : 3 = 7 tysięcy = <b>7000</b>.'),
+ q('dz4-4d','Ile wynosi <b>36 000 : 4</b>?',['900','90 000','9000','8000'],2,'36 tysięcy : 4 = 9 tysięcy = <b>9000</b>.'),
+ // Uwaga na zera!
+ q('dz4-5a','Ile wynosi <b>2000 : 50</b>?',['4','400','400 000','40'],3,'Skreślamy po jednym zerze: 200 : 5 = <b>40</b>. Sprawdzenie: 40 · 50 = 2000.'),
+ q('dz4-5b','Ile wynosi <b>3000 : 50</b>?',['60','6','600','150'],0,'Skreślamy po jednym zerze: 300 : 5 = <b>60</b>. Sprawdzenie: 60 · 50 = 3000.'),
+ q('dz4-5c','Ile wynosi <b>4000 : 40</b>?',['10','100','1000','1'],1,'Skreślamy po jednym zerze: 400 : 4 = <b>100</b>.'),
+ q('dz4-5d','Ile wynosi <b>72 000 : 900</b>?',['8','800','80','8000'],2,'Skreślamy po dwa zera: 720 : 9 = <b>80</b>.'),
+ // Minuty na godziny
+ q('dz4-6a',D_HOURS('180 minut'),['30','18','12','3'],3,'Godzina ma 60 minut: 180 : 60 = <b>3</b>.'),
+ q('dz4-6b',D_HOURS('600 minut'),['10','60','100','6'],0,'600 : 60 = 60 : 6 = <b>10</b>.'),
+ q('dz4-6c',D_HOURS('1440 minut'),['14','24','144','20'],1,'1440 : 60 = 144 : 6 = <b>24</b> — tyle godzin ma doba.'),
+ q('dz4-6d',D_HOURS('300 minut'),['50','30','5','3'],2,'300 : 60 = 30 : 6 = <b>5</b>.'),
+ // Sekundy na minuty
+ q('dz4-7a',D_MINUTES('420 sekund'),['42','6','70','7'],3,'Minuta ma 60 sekund: 420 : 60 = 42 : 6 = <b>7</b>.'),
+ q('dz4-7b',D_MINUTES('900 sekund'),['15','90','9','150'],0,'900 : 60 = 90 : 6 = <b>15</b>.'),
+ q('dz4-7c',D_MINUTES('1800 sekund'),['18','30','180','300'],1,'1800 : 60 = 180 : 6 = <b>30</b>.'),
+ q('dz4-7d',D_MINUTES('3600 sekund'),['36','360','60','600'],2,'3600 : 60 = 360 : 6 = <b>60</b> — to cała godzina.'),
+ // Razy mniej
+ q('dz4-8a','Kuba ma 56 kart z piłkarzami, a jego młodsza siostra ma ich 7 razy mniej. Ile kart ma siostra?',['49','63','7','8'],3,'7 razy mniej: 56 : 7 = <b>8</b>. 49 to „o 7 mniej”.'),
+ q('dz4-8b','W szkole jest 800 uczniów, a w klasie 4b jest ich 40 razy mniej. Ilu uczniów jest w klasie 4b?',['20','760','200','2'],0,'800 : 40 = 80 : 4 = <b>20</b>.'),
+ q('dz4-8c','W hurtowni jest 3600 butelek soku zapakowanych po 6 w zgrzewki. Ile jest zgrzewek?',['60','600','6000','3594'],1,'36 setek : 6 = 6 setek, czyli <b>600</b> zgrzewek.'),
+ q('dz4-8d','Staś ma w skarbonce 168 gr w samych monetach dwugroszowych. Ile ma monet?',['166','336','84','42'],2,'Każda moneta to 2 gr: 168 : 2 = <b>84</b>.'),
+ // Ile razy cięższy?
+ q('dz4-9a','Krowa waży 600 kg, a słoń 6000 kg. Ile razy słoń jest cięższy od krowy?',['10','5400','100','6'],0,'6000 : 600 = 60 : 6 = <b>10</b>. 5400 to odpowiedź na pytanie „o ile cięższy?”.'),
+ q('dz4-9b','Kot waży 4 kg, a tygrys 200 kg. Ile razy tygrys jest cięższy od kota?',['196','5','50','500'],2,'200 : 4 = <b>50</b>.'),
+ q('dz4-9c','Koń waży 600 kg, a pies jest od niego o 570 kg lżejszy. Ile razy pies jest lżejszy od konia?',['30','20','570','2'],1,'Pies waży 600 − 570 = 30 kg. 600 : 30 = 60 : 3 = <b>20</b>. 30 to masa psa, a nie odpowiedź.'),
+ // Po kawałku — które działanie?
+ q('dz4-10a',D_PIECES_HOW('84 : 4'),['80 : 4 + 4','80 : 4 + 4 : 4','8 : 4 + 4 : 4','80 + 4 : 4'],1,'84 = 80 + 4, więc 84 : 4 = <b>80 : 4 + 4 : 4</b> = 20 + 1 = 21. Dzielimy oba kawałki.'),
+ q('dz4-10b',D_PIECES_HOW('156 : 3'),['150 : 3 + 6','15 : 3 + 6 : 3','150 : 3 + 6 : 3','120 : 3 + 6 : 3'],2,'156 = 150 + 6, więc 156 : 3 = <b>150 : 3 + 6 : 3</b> = 50 + 2 = 52.'),
+ q('dz4-10c',D_PIECES_HOW('175 : 5'),['170 : 5 + 5','100 : 5 + 75','150 : 5 + 25','150 : 5 + 25 : 5'],3,'175 = 150 + 25, więc 175 : 5 = <b>150 : 5 + 25 : 5</b> = 30 + 5 = 35.'),
+ q('dz4-10d',D_PIECES_HOW('126 : 6'),['120 : 6 + 6 : 6','120 : 6 + 6','12 : 6 + 6 : 6','60 : 6 + 6 : 6'],0,'126 = 120 + 6, więc 126 : 6 = <b>120 : 6 + 6 : 6</b> = 20 + 1 = 21.'),
+ // Po kawałku — oblicz
+ q('dz4-11a',D_PIECES('76 : 4'),['19','18','21','17'],0,'76 = 40 + 36: 40 : 4 = 10, 36 : 4 = 9, razem <b>19</b>.'),
+ q('dz4-11b',D_PIECES('91 : 7'),['14','13','12','17'],1,'91 = 70 + 21: 70 : 7 = 10, 21 : 7 = 3, razem <b>13</b>.'),
+ q('dz4-11c',D_PIECES('135 : 3'),['35','43','45','55'],2,'135 = 120 + 15: 120 : 3 = 40, 15 : 3 = 5, razem <b>45</b>.'),
+ q('dz4-11d',D_PIECES('160 : 5'),['30','34','23','32'],3,'160 = 150 + 10: 150 : 5 = 30, 10 : 5 = 2, razem <b>32</b>.'),
+ // 100 razy mniej od wyniku
+ q('dz4-12a',D_HUNDRED('2700 + 900'),['360','36','3600','27'],1,'2700 + 900 = 3600. 100 razy mniej: 3600 : 100 = <b>36</b>.'),
+ q('dz4-12b',D_HUNDRED('56 000 − 8000'),['48','4800','480','64'],2,'56 000 − 8000 = 48 000. 100 razy mniej: 48 000 : 100 = <b>480</b>.'),
+ q('dz4-12c',D_HUNDRED('6100 − 2600'),['350','87','3500','35'],3,'6100 − 2600 = 3500. 100 razy mniej: 3500 : 100 = <b>35</b>. 87 wychodzi, gdy liczby się doda zamiast odjąć.'),
+ // Która kwota jest większa?
+ q('dz4-13a','Która kwota jest większa: pierwsza — 10 razy mniejsza od 4500 zł, czy druga — o 1000 zł mniejsza od 4500 zł? O ile?',['Pierwsza, o 3050 zł','Druga, o 3050 zł','Druga, o 1000 zł','Są równe'],1,'Pierwsza: 4500 : 10 = 450 zł. Druga: 4500 − 1000 = 3500 zł. <b>Druga, o 3050 zł</b> (3500 − 450).'),
+ q('dz4-13b','Która kwota jest większa: pierwsza — 100 razy mniejsza od 6400 zł, czy druga — o 6000 zł mniejsza od 6400 zł? O ile?',['Druga, o 336 zł','Pierwsza, o 336 zł','Druga, o 64 zł','Pierwsza, o 400 zł'],0,'Pierwsza: 6400 : 100 = 64 zł. Druga: 6400 − 6000 = 400 zł. <b>Druga, o 336 zł</b> (400 − 64).'),
+ // Jak rozłożyć dzielną?
+ q('dz4-14a',D_SPLIT('168 : 7'),['(160 + 8) : 7','(140 + 28) : 7','(100 + 68) : 7','(150 + 18) : 7'],1,'Obie części muszą dzielić się przez 7: <b>(140 + 28) : 7</b> = 20 + 4 = 24.'),
+ q('dz4-14b',D_SPLIT('216 : 9'),['(200 + 16) : 9','(210 + 6) : 9','(180 + 36) : 9','(100 + 116) : 9'],2,'Obie części muszą dzielić się przez 9: <b>(180 + 36) : 9</b> = 20 + 4 = 24.'),
+ q('dz4-14c',D_SPLIT('234 : 6'),['(200 + 34) : 6','(230 + 4) : 6','(220 + 14) : 6','(180 + 54) : 6'],3,'Obie części muszą dzielić się przez 6: <b>(180 + 54) : 6</b> = 30 + 9 = 39.'),
+ q('dz4-14d',D_SPLIT('192 : 8'),['(160 + 32) : 8','(100 + 92) : 8','(150 + 42) : 8','(190 + 2) : 8'],0,'Obie części muszą dzielić się przez 8: <b>(160 + 32) : 8</b> = 20 + 4 = 24.'),
+ // Po kawałku z odejmowaniem — które działanie?
+ q('dz4-15a',D_MINUS_HOW('87 : 3'),['90 : 3 − 3','90 : 3 + 3 : 3','90 : 3 − 3 : 3','9 : 3 − 3 : 3'],2,'87 = 90 − 3, więc 87 : 3 = <b>90 : 3 − 3 : 3</b> = 30 − 1 = 29.'),
+ q('dz4-15b',D_MINUS_HOW('196 : 7'),['210 : 7 − 14','70 : 7 − 14 : 7','210 : 7 + 14 : 7','210 : 7 − 14 : 7'],3,'196 = 210 − 14, więc 196 : 7 = <b>210 : 7 − 14 : 7</b> = 30 − 2 = 28.'),
+ q('dz4-15c',D_MINUS_HOW('114 : 6'),['120 : 6 − 6 : 6','120 : 6 − 6','120 : 6 + 6 : 6','12 : 6 − 6 : 6'],0,'114 = 120 − 6, więc 114 : 6 = <b>120 : 6 − 6 : 6</b> = 20 − 1 = 19.'),
+ q('dz4-15d',D_MINUS_HOW('245 : 5'),['250 : 5 − 5','250 : 5 − 5 : 5','200 : 5 − 45 : 5','250 : 5 + 5 : 5'],1,'245 = 250 − 5, więc 245 : 5 = <b>250 : 5 − 5 : 5</b> = 50 − 1 = 49.'),
+ // Po kawałku z odejmowaniem — oblicz
+ q('dz4-16a',D_MINUS_CALC('58 : 2'),['31','28','29','30'],2,'58 = 60 − 2: 60 : 2 = 30, 2 : 2 = 1, więc 30 − 1 = <b>29</b>.'),
+ q('dz4-16b',D_MINUS_CALC('117 : 3'),['41','40','38','39'],3,'117 = 120 − 3: 120 : 3 = 40, 3 : 3 = 1, więc 40 − 1 = <b>39</b>.'),
+ q('dz4-16c',D_MINUS_CALC('342 : 9'),['38','42','39','36'],0,'342 = 360 − 18: 360 : 9 = 40, 18 : 9 = 2, więc 40 − 2 = <b>38</b>.'),
+ q('dz4-16d',D_MINUS_CALC('196 : 4'),['51','49','48','46'],1,'196 = 200 − 4: 200 : 4 = 50, 4 : 4 = 1, więc 50 − 1 = <b>49</b>.'),
+ // „O ile więcej” — a ile razy więcej?
+ q('dz4-17a','Marta ma 30 książek, a jej rodzice o 570 książek więcej. Ile razy więcej książek mają rodzice?',['19','570','20','600'],2,'Rodzice mają 30 + 570 = 600 książek. 600 : 30 = 60 : 3 = <b>20</b> razy więcej.'),
+ q('dz4-17b','Kot waży 5 kg, a koń jest od niego o 595 kg cięższy. Ile razy koń jest cięższy od kota?',['119','600','12','120'],3,'Koń waży 5 + 595 = 600 kg. 600 : 5 = <b>120</b> razy więcej.'),
+ q('dz4-17c','Ola przeczytała 15 stron, a Kasia o 75 stron więcej. Ile razy więcej stron przeczytała Kasia?',['6','5','60','90'],0,'Kasia przeczytała 15 + 75 = 90 stron. 90 : 15 = <b>6</b>. 5 wychodzi, gdy podzieli się 75 zamiast 90.'),
+ // Wierszyki
+ q('dz4-18a',RHYME('Siedem sikorek ziarenka zbiera,<br>sto pięć ziarenek mają już teraz.<br>Dzielą je równo — zgadnij, kolego,<br>ile ziarenek jest dla każdego?'),['17','98','5','15'],3,'105 : 7 = (70 + 35) : 7 = 10 + 5 = <b>15</b>.'),
+ q('dz4-18b',RHYME('Pięć jeży jabłka do norki niesie,<br>dziewięćdziesiąt zebrały w lesie.<br>Każdy chce tyle samo — nie kłóćcie się, jeże!<br>Ile jabłek każdemu z was się należy?'),['85','16','18','19'],2,'90 : 5 = (50 + 40) : 5 = 10 + 8 = <b>18</b>.'),
+ // Stopy i jardy
+ q('dz4-19a',`${FEET} Kangur skoczył 900 cm. Ile to jardów?`,['30','10','300','90'],1,'Jard to 3 · 30 cm = 90 cm. 900 : 90 = <b>10</b> jardów. 30 to liczba stóp.'),
+ q('dz4-19b',`${FEET} Stół ma długość 180 cm. Ile to stóp?`,['6','2','60','18'],0,'180 : 30 = 18 : 3 = <b>6</b> stóp.'),
+ q('dz4-19c',`${FEET} Wąż ma długość 540 cm. Ile to jardów?`,['18','60','2','6'],3,'Jard to 90 cm. 540 : 90 = 54 : 9 = <b>6</b> jardów. 18 to liczba stóp.'),
+ // Raty
+ q('dz4-20a','Rower kosztuje 1350 zł. Pierwsza rata wynosi 250 zł, a pozostałe po 100 zł. Na ile rat rozłożono spłatę?',['11','13','12','14'],2,'Po pierwszej racie zostaje 1350 − 250 = 1100 zł, czyli 1100 : 100 = 11 rat. Razem z pierwszą: <b>12</b> rat.'),
+ q('dz4-20b','Telewizor kosztuje 1800 zł. Pierwsza rata wynosi 300 zł, a pozostałe po 250 zł. Na ile rat rozłożono spłatę?',['6','8','5','7'],3,'Po pierwszej racie zostaje 1800 − 300 = 1500 zł, czyli 1500 : 250 = 6 rat (bo 6 · 250 = 1500). Razem z pierwszą: <b>7</b> rat.'),
+ // Na mistrza: większe liczby po kawałku
+ q('dz4-21a',D_PIECES('246 : 3'),['82','28','81','92'],0,'246 = 240 + 6: 240 : 3 = 80, 6 : 3 = 2, razem <b>82</b>.'),
+ q('dz4-21b',D_PIECES('192 : 8'),['23','34','24','26'],2,'192 = 160 + 32: 160 : 8 = 20, 32 : 8 = 4, razem <b>24</b>.'),
+ q('dz4-21c',D_PIECES('154 : 7'),['21','23','32','22'],3,'154 = 140 + 14: 140 : 7 = 20, 14 : 7 = 2, razem <b>22</b>.'),
+ q('dz4-21d',D_PIECES('279 : 9'),['33','31','30','21'],1,'279 = 270 + 9: 270 : 9 = 30, 9 : 9 = 1, razem <b>31</b>.'),
+ // Na mistrza: pudełka na półkach
+ q('dz4-22a',`${SHELVES} Ile kredek jest w jednym pudełku?`,['12','48','4','14'],0,'Na drugiej półce są o 9 − 5 = 4 pudełka więcej i to w nich jest 48 dodatkowych kredek. 48 : 4 = <b>12</b>.'),
+ q('dz4-22b',`${SHELVES} Ile kredek jest na drugiej półce?`,['60','108','96','48'],1,'W pudełku: 48 : (9 − 5) = 12 kredek. Druga półka: 9 · 12 = <b>108</b>. 60 to pierwsza półka.'),
+ q('dz4-22c','W pierwszej piwnicy stoją 3 jednakowe worki ziemniaków, a w drugiej 8 takich worków. W drugiej piwnicy jest o 75 kg ziemniaków więcej. Ile waży jeden worek?',['25','9','75','15'],3,'Różnica to 8 − 3 = 5 worków i to one ważą 75 kg. 75 : 5 = <b>15 kg</b>.'),
+];
+
+// Klasa 4, dział III: powtórzenie „Mnożenie i dzielenie” — zadania złożone: nazwy, prawda/fałsz, inny wynik,
+// zadania wielokrokowe, wybór działania do treści, okienka z dwoma działaniami i zadania na mistrza. Od łatwych do trudnych.
+const ARROWS = (n, a, b) => `Jaka liczba jest <b>${a}</b> od ${n}, a jaka <b>${b}</b> od ${n}? Podaj je w tej kolejności.`;
+const RELATED = (s) => `Które dwa dzielenia wynikają z mnożenia <b>${s}</b>?`;
+const GYM = 'Ania ćwiczyła 35 minut, Basia o 10 minut dłużej niż Ania, Celina 2 razy dłużej niż Ania, a Dorota tyle samo co Basia.';
+export const reviewQuestions3_4 = [
+ // Nazwy w mnożeniu i dzieleniu
+ q('pm4-1a','W działaniu 72 : 8 = 9 liczba 8 to:',['dzielna','iloraz','dzielnik','czynnik'],2,'Dzielimy 72 (dzielna) przez 8 (<b>dzielnik</b>) i otrzymujemy 9 (iloraz).'),
+ q('pm4-1b','O ile iloczyn liczb 7 i 8 jest większy od ich sumy?',['41','1','56','15'],0,'Iloczyn: 7 · 8 = 56, suma: 7 + 8 = 15. Różnica: 56 − 15 = <b>41</b>.'),
+ q('pm4-1c','O ile iloraz liczb 63 i 9 jest mniejszy od ich różnicy?',['54','47','7','61'],1,'Iloraz: 63 : 9 = 7, różnica: 63 − 9 = 54. 54 − 7 = <b>47</b>.'),
+ // Prawda czy fałsz?
+ truth('pm4-2a','0 : 7 = 0','7 : 0 = 0','PF','Zero podzielone przez 7 daje 0 — <b>prawda</b>. Przez zero nie wolno dzielić, więc 7 : 0 nie ma wyniku — <b>fałsz</b>.'),
+ truth('pm4-2b','Mnożenie przez 1 nie zmienia liczby.','15 · 3 · 2 = 15 · 2 · 3','PP','23 · 1 = 23 — <b>prawda</b>. Czynniki można mnożyć w dowolnej kolejności: oba iloczyny to 90 — <b>prawda</b>.'),
+ truth('pm4-2c','Liczba 3 razy większa od 21 to 24.','Liczba o 3 mniejsza od 21 to 18.','FP','3 razy większa od 21 to 3 · 21 = 63, a nie 24 — <b>fałsz</b>. O 3 mniejsza: 21 − 3 = 18 — <b>prawda</b>.'),
+ truth('pm4-2d','Liczba 3 razy mniejsza od 21 to 18.','20 · 0 = 20','FF','3 razy mniejsza od 21 to 21 : 3 = 7 — <b>fałsz</b>. Mnożenie przez 0 zawsze daje 0 — <b>fałsz</b>.'),
+ // Mnożenie i dzielenie są ze sobą związane
+ q('pm4-3a',RELATED('9 · 6 = 54'),['54 : 9 = 6 i 54 : 6 = 9','54 : 9 = 6 i 9 : 6 = 54','6 : 54 = 9 i 9 : 54 = 6','54 : 6 = 8 i 54 : 9 = 7'],0,'Iloczyn 54 dzielimy przez jeden czynnik i dostajemy drugi: <b>54 : 9 = 6 i 54 : 6 = 9</b>.'),
+ q('pm4-3b',RELATED('7 · 8 = 56'),['56 : 7 = 9 i 56 : 8 = 6','8 : 56 = 7 i 7 : 56 = 8','56 : 7 = 8 i 7 : 8 = 56','56 : 7 = 8 i 56 : 8 = 7'],3,'Iloczyn 56 dzielimy przez jeden czynnik i dostajemy drugi: <b>56 : 7 = 8 i 56 : 8 = 7</b>.'),
+ // Razy mniej i razy więcej od jednej liczby
+ q('pm4-4a',ARROWS(12,'3 razy mniejsza','4 razy większa'),['36 i 3','4 i 48','9 i 16','4 i 16'],1,'3 razy mniejsza: 12 : 3 = 4. 4 razy większa: 4 · 12 = 48. Odpowiedź: <b>4 i 48</b>. 9 i 16 to „o 3 mniej” i „o 4 więcej”.'),
+ q('pm4-4b',ARROWS(10,'2 razy mniejsza','3 razy większa'),['20 i 30','5 i 13','5 i 30','8 i 30'],2,'2 razy mniejsza: 10 : 2 = 5. 3 razy większa: 3 · 10 = 30. Odpowiedź: <b>5 i 30</b>.'),
+ q('pm4-4c',ARROWS(9,'3 razy mniejsza','4 razy większa'),['3 i 13','6 i 13','27 i 36','3 i 36'],3,'3 razy mniejsza: 9 : 3 = 3. 4 razy większa: 4 · 9 = 36. Odpowiedź: <b>3 i 36</b>.'),
+ // Inny wynik niż pozostałe
+ odd('pm4-5a',['400 · 50','2000 · 10','60 000 : 3','4000 · 50'],3,'400 · 50 = 20 000, 2000 · 10 = 20 000, 60 000 : 3 = 20 000, ale <b>4000 · 50</b> = 200 000.'),
+ odd('pm4-5b',['350 · 20','63 000 : 90','7 · 100','4900 : 7'],0,'63 000 : 90 = 700, 7 · 100 = 700, 4900 : 7 = 700, ale <b>350 · 20</b> = 7000.'),
+ odd('pm4-5c',['48 000 : 60','2 · 400','40 · 200','16 000 : 20'],2,'48 000 : 60 = 800, 2 · 400 = 800, 16 000 : 20 = 800, ale <b>40 · 200</b> = 8000.'),
+ odd('pm4-5d',['30 · 600','90 000 : 50','180 000 : 10','9 · 2000'],1,'30 · 600 = 18 000, 180 000 : 10 = 18 000, 9 · 2000 = 18 000, ale <b>90 000 : 50</b> = 1800.'),
+ // Przez jaką liczbę?
+ q('pm4-6a','Przez jaką liczbę trzeba pomnożyć 4170, aby otrzymać 417 000?',['100','10','1000','10 000'],0,'Do 4170 dopisano dwa zera, więc mnożymy przez <b>100</b>.'),
+ q('pm4-6b','Przez jaką liczbę trzeba podzielić 560 000, aby otrzymać 56?',['100','1000','10 000','10'],2,'Z 560 000 skreślono cztery zera, więc dzielimy przez <b>10 000</b>.'),
+ // Godziny, minuty i sekundy
+ q('pm4-7a','Film trwa 2 godziny i 15 minut. Ile to sekund?',['7500','13 500','2150','8100'],3,'2 h 15 min = 120 + 15 = 135 minut. 135 · 60 = 100 · 60 + 35 · 60 = 6000 + 2100 = <b>8100</b> sekund.'),
+ q('pm4-7b','Ile pełnych godzin jest w 1000 minut i ile minut zostaje?',['10 h','16 h 40 min','16 h 4 min','100 h'],1,'16 · 60 = 960 minut, zostaje 1000 − 960 = 40 minut. Razem <b>16 h 40 min</b>. Godzina ma 60 minut, a nie 100.'),
+ q('pm4-7c','Ile to godzin: 9000 minut?',['900','15','150','1500'],2,'9000 : 60 = 900 : 6 = <b>150</b> godzin.'),
+ // Ile dni?
+ q('pm4-8a','Ola czyta codziennie 8 stron. Książka ma 136 stron. Ile dni zajmie jej przeczytanie całej książki?',['17','128','16','18'],0,'136 : 8 = (80 + 56) : 8 = 10 + 7 = <b>17</b> dni.'),
+ q('pm4-8b','Tomek odkłada co tydzień 6 zł. Po ilu tygodniach uzbiera na grę za 114 zł?',['18','108','19','20'],2,'114 : 6 = (120 − 6) : 6 = 20 − 1 = <b>19</b> tygodni.'),
+ // Razy więcej — ile jest każdych?
+ q('pm4-9a','W 28-osobowej klasie jest 3 razy więcej dziewcząt niż chłopców. Ile dziewcząt jest w tej klasie?',['7','21','25','14'],1,'Na 1 chłopca przypadają 3 dziewczynki, czyli grupy po 4 osoby: 28 : 4 = 7 chłopców. Dziewcząt: 3 · 7 = <b>21</b>.'),
+ q('pm4-9b','W pudełku jest 45 kulek, czerwonych i niebieskich. Czerwonych jest 4 razy więcej niż niebieskich. Ile jest kulek czerwonych?',['9','41','11','36'],3,'Na 1 niebieską przypadają 4 czerwone, czyli grupy po 5 kulek: 45 : 5 = 9 niebieskich. Czerwonych: 4 · 9 = <b>36</b>.'),
+ q('pm4-9c','Na parkingu stoi 30 samochodów osobowych i ciężarowych. Osobowych jest 5 razy więcej niż ciężarowych. Ile jest ciężarówek?',['5','6','25','24'],0,'Na 1 ciężarówkę przypada 5 osobowych, czyli grupy po 6 aut: 30 : 6 = <b>5</b> ciężarówek.'),
+ // Ile na jednego ucznia?
+ q('pm4-10a','W klasie 4b jest 20 uczniów. Za bilety do kina zapłacono łącznie 640 zł. Ile kosztował jeden bilet?',['620 zł','320 zł','12 800 zł','32 zł'],3,'640 : 20 = 64 : 2 = <b>32 zł</b>.'),
+ q('pm4-10b','Za wycieczkę 30 uczniów zapłacono łącznie 3900 zł. Ile zapłacił jeden uczeń?',['13 zł','130 zł','1300 zł','3870 zł'],1,'3900 : 30 = 390 : 3 = <b>130 zł</b>.'),
+ // Coś zostało
+ q('pm4-11a','Zosia miała 75 koralików. Zrobiła 8 jednakowych bransoletek i zostały jej 3 koraliki. Z ilu koralików jest jedna bransoletka?',['9','10','78','8'],0,'Na bransoletki zużyła 75 − 3 = 72 koraliki. 72 : 8 = <b>9</b>.'),
+ q('pm4-11b','Babcia miała 60 jajek. Upiekła 7 jednakowych ciast i zostały jej 4 jajka. Ile jajek zużyła na jedno ciasto?',['9','64','8','7'],2,'Na ciasta zużyła 60 − 4 = 56 jajek. 56 : 7 = <b>8</b>.'),
+ // Długość pociągu
+ q('pm4-12a','Wagon ma 22 m długości, a lokomotywa 18 m. Jaką długość ma pociąg złożony z lokomotywy i 6 wagonów?',['240 m','150 m','132 m','46 m'],1,'Wagony: 6 · 22 = 132 m. Z lokomotywą: 132 + 18 = <b>150 m</b>. 240 m wychodzi, gdy pomnoży się 6 · (22 + 18).'),
+ q('pm4-12b','Pociąg składa się z lokomotywy o długości 20 m i 8 jednakowych wagonów. Cały pociąg ma 220 m. Jaką długość ma jeden wagon?',['27 m','28 m','30 m','25 m'],3,'Wagony mają razem 220 − 20 = 200 m. 200 : 8 = <b>25 m</b>.'),
+ // Ile miejsc?
+ q('pm4-13a','Wagon drugiej klasy ma 10 przedziałów ośmioosobowych, a wagon pierwszej klasy 9 przedziałów sześcioosobowych. Ile miejsc jest w pociągu z 4 wagonami drugiej klasy i 2 wagonami pierwszej klasy?',['428','134','374','482'],0,'Druga klasa: 4 · 10 · 8 = 320 miejsc. Pierwsza klasa: 2 · 9 · 6 = 108 miejsc. Razem 320 + 108 = <b>428</b>.'),
+ q('pm4-13b','W sali kinowej jest 12 rzędów po 15 miejsc, a na balkonie 4 rzędy po 9 miejsc. Ile miejsc jest razem?',['40','196','216','261'],2,'Parter: 12 · 15 = 120 + 60 = 180. Balkon: 4 · 9 = 36. Razem 180 + 36 = <b>216</b>.'),
+ // Zniżka
+ q('pm4-14a','Dla szkoły zamówiono 30 skakanek po 24 zł. Sprzedawca dał zniżkę i zapłacono tylko 600 zł. Ile złotych zaoszczędzono?',['120 zł','24 zł','696 zł','720 zł'],0,'Bez zniżki: 30 · 24 = 720 zł. Zaoszczędzono 720 − 600 = <b>120 zł</b>.'),
+ q('pm4-14b','Kupiono 15 piłek po 40 zł. Dzięki zniżce zapłacono 520 zł. O ile złotych więcej trzeba by zapłacić bez zniżki?',['40 zł','560 zł','600 zł','80 zł'],3,'Bez zniżki: 15 · 40 = 600 zł. 600 − 520 = <b>80 zł</b>.'),
+ // Kiedyś i dziś
+ q('pm4-15a','W 1990 roku w pewnym mieście było 300 komputerów, a dziś jest ich 400 razy więcej. Ile komputerów jest dziś w tym mieście?',['1200','12 000','120 000','700'],2,'400 · 300: 4 · 3 = 12 i cztery zera: <b>120 000</b>.'),
+ q('pm4-15b','W 1995 roku w pewnym mieście było 80 telefonów komórkowych, a dziś jest ich 900 razy więcej. Ile telefonów komórkowych jest dziś?',['72 000','7200','720 000','980'],0,'900 · 80: 9 · 8 = 72 i trzy zera: <b>72 000</b>.'),
+ // Najpierw jedno, potem drugie
+ q('pm4-16a','Mama ma 36 lat, czyli 4 razy więcej niż Kasia. Brat Kasi jest od niej o 3 lata starszy. Ile lat ma brat?',['33','12','39','6'],1,'Kasia: 36 : 4 = 9 lat. Brat: 9 + 3 = <b>12</b> lat.'),
+ q('pm4-16b','Tata zarobił 4500 zł, czyli 9 razy więcej niż jego syn w wakacje. Ile zarobili razem?',['4509 zł','500 zł','4491 zł','5000 zł'],3,'Syn: 4500 : 9 = 500 zł. Razem 4500 + 500 = <b>5000 zł</b>.'),
+ // Zakupy i reszta
+ q('pm4-17a','Mama kupiła 4 kg jabłek po 3 zł i 3 kg gruszek po 6 zł. Zapłaciła banknotem 50 zł. Ile reszty otrzymała?',['30 zł','35 zł','15 zł','20 zł'],3,'Jabłka: 4 · 3 = 12 zł, gruszki: 3 · 6 = 18 zł, razem 30 zł. Reszta: 50 − 30 = <b>20 zł</b>.'),
+ q('pm4-17b','Tata kupił 6 zeszytów po 4 zł i 3 piórniki po 17 zł. Zapłacił banknotem 100 zł. Ile reszty otrzymał?',['75 zł','25 zł','30 zł','35 zł'],1,'Zeszyty: 6 · 4 = 24 zł, piórniki: 3 · 17 = 51 zł, razem 75 zł. Reszta: 100 − 75 = <b>25 zł</b>.'),
+ // Które działanie pasuje do zadania?
+ q('pm4-18a','Które działanie pozwala obliczyć, ile kosztuje 5 zeszytów po 4 zł i 3 długopisy po 2 zł?',['5 · 4 + 3 · 2','(5 + 3) · (4 + 2)','5 · 4 · 3 · 2','5 + 4 + 3 + 2'],0,'Zeszyty: 5 · 4, długopisy: 3 · 2, a potem dodajemy: <b>5 · 4 + 3 · 2</b> = 20 + 6 = 26 zł.'),
+ q('pm4-18b','Ola miała 40 zł. Kupiła 3 lizaki po 2 zł, a resztę pieniędzy podzieliła po równo między 2 siostry. Które działanie pozwala obliczyć, ile dostała każda siostra?',['40 − 3 · 2 : 2','40 : 2 − 3 · 2','(40 − 3 · 2) : 2','(40 − 3) · 2 : 2'],2,'Najpierw reszta po zakupach: 40 − 3 · 2 = 34 zł, potem dzielimy na 2: <b>(40 − 3 · 2) : 2</b> = 17 zł.'),
+ // Okienka z dwoma działaniami
+ q('pm4-19a',FILL(`${BOX} · 6 = 84 : 2`),['14','42','8','7'],3,'84 : 2 = 42. Szukamy liczby, która pomnożona przez 6 daje 42: <b>7</b>.'),
+ q('pm4-19b',FILL(`120 : ${BOX} = 4 · 5`),['5','6','80','24'],1,'4 · 5 = 20. 120 podzielone przez ile daje 20? 120 : 6 = 20, więc w okienku jest <b>6</b>.'),
+ q('pm4-19c',FILL(`${BOX} : 9 = 56 : 7`),['63','8','72','81'],2,'56 : 7 = 8. Szukamy dzielnej: 8 · 9 = <b>72</b>.'),
+ // Pomyślana liczba
+ q('pm4-20a','Pomyślałem liczbę. Pomnożyłem ją przez 4, do wyniku dodałem 12 i otrzymałem 100. Jaką liczbę pomyślałem?',['28','352','25','22'],3,'Liczymy od końca: 100 − 12 = 88, 88 : 4 = <b>22</b>. Sprawdzenie: 22 · 4 + 12 = 100.'),
+ q('pm4-20b','Pomyślałam liczbę. Podzieliłam ją przez 6, od wyniku odjęłam 5 i otrzymałam 9. Jaką liczbę pomyślałam?',['24','84','54','4'],1,'Liczymy od końca: 9 + 5 = 14, 14 · 6 = <b>84</b>. Sprawdzenie: 84 : 6 = 14, 14 − 5 = 9.'),
+ // Ile czasu razem?
+ q('pm4-21a',`${GYM} Ile czasu ćwiczyły razem?`,['2 h 55 min','3 h 15 min','3 h 5 min','1 h 95 min'],1,'Ania: 35 min, Basia: 45 min, Celina: 2 · 35 = 70 min, Dorota: 45 min. Razem 195 minut = 180 + 15, czyli <b>3 h 15 min</b>.'),
+ q('pm4-21b','Wojtek grał w szachy od 15:20 do 16:05. Janek grał 3 razy dłużej niż Wojtek. Ile czasu grał Janek?',['1 h 35 min','2 h 25 min','1 h 45 min','2 h 15 min'],3,'Wojtek grał od 15:20 do 16:05, czyli 45 minut. Janek: 3 · 45 = 135 minut = <b>2 h 15 min</b>.'),
+ // Na mistrza
+ q('pm4-22a','Na pierwszej półce stoją 4 jednakowe pudełka kredek, a na drugiej 7 takich pudełek. Na drugiej półce jest o 36 kredek więcej. Ile kredek jest na obu półkach razem?',['132','48','84','121'],0,'Różnica to 7 − 4 = 3 pudełka, czyli 36 kredek: w pudełku jest 36 : 3 = 12. Wszystkich pudełek jest 11: 11 · 12 = <b>132</b>.'),
+ q('pm4-22b','Klasa 4a kupiła 18 biletów do teatru, a klasa 4b 24 takie same bilety i zapłaciła o 90 zł więcej. Ile zapłaciły obie klasy razem?',['270 zł','360 zł','630 zł','540 zł'],2,'Klasa 4b kupiła o 6 biletów więcej i to one kosztowały 90 zł: bilet kosztuje 90 : 6 = 15 zł. Wszystkich biletów jest 42: 42 · 15 = 420 + 210 = <b>630 zł</b>.'),
+];
