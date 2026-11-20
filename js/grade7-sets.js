@@ -458,3 +458,103 @@ export const squareRootQuestions7 = [
  q('pk7-16c',calc(`(${R(m(3,1,16))} − ${R(f(9,16))}) · ${R('0,64')}`), ['0,8','1,15','4','0,08'],0,`${m(3,1,16)} = ${f(49,16)}, więc ${R(f(49,16))} = ${f(7,4)}, a ${R(f(9,16))} = ${f(3,4)}. W nawiasie ${f(7,4)} − ${f(3,4)} = 1, a ${R('0,64')} = 0,8. Wynik: 1 · 0,8 = <b>0,8</b>.`),
  q('pk7-16d',calc(`${R(m(5,1,16))} : ${R(f(9,64))} − ${R(49)}`), ['13','6','−1',f(27,32)],2,`${m(5,1,16)} = ${f(81,16)}, więc ${R(f(81,16))} = ${f(9,4)}, a ${R(f(9,64))} = ${f(3,8)}. Dzielenie: ${f(9,4)} : ${f(3,8)} = ${f(9,4)} · ${f(8,3)} = 6. Potem 6 − 7 = <b>−1</b>.`),
 ];
+
+// Klasa 7, dział „Pierwiastki”: szacowanie pierwiastków. Zadania od najłatwiejszych do najtrudniejszych (ordered).
+const IRR = 'Która z podanych liczb jest <b>niewymierna</b>?';
+const betweenNat = (n) => `Między którymi kolejnymi liczbami naturalnymi leży na osi liczbowej liczba <b>${R(n)}</b>?`;
+const nearest = (n) => `Do której liczby naturalnej jest najbliżej liczba <b>${R(n)}</b>?`;
+const naturals = (a, b) => `Jakie liczby naturalne leżą na osi liczbowej między liczbami <b>${R(a)}</b> i <b>${R(b)}</b>?`;
+const howMany = (a, b) => `Ile jest liczb naturalnych <i>m</i> spełniających warunek <b>${R(a)} &lt; <i>m</i> &lt; ${R(b)}</b>?`;
+const BIGGEST = 'Która z podanych liczb jest <b>największa</b>?';
+const BOX = `Wiedząc, że ${R(2)} ≈ 1,41, ${R(3)} ≈ 1,73, ${R(5)} ≈ 2,24 i ${R(10)} ≈ 3,16, oblicz`;
+const tiles = (n, what) => `Uczniowie mają <b>${n}</b> jednakowych kwadratowych ${what}. Z jak największej ich liczby chcą ułożyć jeden duży kwadrat. Ile ${what} zostanie?`;
+const rng = (lo) => `większa od ${lo} i mniejsza od ${lo + 1}`;
+const UNDER10 = 'Wartość którego wyrażenia jest <b>mniejsza od 10</b>?';
+const addTo = (a, b) => `Do liczby <b>−${R(a)}</b> dodajemy <b>${b}</b>. Otrzymany wynik jest liczbą`;
+const ADDED = ['większą od 1', 'dodatnią mniejszą od 1', 'ujemną większą od −1', 'mniejszą od −1'];
+const three = (a, b, c, cond) => `Dane są trzy liczby:<div class="task-statements">I. ${a}<br>II. ${b}<br>III. ${c}</div>Które z tych liczb są <b>${cond}</b>?`;
+const where = (a, b, truth, explain) => (id) => q(id, `Czy podane zdania są prawdziwe?<div class="task-statements">I. ${a}<br>II. ${b}</div>Wybierz ocenę zdań (P — prawda, F — fałsz).`, ['I: P, II: P', 'I: P, II: F', 'I: F, II: P', 'I: F, II: F'], ['PP','PF','FP','FF'].indexOf(truth), explain);
+const IRRWHY = 'Pierwiastek z liczby naturalnej, która nie jest kwadratem liczby naturalnej, jest liczbą niewymierną.';
+
+export const rootEstimationQuestions7 = [
+ // Liczby niewymierne wśród pierwiastków z liczb naturalnych
+ q('sp7-1a',IRR, [R(36),R(52),R(81),R(100)],1,`7² = 49 i 8² = 64, więc 52 nie jest kwadratem żadnej liczby naturalnej — <b>${R(52)}</b> jest niewymierny. Pozostałe: ${R(36)} = 6, ${R(81)} = 9, ${R(100)} = 10. ${IRRWHY}`),
+ q('sp7-1b',IRR, [R(63),R(64),R(121),R(25)],0,`7² = 49 i 8² = 64, a 63 leży między nimi, więc <b>${R(63)}</b> jest niewymierny. ${R(64)} = 8, ${R(121)} = 11, ${R(25)} = 5.`),
+ q('sp7-1c',IRR, [R(144),R(169),R(170),R(196)],2,`13² = 169 i 14² = 196, więc 170 nie jest kwadratem — <b>${R(170)}</b> jest niewymierny. ${R(144)} = 12, ${R(169)} = 13, ${R(196)} = 14.`),
+ q('sp7-1d',IRR, [R(225),R(1),R(400),R(99)],3,`9² = 81 i 10² = 100, więc <b>${R(99)}</b> jest niewymierny. ${R(225)} = 15, ${R(1)} = 1, ${R(400)} = 20.`),
+ // Liczby niewymierne wśród pierwiastków z ułamków
+ q('sp7-2a',IRR, [R(f(16,49)),R('0,25'),R(f(9,20)),R('1,44')],2,`20 nie jest kwadratem liczby naturalnej, więc <b>${R(f(9,20))}</b> jest niewymierny. Pozostałe: ${R(f(16,49))} = ${f(4,7)}, ${R('0,25')} = 0,5, ${R('1,44')} = 1,2.`),
+ q('sp7-2b',IRR, [R('0,4'),R(f(1,64)),R('0,81'),R(m(2,1,4))],0,`0,4 = ${f(4,10)} = ${f(2,5)}, a ani 2, ani 5 nie są kwadratami, więc <b>${R('0,4')}</b> jest niewymierny. Uwaga: 0,2² = 0,04, a nie 0,4. Pozostałe: ${R(f(1,64))} = ${f(1,8)}, ${R('0,81')} = 0,9, ${R(m(2,1,4))} = ${R(f(9,4))} = ${m(1,1,2)}.`),
+ q('sp7-2c',IRR, [R(f(25,36)),R('1,6'),R('0,01'),R(m(1,7,9))],1,`1,6 = ${f(16,10)} = ${f(8,5)} — to nie jest kwadrat ułamka, więc <b>${R('1,6')}</b> jest niewymierny. Sprawdzenie: 1,2² = 1,44 i 1,3² = 1,69, a 1,6 leży między nimi. Pozostałe: ${R(f(25,36))} = ${f(5,6)}, ${R('0,01')} = 0,1, ${R(m(1,7,9))} = ${R(f(16,9))} = ${f(4,3)}.`),
+ q('sp7-2d',IRR, [R('0,64'),R(f(4,121)),R(m(3,1,16)),R(f(49,60))],3,`60 nie jest kwadratem liczby naturalnej, więc <b>${R(f(49,60))}</b> jest niewymierny. Pozostałe: ${R('0,64')} = 0,8, ${R(f(4,121))} = ${f(2,11)}, ${R(m(3,1,16))} = ${R(f(49,16))} = ${f(7,4)}.`),
+ // Między którymi liczbami naturalnymi?
+ q('sp7-3a',betweenNat(33), ['5 i 6','16 i 17','6 i 7','4 i 5'],0,`5² = 25 &lt; 33 &lt; 36 = 6², więc <b>5 &lt; ${R(33)} &lt; 6</b>. 16 i 17 to połowa liczby 33 — pierwiastek to nie dzielenie przez 2.`),
+ q('sp7-3b',betweenNat(58), ['29 i 30','8 i 9','6 i 7','7 i 8'],3,`7² = 49 &lt; 58 &lt; 64 = 8², więc <b>7 &lt; ${R(58)} &lt; 8</b>.`),
+ q('sp7-3c',betweenNat(105), ['52 i 53','9 i 10','10 i 11','11 i 12'],2,`10² = 100 &lt; 105 &lt; 121 = 11², więc <b>10 &lt; ${R(105)} &lt; 11</b>.`),
+ q('sp7-3d',betweenNat(150), ['11 i 12','12 i 13','75 i 76','13 i 14'],1,`12² = 144 &lt; 150 &lt; 169 = 13², więc <b>12 &lt; ${R(150)} &lt; 13</b>.`),
+ // Przybliżenie do całości
+ q('sp7-4a',nearest(26), ['6','13','5','4'],2,`5² = 25 i 5,5² = 30,25. Skoro 25 &lt; 26 &lt; 30,25, to 5 &lt; ${R(26)} &lt; 5,5, więc ${R(26)} ≈ <b>5</b>.`),
+ q('sp7-4b',nearest(47), ['7','6','23','8'],0,`6,5² = 42,25 i 7² = 49. Skoro 42,25 &lt; 47 &lt; 49, to 6,5 &lt; ${R(47)} &lt; 7, więc ${R(47)} ≈ <b>7</b>.`),
+ q('sp7-4c',nearest(83), ['10','41','8','9'],3,`9² = 81 i 9,5² = 90,25. Skoro 81 &lt; 83 &lt; 90,25, to 9 &lt; ${R(83)} &lt; 9,5, więc ${R(83)} ≈ <b>9</b>.`),
+ q('sp7-4d',nearest(118), ['10','11','59','12'],1,`10,5² = 110,25 i 11² = 121. Skoro 110,25 &lt; 118 &lt; 121, to 10,5 &lt; ${R(118)} &lt; 11, więc ${R(118)} ≈ <b>11</b>.`),
+ // Większe liczby pod pierwiastkiem
+ q('sp7-5a',betweenNat(350), ['17 i 18','18 i 19','175 i 176','19 i 20'],1,`18² = 324 &lt; 350 &lt; 361 = 19², więc <b>18 &lt; ${R(350)} &lt; 19</b>.`),
+ q('sp7-5b',betweenNat(500), ['21 i 22','250 i 251','23 i 24','22 i 23'],3,`22² = 484 &lt; 500 &lt; 529 = 23², więc <b>22 &lt; ${R(500)} &lt; 23</b>. Najpierw szacujemy z grubsza: 20² = 400 i 30² = 900, a potem sprawdzamy kolejne kwadraty.`),
+ q('sp7-5c',betweenNat(700), ['26 i 27','25 i 26','27 i 28','350 i 351'],0,`26² = 676 &lt; 700 &lt; 729 = 27², więc <b>26 &lt; ${R(700)} &lt; 27</b>.`),
+ q('sp7-5d',betweenNat(1100), ['32 i 33','550 i 551','33 i 34','34 i 35'],2,`33² = 1089 &lt; 1100 &lt; 1156 = 34², więc <b>33 &lt; ${R(1100)} &lt; 34</b>.`),
+ // Jakie liczby naturalne leżą między pierwiastkami?
+ q('sp7-6a',naturals(3,20), ['1, 2, 3, 4','3, 4, 5','2, 3, 4, 5','2, 3, 4'],3,`1 &lt; ${R(3)} &lt; 2 i 4 &lt; ${R(20)} &lt; 5, więc między tymi liczbami leżą <b>2, 3, 4</b>. Liczba 1 jest mniejsza od ${R(3)}, a 5 większa od ${R(20)}.`),
+ q('sp7-6b',naturals(10,50), ['3, 4, 5, 6, 7','4, 5, 6','4, 5, 6, 7','5, 6, 7'],2,`3 &lt; ${R(10)} &lt; 4 i 7 &lt; ${R(50)} &lt; 8, więc między nimi leżą <b>4, 5, 6, 7</b>.`),
+ q('sp7-6c',naturals(16,60), ['4, 5, 6, 7','5, 6, 7','5, 6, 7, 8','4, 5, 6'],1,`${R(16)} = 4, a 7 &lt; ${R(60)} &lt; 8. Liczba 4 to jeden z końców, a nie liczba „między”, więc zostają <b>5, 6, 7</b>.`),
+ q('sp7-6d',naturals(40,90), ['7, 8, 9','6, 7, 8, 9','7, 8, 9, 10','8, 9'],0,`6 &lt; ${R(40)} &lt; 7 i 9 &lt; ${R(90)} &lt; 10, więc między nimi leżą <b>7, 8, 9</b>.`),
+ // Ile liczb naturalnych spełnia warunek?
+ q('sp7-7a',howMany(8,90), ['6','7','8','82'],1,`2 &lt; ${R(8)} &lt; 3 i 9 &lt; ${R(90)} &lt; 10, więc <i>m</i> = 3, 4, 5, 6, 7, 8, 9 — to <b>7</b> liczb. 82 to 90 − 8: nie odejmujemy liczb spod pierwiastka.`),
+ q('sp7-7b',howMany(20,200), ['10','9','11','180'],0,`4 &lt; ${R(20)} &lt; 5 i 14 &lt; ${R(200)} &lt; 15, więc <i>m</i> = 5, 6, …, 14 — to <b>10</b> liczb.`),
+ q('sp7-7c',howMany(50,250), ['7','9','200','8'],3,`7 &lt; ${R(50)} &lt; 8 i 15 &lt; ${R(250)} &lt; 16, więc <i>m</i> = 8, 9, …, 15 — to <b>8</b> liczb.`),
+ q('sp7-7d',howMany(100,500), ['11','13','12','400'],2,`${R(100)} = 10 i 22 &lt; ${R(500)} &lt; 23. Nierówność jest ostra, więc 10 odpada: <i>m</i> = 11, 12, …, 22 — to <b>12</b> liczb.`),
+ // Porównywanie
+ q('sp7-8a',BIGGEST, [R(50),'7','6,9',R(45)],0,`Porównujemy kwadraty: (${R(50)})² = 50, 7² = 49, 6,9² = 47,61, (${R(45)})² = 45. Największa jest <b>${R(50)}</b> — trochę większa od 7.`),
+ q('sp7-8b',BIGGEST, ['4,5',R(19),R(21),'4,4'],2,`Kwadraty: 4,5² = 20,25, (${R(19)})² = 19, (${R(21)})² = 21, 4,4² = 19,36. Największa jest <b>${R(21)}</b>.`),
+ q('sp7-8c',BIGGEST, ['8',R(63),'7,9',R(65)],3,`Kwadraty: 8² = 64, (${R(63)})² = 63, 7,9² = 62,41, (${R(65)})² = 65. Największa jest <b>${R(65)}</b>, bo 65 &gt; 64.`),
+ q('sp7-8d',BIGGEST, [R(30),R(35),'5,9','5,8'],1,`Kwadraty: (${R(30)})² = 30, (${R(35)})² = 35, 5,9² = 34,81, 5,8² = 33,64. Największa jest <b>${R(35)}</b>, bo 35 &gt; 34,81.`),
+ // Prawda czy fałsz: gdzie leży pierwiastek?
+ where(`Liczba ${R(1500)} leży na osi liczbowej między 30 a 40.`,`Liczba ${R(1500)} leży na osi liczbowej między 40 a 50.`,'PF',`30² = 900, 40² = 1600, 50² = 2500. Skoro 900 &lt; 1500 &lt; 1600, to 30 &lt; ${R(1500)} &lt; 40. I — <b>prawda</b>, II — <b>fałsz</b>.`)('sp7-9a'),
+ where(`Liczba ${R(700)} leży na osi liczbowej między 20 a 25.`,`Liczba ${R(700)} leży na osi liczbowej między 25 a 30.`,'FP',`25² = 625 i 30² = 900. Skoro 625 &lt; 700 &lt; 900, to 25 &lt; ${R(700)} &lt; 30. I — <b>fałsz</b>, II — <b>prawda</b>.`)('sp7-9b'),
+ where(`${R(3000)} &gt; 50`,`${R(3000)} &lt; 60`,'PP',`50² = 2500 &lt; 3000 &lt; 3600 = 60², więc 50 &lt; ${R(3000)} &lt; 60. Oba zdania — <b>prawda</b>.`)('sp7-9c'),
+ where(`Liczba ${R(2400)} leży na osi liczbowej między 50 a 60.`,`${R(5000)} &lt; 70`,'FF',`I: 50² = 2500 &gt; 2400, więc ${R(2400)} &lt; 50 — <b>fałsz</b>. II: 70² = 4900 &lt; 5000, więc ${R(5000)} &gt; 70 — <b>fałsz</b>.`)('sp7-9d'),
+ // Przybliżenia z ramki
+ q('sp7-10a',`${BOX} przybliżoną wartość iloczynu <b>6${R(2)}</b>.`, ['7,41','84,6','8,46','6,82'],2,`6${R(2)} to 6 · ${R(2)} ≈ 6 · 1,41 = <b>8,46</b>. 7,41 to 6 + 1,41 — między liczbą a pierwiastkiem jest mnożenie.`),
+ q('sp7-10b',`${BOX} przybliżoną wartość iloczynu <b>3${R(5)}</b>.`, ['5,24','6,72','6,62','67,2'],1,`3 · 2,24 = <b>6,72</b>.`),
+ q('sp7-10c',`${BOX} przybliżoną wartość iloczynu <b>5${R(3)}</b>.`, ['8,65','6,73','8,15','86,5'],0,`5 · 1,73 = <b>8,65</b>.`),
+ q('sp7-10d',`${BOX} przybliżoną wartość iloczynu <b>2${R(10)}</b>.`, ['5,16','63,2','6,22','6,32'],3,`2 · 3,16 = <b>6,32</b>. 5,16 to 2 + 3,16.`),
+ // Przybliżone wartości wyrażeń
+ q('sp7-11a',`${BOX} przybliżoną wartość wyrażenia <b>4${R(5)} − ${R(2)}</b>.`, ['6,55','7,55','10,37','8,96'],1,`4 · 2,24 − 1,41 = 8,96 − 1,41 = <b>7,55</b>. Najpierw mnożenie, potem odejmowanie.`),
+ q('sp7-11b',`${BOX} przybliżoną wartość wyrażenia <b>3${R(3)} + 2${R(2)}</b>.`, ['7,46','8,81','6,01','8,01'],3,`3 · 1,73 + 2 · 1,41 = 5,19 + 2,82 = <b>8,01</b>.`),
+ q('sp7-11c',`${BOX} przybliżoną wartość wyrażenia <b>10${R(10)} − 10${R(2)}</b>.`, ['1,75','16,5','17,5','175'],2,`10 · 3,16 − 10 · 1,41 = 31,6 − 14,1 = <b>17,5</b>.`),
+ q('sp7-11d',`${BOX} przybliżoną wartość wyrażenia <b>${R(10)} + ${R(5)} − ${R(3)}</b>.`, ['3,67','4,67','7,13','2,67'],0,`3,16 + 2,24 − 1,73 = 5,40 − 1,73 = <b>3,67</b>. 7,13 to suma wszystkich trzech liczb.`),
+ // Największy kwadrat z płytek
+ q('sp7-12a',tiles(300,'płytek'), ['11','17','24','13'],0,`17² = 289 &lt; 300 &lt; 324 = 18², więc największy kwadrat ma bok z 17 płytek i zużywa 289 płytek. Zostanie 300 − 289 = <b>11</b>. 17 to bok kwadratu, a nie reszta.`),
+ q('sp7-12b',tiles(450,'karteczek'), ['21','34','9','12'],2,`21² = 441 &lt; 450 &lt; 484 = 22², więc kwadrat 21 × 21 zużyje 441 karteczek. Zostanie 450 − 441 = <b>9</b>.`),
+ q('sp7-12c',tiles(700,'płytek'), ['26','24','29','4'],1,`26² = 676 &lt; 700 &lt; 729 = 27², więc kwadrat 26 × 26 zużyje 676 płytek. Zostanie 700 − 676 = <b>24</b>. 29 to brak do kwadratu 27 × 27.`),
+ q('sp7-12d',tiles(1000,'karteczek'), ['31','24','61','39'],3,`31² = 961 &lt; 1000 &lt; 1024 = 32², więc kwadrat 31 × 31 zużyje 961 karteczek. Zostanie 1000 − 961 = <b>39</b>.`),
+ // Liczba z pierwiastkiem — gdzie leży?
+ q('sp7-13a',`Liczba <b>3 + ${R(20)}</b> jest`, [rng(4),rng(5),rng(6),rng(7)],3,`4 &lt; ${R(20)} &lt; 5, bo 16 &lt; 20 &lt; 25. Dodajemy 3: 7 &lt; 3 + ${R(20)} &lt; 8. Liczba jest <b>${rng(7)}</b>.`),
+ q('sp7-13b',`Liczba <b>10 − ${R(30)}</b> jest`, [rng(4),rng(5),rng(6),rng(3)],0,`5 &lt; ${R(30)} &lt; 6. Odejmujemy od 10 — większy pierwiastek daje mniejszy wynik: 10 − 6 &lt; 10 − ${R(30)} &lt; 10 − 5, czyli 4 &lt; 10 − ${R(30)} &lt; 5. Liczba jest <b>${rng(4)}</b>.`),
+ q('sp7-13c',`Liczba <b>${R(65)} + 2</b> jest`, [rng(8),rng(9),rng(10),rng(11)],2,`8 &lt; ${R(65)} &lt; 9, bo 64 &lt; 65 &lt; 81. Dodajemy 2: 10 &lt; ${R(65)} + 2 &lt; 11. Liczba jest <b>${rng(10)}</b>.`),
+ q('sp7-13d',`Liczba <b>20 − ${R(130)}</b> jest`, [rng(7),rng(8),rng(9),rng(11)],1,`11 &lt; ${R(130)} &lt; 12, więc 20 − 12 &lt; 20 − ${R(130)} &lt; 20 − 11, czyli 8 &lt; 20 − ${R(130)} &lt; 9. Liczba jest <b>${rng(8)}</b>. 11 i 12 to oszacowanie samego pierwiastka.`),
+ // Które wyrażenie jest mniejsze od 10?
+ q('sp7-14a',UNDER10, [`3 + ${R(50)}`,`5 + ${R(24)}`,`13 − ${R(8)}`,`2 + ${R(70)}`],1,`${R(24)} &lt; 5, bo 24 &lt; 25, więc <b>5 + ${R(24)}</b> &lt; 10. Pozostałe są większe od 10: ${R(50)} &gt; 7, ${R(8)} &lt; 3 (więc 13 − ${R(8)} &gt; 10), ${R(70)} &gt; 8.`),
+ q('sp7-14b',UNDER10, [`6 + ${R(17)}`,`16 − ${R(35)}`,`4 + ${R(37)}`,`1 + ${R(80)}`],3,`${R(80)} &lt; 9, bo 80 &lt; 81, więc <b>1 + ${R(80)}</b> &lt; 10. Pozostałe: ${R(17)} &gt; 4, ${R(35)} &lt; 6 (więc 16 − ${R(35)} &gt; 10), ${R(37)} &gt; 6.`),
+ q('sp7-14c',UNDER10, [R(99),`7 + ${R(10)}`,`12 − ${R(3)}`,`${R(26)} + 5`],0,`${R(99)} &lt; ${R(100)} = 10, więc <b>${R(99)}</b> &lt; 10. Pozostałe: ${R(10)} &gt; 3, ${R(3)} &lt; 2 (więc 12 − ${R(3)} &gt; 10), ${R(26)} &gt; 5.`),
+ q('sp7-14d',UNDER10, [`8 + ${R(5)}`,`14 − ${R(15)}`,`3 + ${R(48)}`,`2 + ${R(65)}`],2,`${R(48)} &lt; 7, bo 48 &lt; 49, więc <b>3 + ${R(48)}</b> &lt; 10. Pozostałe: ${R(5)} &gt; 2, ${R(15)} &lt; 4 (więc 14 − ${R(15)} &gt; 10), ${R(65)} &gt; 8.`),
+ // Do liczby −√a dodajemy b
+ q('sp7-15a',addTo(15,5), ADDED,0,`3 &lt; ${R(15)} &lt; 4, więc −4 &lt; −${R(15)} &lt; −3. Po dodaniu 5: 1 &lt; 5 − ${R(15)} &lt; 2. Wynik jest <b>większy od 1</b>.`),
+ q('sp7-15b',addTo(50,8), ADDED,1,`7 &lt; ${R(50)} &lt; 8, więc −8 &lt; −${R(50)} &lt; −7. Po dodaniu 8: 0 &lt; 8 − ${R(50)} &lt; 1. Wynik jest <b>dodatni i mniejszy od 1</b>.`),
+ q('sp7-15c',addTo(70,8), ADDED,2,`8 &lt; ${R(70)} &lt; 9, więc −9 &lt; −${R(70)} &lt; −8. Po dodaniu 8: −1 &lt; 8 − ${R(70)} &lt; 0. Wynik jest <b>ujemny i większy od −1</b>.`),
+ q('sp7-15d',addTo(90,7), ADDED,3,`9 &lt; ${R(90)} &lt; 10, więc −10 &lt; −${R(90)} &lt; −9. Po dodaniu 7: −3 &lt; 7 − ${R(90)} &lt; −2. Wynik jest <b>mniejszy od −1</b>.`),
+ // Które z trzech liczb spełniają warunek?
+ q('sp7-16a',three(R(85),`4 + ${R(24)}`,`6 + ${R(10)}`,'większe od 9'), ['Tylko I','Tylko I i II','Tylko I i III','Tylko II i III'],2,`I: ${R(85)} &gt; ${R(81)} = 9 — tak. II: ${R(24)} &lt; 5, więc 4 + ${R(24)} &lt; 9 — nie. III: ${R(10)} &gt; 3, więc 6 + ${R(10)} &gt; 9 — tak. Odpowiedź: <b>tylko I i III</b>.`),
+ q('sp7-16b',three(R(60),`5 + ${R(10)}`,`12 − ${R(15)}`,'mniejsze od 8'), ['Tylko I','Tylko II','Tylko I i III','Tylko II i III'],0,`I: ${R(60)} &lt; ${R(64)} = 8 — tak. II: ${R(10)} &gt; 3, więc 5 + ${R(10)} &gt; 8 — nie. III: ${R(15)} &lt; 4, więc 12 − ${R(15)} &gt; 8 — nie. Odpowiedź: <b>tylko I</b>.`),
+ q('sp7-16c',three(R(140),`9 + ${R(8)}`,`20 − ${R(60)}`,'większe od 12'), ['Tylko I','Tylko I i II','Tylko II i III','Tylko III'],3,`I: ${R(140)} &lt; ${R(144)} = 12 — nie. II: ${R(8)} &lt; 3, więc 9 + ${R(8)} &lt; 12 — nie. III: ${R(60)} &lt; 8, więc 20 − ${R(60)} &gt; 12 — tak. Odpowiedź: <b>tylko III</b>.`),
+ q('sp7-16d',three(R(33),`2 + ${R(15)}`,`10 − ${R(15)}`,'mniejsze od 6'), ['Tylko I','Tylko I i II','Tylko II','Wszystkie trzy'],1,`I: ${R(33)} &lt; ${R(36)} = 6 — tak. II: ${R(15)} &lt; 4, więc 2 + ${R(15)} &lt; 6 — tak. III: ${R(15)} &lt; 4, więc 10 − ${R(15)} &gt; 6 — nie. Odpowiedź: <b>tylko I i II</b>.`),
+];

@@ -4,20 +4,20 @@ assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.title), ['Zegary, kal
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności', 'Liczby pierwsze i złożone', 'Potęgowanie', 'Cyfry rzymskie', 'Kolejność wykonywania działań', 'Płaszczyzna, proste, półproste, odcinki', 'Kąty', 'Mierzenie kątów', 'Trójkąty', 'Równoległoboki i romby', 'Trapezy']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.section), ['Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Figury geometryczne', 'Figury geometryczne', 'Figury geometryczne', 'Figury geometryczne', 'Figury geometryczne', 'Figury geometryczne']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
- 'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Procenty — zadania egzaminacyjne', 'Potęgi', 'Potęgi o tych samych podstawach', 'Notacja wykładnicza', 'Obliczenia w notacji wykładniczej', 'Potęgi — zadania egzaminacyjne', 'Pierwiastek kwadratowy',
+ 'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Procenty — zadania egzaminacyjne', 'Potęgi', 'Potęgi o tych samych podstawach', 'Notacja wykładnicza', 'Obliczenia w notacji wykładniczej', 'Potęgi — zadania egzaminacyjne', 'Pierwiastek kwadratowy', 'Szacowanie pierwiastków',
 ]);
 // Klasy 4, 7 i 8 są podzielone na działy.
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.section), ['Zaczynamy przygodę z matematyką', ...Array(6).fill('Dodawanie i odejmowanie'), ...Array(6).fill('Mnożenie i dzielenie')]);
 // Klasa 8: każdy zestaw ma 3 plusy, a hasła (nazwy zwierząt) się nie powtarzają.
 {const g8=SCENARIOS.filter(s=>s.grade===8);assert(g8.every(s=>s.award&&s.award.pluses===3),'grade 8: 3 pluses');assert.equal(new Set(g8.map(s=>s.award.password)).size,g8.length);}
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.section), ['Statystyka i prawdopodobieństwo', 'Statystyka i prawdopodobieństwo', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu']);
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.section), ['Procenty', 'Procenty', 'Procenty', 'Procenty', 'Potęgi', 'Potęgi', 'Potęgi', 'Potęgi', 'Potęgi', 'Pierwiastki']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.section), ['Procenty', 'Procenty', 'Procenty', 'Procenty', 'Potęgi', 'Potęgi', 'Potęgi', 'Potęgi', 'Potęgi', 'Pierwiastki', 'Pierwiastki']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
  'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Wyrażenia algebraiczne', 'Mnożenie sum algebraicznych', 'Równania', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne', 'Wyrażenia algebraiczne — zadania egzaminacyjne', 'Potęgi — zadania egzaminacyjne',
 ]);
-assert.equal(SCENARIOS.length,44);
+assert.equal(SCENARIOS.length,45);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,1826);
+assert.equal(new Set(all.map(q=>q.id)).size,1890);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -1450,4 +1450,59 @@ assert.equal(Object.keys(V).length+8,64);
 // Od łatwych do trudnych: grupy w pliku w kolejności 1…16.
 assert.deepEqual([...new Set(sq.questions.map(q=>q.sourceGroup))],Array.from({length:16},(_,i)=>`pk7-${i+1}`));
 console.log('PASS: grade 7 square roots — all 64 answer keys computed independently');
+}
+
+// Klasa 7, dział „Pierwiastki”: szacowanie pierwiastków — każdy klucz liczony niezależnie (Math.sqrt).
+{
+const se=SCENARIOS.find(s=>s.id==='root-estimation-7');
+assert.equal(se.grade,7);assert.equal(se.section,'Pierwiastki');assert.equal(se.ordered,true);
+assert.deepEqual(se.award,{password:'Gdzie na osi pierwiastek leży – szacuj, a milion ci się należy!',pluses:1});
+assert.equal(se.questions.length,64);
+assert.deepEqual([...new Set(se.questions.map(q=>q.sourceGroup))],Array.from({length:16},(_,i)=>`sp7-${i+1}`));
+assert.deepEqual([0,1,2,3].map(i=>se.questions.filter(q=>q.correct===i).length),[16,16,16,16]);
+assert.deepEqual(SCENARIOS.filter(s=>s.questions===se.questions).map(s=>s.grade),[7]);
+const r=Math.sqrt, Q=id=>se.questions.find(q=>q.id===id);
+// Wartość wyrażenia z HTML: √ → Math.sqrt, ułamki, liczby mieszane, przecinki.
+const ev=html=>{const t=html.replace(/(\d*)<span class="frac"><span>(\d+)<\/span><span>(\d+)<\/span><\/span>/g,(_,w,a,b)=>`(${+w||0}+${a}/${b})`).replace(/(\d)<span class="sqrt">/g,'$1*<span class="sqrt">').replace(/<span class="sqrt"><span>/g,'Math.sqrt(').replace(/<\/span><\/span>/g,')').replace(/<[^>]+>/g,'').replace(/−/g,'-').replace(/(\d),(\d)/g,'$1.$2').replace(/ /g,'');return Function(`return ${t}`)();};
+const only=(id,ok)=>{const q=Q(id);assert.deepEqual(q.answers.filter(ok),[q.answers[q.correct]],id);};
+// 1–2: dokładnie jedna liczba niewymierna (pod pierwiastkiem ułamek nieskracalny, którego licznik lub mianownik nie jest kwadratem).
+const gcd=(a,b)=>b?gcd(b,a%b):a, isSq=n=>Number.isInteger(r(n));
+const frac=html=>{const t=html.replace(/<span class="sqrt"><span>/,'').replace(/<\/span><\/span>$/,'');let m=t.match(/^(\d*)<span class="frac"><span>(\d+)<\/span><span>(\d+)<\/span><\/span>$/);if(m)return [(+m[1]||0)*+m[3]+ +m[2],+m[3]];m=t.match(/^(\d+),(\d+)$/);if(m)return [+(m[1]+m[2]),10**m[2].length];assert.match(t,/^\d+$/);return [+t,1];};
+const irr=html=>{const [a,b]=frac(html),g=gcd(a,b);return !(isSq(a/g)&&isSq(b/g));};
+for(const g of [1,2]) for(const l of 'abcd') only(`sp7-${g}${l}`,irr);
+// 3, 5: kolejne liczby naturalne.
+const N={'sp7-3a':33,'sp7-3b':58,'sp7-3c':105,'sp7-3d':150,'sp7-5a':350,'sp7-5b':500,'sp7-5c':700,'sp7-5d':1100};
+for(const [id,n] of Object.entries(N)){assert(Q(id).q.includes(`<span>${n}</span>`),id);only(id,a=>{const [lo,hi]=a.split(' i ').map(Number);return hi===lo+1&&lo<r(n)&&r(n)<hi;});}
+// 4: najbliższa liczba naturalna.
+for(const [id,n] of [['sp7-4a',26],['sp7-4b',47],['sp7-4c',83],['sp7-4d',118]]){assert(Q(id).q.includes(`<span>${n}</span>`));only(id,a=>+a===Math.round(r(n)));}
+// 6–7: liczby naturalne ściśle między pierwiastkami.
+const inside=(a,b)=>Array.from({length:200},(_,k)=>k).filter(k=>r(a)<k&&k<r(b));
+const ab=id=>[...Q(id).q.matchAll(/<span class="sqrt"><span>(\d+)<\/span>/g)].map(m=>+m[1]);
+for(const l of 'abcd'){const [a,b]=ab(`sp7-6${l}`);only(`sp7-6${l}`,x=>x===inside(a,b).join(', '));}
+for(const l of 'abcd'){const [a,b]=ab(`sp7-7${l}`);only(`sp7-7${l}`,x=>+x===inside(a,b).length);}
+// 8: największa liczba.
+for(const l of 'abcd'){const q=Q(`sp7-8${l}`),v=q.answers.map(ev);assert.equal(v.indexOf(Math.max(...v)),q.correct);assert.equal(new Set(v).size,4);}
+// 9: prawda czy fałsz.
+const pf=(a,b)=>`I: ${a?'P':'F'}, II: ${b?'P':'F'}`, ans=id=>Q(id).answers[Q(id).correct];
+assert.equal(ans('sp7-9a'),pf(30<r(1500)&&r(1500)<40,40<r(1500)&&r(1500)<50));
+assert.equal(ans('sp7-9b'),pf(20<r(700)&&r(700)<25,25<r(700)&&r(700)<30));
+assert.equal(ans('sp7-9c'),pf(r(3000)>50,r(3000)<60));
+assert.equal(ans('sp7-9d'),pf(50<r(2400)&&r(2400)<60,r(5000)<70));
+// 10–11: przybliżenia z ramki.
+const AP={2:1.41,3:1.73,5:2.24,10:3.16};
+for(const g of [10,11]) for(const l of 'abcd'){const q=Q(`sp7-${g}${l}`);assert(q.q.includes('1,41')&&q.q.includes('3,16'));const e=q.q.match(/<b>(.*)<\/b>/)[1].replace(/<span class="sqrt"><span>(\d+)<\/span><\/span>/g,(_,n)=>`<span>${AP[n]}</span>`).replace(/(\d)<span>/g,'$1*<span>');const v=Math.round(ev(e)*100)/100;only(q.id,a=>Math.abs(ev(a)-v)<1e-9);}
+// 12: reszta z największego kwadratu.
+for(const l of 'abcd'){const n=+Q(`sp7-12${l}`).q.match(/<b>(\d+)<\/b>/)[1];only(`sp7-12${l}`,a=>+a===n-Math.floor(r(n))**2);}
+// 13: przedział (lo, lo + 1).
+for(const l of 'abcd'){const q=Q(`sp7-13${l}`),v=ev(q.q.match(/<b>(.*)<\/b>/)[1]);only(q.id,a=>{const lo=+a.match(/od (\d+)/)[1];return lo<v&&v<lo+1;});}
+// 14: jedyne wyrażenie mniejsze od 10.
+for(const l of 'abcd') only(`sp7-14${l}`,a=>ev(a)<10);
+// 15: wynik −√a + b.
+const kind=v=>v>1?0:v>0?1:v>-1?2:3;
+for(const l of 'abcd'){const q=Q(`sp7-15${l}`),[a]=ab(q.id),b=+q.q.match(/dodajemy <b>(\d+)<\/b>/)[1];assert.equal(q.correct,kind(b-r(a)),q.id);}
+// 16: które z trzech liczb spełniają warunek.
+const T={'sp7-16a':[[r(85),4+r(24),6+r(10)],x=>x>9],'sp7-16b':[[r(60),5+r(10),12-r(15)],x=>x<8],'sp7-16c':[[r(140),9+r(8),20-r(60)],x=>x>12],'sp7-16d':[[r(33),2+r(15),10-r(15)],x=>x<6]};
+const name=bs=>{const k=['I','II','III'].filter((_,i)=>bs[i]);return k.length===3?'Wszystkie trzy':'Tylko '+k.join(' i ');};
+for(const [id,[vals,ok]] of Object.entries(T)){const st=Q(id).q.match(/I\. (.*?)<br>II\. (.*?)<br>III\. (.*?)<\/div>/).slice(1).map(ev);st.forEach((v,i)=>assert(Math.abs(v-vals[i])<1e-12,id));only(id,a=>a===name(vals.map(ok)));}
+console.log('PASS: grade 7 root estimation — all 64 answer keys computed independently');
 }
