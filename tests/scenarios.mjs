@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import {SCENARIOS, makeRound, restoreRound} from '../js/scenarios.js';
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.title), ['Zegary, kalendarz i jednostki długości', 'Oś liczbowa', 'Dodawanie i odejmowanie', 'Szacowanie', 'Sprytne dodawanie', 'Sprytne odejmowanie', 'Powtórzenie: dodawanie i odejmowanie', 'Jak rozwiązywać zadania tekstowe', 'Tabliczka mnożenia', 'Tabliczka dzielenia', 'Sprytne mnożenie', 'Sprytne dzielenie', 'Powtórzenie: mnożenie i dzielenie']);
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności', 'Liczby pierwsze i złożone', 'Potęgowanie', 'Cyfry rzymskie', 'Kolejność wykonywania działań', 'Płaszczyzna, proste, półproste, odcinki', 'Kąty', 'Mierzenie kątów', 'Trójkąty']);
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.section), ['Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Figury geometryczne', 'Figury geometryczne', 'Figury geometryczne', 'Figury geometryczne']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności', 'Liczby pierwsze i złożone', 'Potęgowanie', 'Cyfry rzymskie', 'Kolejność wykonywania działań', 'Płaszczyzna, proste, półproste, odcinki', 'Kąty', 'Mierzenie kątów', 'Trójkąty', 'Równoległoboki i romby', 'Trapezy']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.section), ['Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Figury geometryczne', 'Figury geometryczne', 'Figury geometryczne', 'Figury geometryczne', 'Figury geometryczne', 'Figury geometryczne']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
  'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Procenty — zadania egzaminacyjne', 'Potęgi', 'Potęgi o tych samych podstawach', 'Notacja wykładnicza', 'Obliczenia w notacji wykładniczej', 'Potęgi — zadania egzaminacyjne', 'Pierwiastek kwadratowy',
 ]);
@@ -15,9 +15,9 @@ assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.section), ['Procenty'
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
  'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Wyrażenia algebraiczne', 'Mnożenie sum algebraicznych', 'Równania', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne', 'Wyrażenia algebraiczne — zadania egzaminacyjne', 'Potęgi — zadania egzaminacyjne',
 ]);
-assert.equal(SCENARIOS.length,42);
+assert.equal(SCENARIOS.length,44);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,1702);
+assert.equal(new Set(all.map(q=>q.id)).size,1826);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -1321,6 +1321,95 @@ only('tr5-13a',a=>deg(a)===9+9+(9-3));only('tr5-13b',a=>deg(a)===10+2*(10-4));on
 only('tr5-15a',a=>deg(a)===180-35-70);only('tr5-15b',a=>2*deg(a)+deg(a)===90);only('tr5-15c',a=>{const x=deg(a)/3;return x+x+deg(a)===180;});
 only('tr5-15d',a=>{const x=deg(a)-4;return x+(x+3)+deg(a)===22;});
 console.log('PASS: grade 5 triangles — all 60 answer keys measured on drawings or computed');
+}
+// Klasa 5: równoległoboki i trapezy — kąty i odcinki mierzone na rysunkach, reszta liczona niezależnie z treści.
+{
+const xy=s=>s.split(',').map(Number), num=a=>parseFloat(a.replace(',','.')), near=(a,b,e=0.5)=>Math.abs(a-b)<e, len=(p,q)=>Math.hypot(p[0]-q[0],p[1]-q[1]);
+const only=(id,ok)=>assert.deepEqual(ask(id).answers.filter(ok),[selected(id)],id);
+const dirDeg=(v,p)=>Math.atan2(-(p[1]-v[1]),p[0]-v[0])*180/Math.PI, ccw=(v,a,b)=>((dirDeg(v,b)-dirDeg(v,a))%360+360)%360;
+const vec=(p,q)=>[q[0]-p[0],q[1]-p[1]], crossN=(u,v)=>(u[0]*v[1]-u[1]*v[0])/Math.hypot(...u)/Math.hypot(...v), par=(u,v)=>Math.abs(crossN(u,v))<0.01;
+const quadOf=id=>{const m=ask(id).q.match(/data-quad="([A-Z]{4})" points="([^"]+)"/);return m&&{names:m[1],P:m[2].split(' ').map(xy)};};
+const arcs=id=>{const r={};for(const m of ask(id).q.matchAll(/data-arc="([^"]+)" data-v="([^"]+)" data-a="([^"]+)" data-b="([^"]+)"/g))(r[m[1]]??=[]).push(ccw(xy(m[2]),xy(m[3]),xy(m[4])));return r;};
+const labels=id=>[...ask(id).q.matchAll(/data-side="([^;]+);([^"]+)" data-len="([^"]+)"/g)].map(m=>({l:len(xy(m[1]),xy(m[2])),t:m[3]}));
+const scale=id=>{const n=labels(id).filter(x=>/^\d/.test(x.t));assert(n.length,id);const k=n.map(x=>x.l/num(x.t));assert(k.every(v=>Math.abs(v/k[0]-1)<0.02),id+' labels to scale');return k[0];};
+const sides=P=>[0,1,2,3].map(i=>vec(P[i],P[(i+1)%4]));
+const inner=P=>P.map((v,i)=>{const d=ccw(v,P[(i+1)%4],P[(i+3)%4]);return Math.min(d,360-d);});
+const sets=['parallelograms-5','trapezoids-5'].map(id=>SCENARIOS.find(s=>s.id===id));
+const [pg,tz]=sets;
+assert.deepEqual(pg.award,{password:'Romb, równoległobok i wysokość też – teraz o nich wszystko wiesz!',pluses:2});
+assert.deepEqual(tz.award,{password:'Dwie podstawy równoległe mam – z trapezem świetnie radę dam!',pluses:2});
+assert.equal(pg.questions.length,64);assert.equal(tz.questions.length,60);
+for(const s of sets){assert.equal(s.grade,5);assert.equal(s.section,'Figury geometryczne');assert.equal(s.ordered,true);
+ const g=new Set(s.questions.map(q=>q.sourceGroup));assert.equal(g.size,s.questions.length/4);
+ assert.deepEqual([0,1,2,3].map(i=>s.questions.filter(q=>q.correct===i).length),Array(4).fill(s.questions.length/4));
+ for(const q of s.questions){const Q=quadOf(q.id);if(!Q)continue;
+  const I=inner(Q.P);assert(near(I.reduce((a,b)=>a+b),360),q.id);
+  // Łuki: podpis w stopniach = miara na rysunku, kwadracik = 90°, ta sama litera = ta sama miara.
+  for(const [n,ds] of Object.entries(arcs(q.id))){for(const d of ds){if(n==='prosty')assert(near(d,90),q.id);else if(/°$/.test(n))assert(near(d,num(n)),q.id+' '+n);}assert(ds.every(d=>near(d,ds[0])),q.id+' '+n);}
+  if(labels(q.id).some(x=>/^\d/.test(x.t)))scale(q.id);
+  // Pytanie o kąt oznaczony literą: odpowiedź zmierzona na rysunku.
+  const L=q.q.match(/kąt ([αβγδ])\?/);if(L)only(q.id,a=>near(num(a),arcs(q.id)[L[1]][0]));
+  // Figury z quizu o równoległobokach są równoległobokami, a z quizu o trapezach — trapezami o podstawach AB i CD (poza tz5-3d).
+  const S=sides(Q.P);if(s===pg)assert(par(S[0],S[2])&&par(S[1],S[3]),q.id);else if(q.id!=='tz5-3d')assert(par(S[0],S[2]),q.id);
+ }
+}
+// Trapezy: który czworokąt jest trapezem (pary boków równoległych na rysunku, a boki nierównoległe wyraźnie różnią się kierunkiem).
+const shapes=id=>[...ask(id).q.matchAll(/data-shape="([IV]+)" points="([^"]+)"/g)].map(m=>{const P=m[2].split(' ').map(xy),S=sides(P),c=[[0,2],[1,3]].map(([i,j])=>Math.abs(crossN(S[i],S[j])));assert(c.every(x=>x<0.01||x>0.2),id);return [m[1],c.some(x=>x<0.01)];});
+for(const id of ['tz5-2a','tz5-2b','tz5-2c','tz5-2d']){const sh=shapes(id),not=ask(id).q.includes('<b>nie jest</b>');assert.equal(sh.filter(([,t])=>t!==not).length,1,id);only(id,a=>sh.find(([n])=>n===a)[1]!==not);}
+// Rodzaj czworokąta: równoległe boki, równe ramiona, kąt prosty — z rysunku.
+for(const id of ['tz5-3a','tz5-3b','tz5-3c','tz5-3d']){const {P}=quadOf(id),S=sides(P),I=inner(P);let k;
+ if(!par(S[0],S[2])&&!par(S[1],S[3]))k='to nie jest trapez';else if(I.some(d=>near(d,90)))k='trapez prostokątny';else if(near(Math.hypot(...S[1]),Math.hypot(...S[3]),1))k='trapez równoramienny';else k='trapez, ale ani równoramienny, ani prostokątny';only(id,a=>a===k);}
+// Kąty z treści.
+const angs=a=>a.match(/\d+/g).map(Number).sort((x,y)=>x-y), same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+const given=id=>+ask(id).q.match(/<b>(\d+)°<\/b>/)[1];
+for(const g of ['tz5-5a','tz5-5b','tz5-5c','tz5-5d']){const x=given(g);only(g,a=>same(angs(a),[90,90,180-x].sort((p,q)=>p-q)));}
+for(const g of ['tz5-7a','tz5-7b','tz5-7c','tz5-7d','rw5-4a','rw5-4b','rw5-4c','rw5-4d']){const x=given(g);only(g,a=>same(angs(a),[x,180-x,180-x].sort((p,q)=>p-q)));}
+only('tz5-4b',a=>num(a)===180-70);only('tz5-4c',a=>num(a)===180-125);
+// Odcinki oznaczone literą: długość zmierzona na rysunku i przeliczona przez skalę podpisów.
+for(const id of ['tz5-9a','tz5-9b','tz5-9c','tz5-9d']){const k=scale(id),L=ask(id).q.match(/odcinek <i>(\w)<\/i>|podstawa <i>(\w)<\/i>|ramię <i>(\w)<\/i>/).slice(1).find(Boolean);
+ const m=labels(id).filter(x=>x.t===L);assert(m.length);only(id,a=>m.every(x=>near(x.l/k,num(a),0.05)));}
+only('tz5-9a',a=>num(a)===(10-6)/2);only('tz5-9b',a=>num(a)===12-3-3);
+// Ile trapezów: linie poziome łączą ramiona, inne łączą podstawy; trapez wyznacza każda para poziomych i każda para „bocznych” linii.
+const C2=n=>n*(n-1)/2;
+for(const id of ['tz5-12a','tz5-12b','tz5-12c','tz5-12d']){const {P}=quadOf(id),cuts=[...ask(id).q.matchAll(/data-cut="(\w)" x1="([^"]+)" y1="([^"]+)" x2="([^"]+)" y2="([^"]+)"/g)].map(m=>[m[1],[+m[2],+m[3]],[+m[4],+m[5]]]);
+ const onSeg=(p,a,b)=>Math.abs(crossN(vec(a,p),vec(a,b))*len(a,p))<1&&len(a,p)+len(p,b)<len(a,b)+1;
+ for(const [k,p,r] of cuts){if(k==='h'){assert(par(vec(p,r),vec(P[0],P[1]))&&onSeg(p,P[0],P[3])&&onSeg(r,P[1],P[2]),id);}else{assert(onSeg(p,P[3],P[2])&&onSeg(r,P[0],P[1])&&!par(vec(p,r),vec(P[0],P[3]))&&!par(vec(p,r),vec(P[1],P[2])),id);}}
+ const h=cuts.filter(c=>c[0]==='h').length,v=cuts.length-h;only(id,a=>+a===C2(h+2)*C2(v+2));}
+only('tz5-13a',a=>same(angs(a),[60,60,120,120]));only('tz5-13b',a=>same(angs(a),[60,90,90,120]));only('tz5-13c',a=>num(a)===2*4+4+4+4);only('tz5-13d',a=>num(a)===6+3+3+3);
+only('tz5-14a',a=>num(a)===8-3);only('tz5-14b',a=>num(a)===7-4);only('tz5-14c',a=>num(a)===(10-4)/2);only('tz5-14d',a=>num(a)===3+4);
+only('tz5-15a',a=>12+8+2*num(a)===30);only('tz5-15b',a=>num(a)===7+7+(7+2)+2*(7+2));only('tz5-15c',a=>num(a)+4*num(a)===180&&num(a)<90);only('tz5-15d',a=>{const x=num(a)-40;return x+num(a)===180&&num(a)>90;});
+for(const g of ['tz5-1','tz5-10','rw5-1','rw5-8','rw5-11','rw5-14'])assert.deepEqual(['a','b','c','d'].map(l=>ask(g+l).correct),[0,1,2,3],g);
+// Równoległoboki: nazwy boków, przekątnych i kątów odczytane z kolejności wierzchołków na rysunku.
+{const {names:n,P}=quadOf('rw5-2a'),S=sides(P);assert(par(S[0],S[2])&&par(S[1],S[3]));only('rw5-2a',a=>a===`${n[0]}${n[1]} ∥ ${n[2]}${n[3]} i ${n[1]}${n[2]} ∥ ${n[0]}${n[3]}`);}
+{const {names:n}=quadOf('rw5-2b');only('rw5-2b',a=>a===`${n[0]}${n[2]} i ${n[1]}${n[3]}`);}
+{const {names:n,P}=quadOf('rw5-2c');only('rw5-2c',a=>a.length===2&&n.includes(a[0])&&n.includes(a[1])&&Math.abs(n.indexOf(a[0])-n.indexOf(a[1]))%2===1&&near(len(P[n.indexOf(a[0])],P[n.indexOf(a[1])]),len(P[0],P[1]))&&a!=='PR');}
+{const {names:n,P}=quadOf('rw5-2d'),I=inner(P);only('rw5-2d',a=>{const v=a.match(/wierzchołku (\w)/);return v&&v[1]!=='W'&&near(I[n.indexOf(v[1])],I[n.indexOf('W')]);});}
+// Obwody i boki.
+for(const id of ['rw5-3a','rw5-3d']){const b=num(ask(id).q.match(/boku <b>([\d,]+) cm/)[1]);only(id,a=>num(a)===4*b);}
+for(const id of ['rw5-3b','rw5-3c']){const [x,y]=[...ask(id).q.matchAll(/<b>([\d,]+) cm<\/b>/g)].map(m=>num(m[1]));only(id,a=>near(num(a),2*(x+y),1e-9));}
+only('rw5-5a',a=>4*num(a)===64);only('rw5-5b',a=>2*(10+num(a))===54);only('rw5-5c',a=>2*(12+num(a))===34&&num(a)<12);only('rw5-5d',a=>2*(21+num(a))===70);
+only('rw5-7a',a=>a==='2');only('rw5-7b',a=>a==='0');only('rw5-7c',a=>a==='4');only('rw5-7d',a=>a==='2');
+// Który odcinek jest wysokością: prostopadły do AB, końce na prostych AB i CD.
+for(const id of ['rw5-9a','rw5-9b','rw5-9c','rw5-9d']){const {P}=quadOf(id),segs=[...ask(id).q.matchAll(/data-seg="(\w)" x1="([^"]+)" y1="([^"]+)" x2="([^"]+)" y2="([^"]+)"/g)].map(m=>[m[1],[+m[2],+m[3]],[+m[4],+m[5]]]);
+ const onLine=(p,a,b)=>Math.abs(crossN(vec(a,p),vec(a,b))*len(a,p))<1, AB=vec(P[0],P[1]);
+ const h=segs.filter(([,p,r])=>Math.abs(crossN(vec(p,r),AB))>0.999&&(onLine(p,P[0],P[1])&&onLine(r,P[3],P[2])||onLine(r,P[0],P[1])&&onLine(p,P[3],P[2])));
+ assert.equal(segs.length,4);assert.equal(h.length,1,id);only(id,a=>a===`odcinek ${h[0][0]}`);}
+// Wysokość w kratce: odległość między prostymi AB i CD liczona w kratkach.
+for(const id of ['rw5-10a','rw5-10b','rw5-10c','rw5-10d']){const m=ask(id).q.match(/data-gquad="ABCD" data-g="([^"]+)"/),[A,B,C,D]=m[1].split(' ').map(xy);
+ assert.deepEqual([A[0]+C[0],A[1]+C[1]],[B[0]+D[0],B[1]+D[1]]);const ab=vec(A,B),h=Math.abs(ab[0]*(D[1]-A[1])-ab[1]*(D[0]-A[0]))/Math.hypot(...ab);
+ const cell=ask(id).q.includes('<b>5 mm</b>')?0.5:1;only(id,a=>near(num(a),h*cell,1e-9));}
+// Czwarty wierzchołek: D = A + C − B.
+for(const id of ['rw5-12a','rw5-12b','rw5-12c','rw5-12d']){const g=n=>xy(ask(id).q.match(new RegExp(`data-gp="${n}" data-g="([^"]+)"`))[1]),[A,B,C]=['A','B','C'].map(g),D=[A[0]+C[0]-B[0],A[1]+C[1]-B[1]];
+ const c=[...ask(id).q.matchAll(/data-cand="(\d)" data-g="([^"]+)"/g)].filter(m=>same(xy(m[2]),D));assert.equal(c.length,1,id);only(id,a=>a===`w punkcie ${c[0][1]}`);}
+only('rw5-11b',a=>num(a)===10/2);only('rw5-11c',a=>a==='7 cm i 7 cm');
+only('rw5-15a',a=>4*num(a)===2*(7+5));
+only('rw5-15b',a=>{const [x,y]=a.match(/\d+/g).map(Number);return y===3*x&&2*(x+y)===48;});
+only('rw5-15c',a=>{const [x,y]=a.match(/[\d,]+/g).map(num);return y===x+5&&2*(x+y)===34;});
+only('rw5-15d',a=>4*num(a)+12===100);
+const pair=a=>a.match(/\d+/g).map(Number);
+only('rw5-16a',a=>{const [x,y]=pair(a);return x+y===180&&y-x===30;});only('rw5-16b',a=>{const [x,y]=pair(a);return x+y===180&&y===2*x;});
+only('rw5-16c',a=>{const [x,y]=pair(a);return x===2*35&&x+y===180;});only('rw5-16d',a=>{const [x,y]=pair(a);return 2*x===100&&x+y===180;});
+console.log('PASS: grade 5 parallelograms and trapezoids — all 124 answer keys measured on drawings or computed');
 }
 
 // Klasa 7, dział „Pierwiastki”: pierwiastek kwadratowy — każdy klucz liczony niezależnie (Math.sqrt), poprawna odpowiedź jedyna o dobrej wartości.

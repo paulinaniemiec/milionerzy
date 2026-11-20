@@ -451,3 +451,277 @@ export const triangleQuestions5 = [
  q('tr5-15c','W trójkącie równoramiennym kąt między ramionami jest <b>3 razy większy</b> od każdego z kątów przy podstawie. Ile stopni ma kąt między ramionami?',['36°','72°','108°','135°'],2,'Kąty przy podstawie to po jednej części, kąt między ramionami — 3 części. Razem 5 równych części: 180° : 5 = 36°. Kąt między ramionami: 3 · 36° = <b>108°</b>.'),
  q('tr5-15d','Jeden bok trójkąta jest o <b>3 cm krótszy</b> od drugiego i o <b>4 cm krótszy</b> od trzeciego. Obwód wynosi <b>22 cm</b>. Ile ma <b>najdłuższy</b> bok?',['5 cm','8 cm','7 cm','9 cm'],3,'Gdyby dwa dłuższe boki skrócić o 3 cm i 4 cm, zostałyby trzy boki równe najkrótszemu: 22 − 3 − 4 = 15 cm, 15 : 3 = 5 cm. Boki: 5, 8 i 9 cm. Najdłuższy ma <b>9 cm</b>.'),
 ];
+
+// Klasa 5, dział „Figury geometryczne”: trapezy oraz równoległoboki i romby (z wysokością). Od łatwych do trudnych (`ordered`).
+// Czworokąt podajemy w układzie z osią y w górę (pierwsze cztery punkty to wierzchołki po kolei); `quad` obraca go o `rot`
+// i dopasowuje do rysunku. Wierzchołki, łuki, podpisy, wysokości i odcinki mają współrzędne w data-*, test mierzy na nich kąty i długości.
+// `ext`: {E: [z, od, długość]} — przedłużenie boku linią przerywaną z punktu `z` w kierunku od punktu `od`.
+// `arcs`: [wierzchołek, punkt, punkt, nazwa, podpis]; `sides`: [punkt, punkt, podpis]; `heights`: [wierzchołek, punkt, punkt, podpis, nazwa spodka]
+// — wysokość na prostą przez dwa punkty; `segs`: [punkt, punkt, nazwa] — odcinki podpisane literą; `cuts`: [punkt, punkt, rodzaj] — linie podziału.
+function quad({P, rot = 0, ext = {}, arcs = [], sides = [], heights = [], segs = [], cuts = [], names = true, desc}) {
+ const V = Object.keys(P).slice(0, 4), m = Object.fromEntries(Object.entries(P).map(([k, p]) => [k, [...p]]));
+ for (const [k, [from, away, e]] of Object.entries(ext)) { const [p, a] = [m[from], m[away]], d = Math.hypot(p[0] - a[0], p[1] - a[1]); m[k] = [p[0] + (p[0] - a[0]) / d * e, p[1] + (p[1] - a[1]) / d * e]; }
+ const feet = heights.map(([v, a, b, , name], i) => {
+  const [ax, ay] = m[a], dx = m[b][0] - ax, dy = m[b][1] - ay, t = ((m[v][0] - ax) * dx + (m[v][1] - ay) * dy) / (dx * dx + dy * dy);
+  const k = name ?? `h${i}`; m[k] = [ax + t * dx, ay + t * dy]; return [k, t];
+ });
+ const turn = ([x, y]) => [x * Math.cos(rad(rot)) - y * Math.sin(rad(rot)), x * Math.sin(rad(rot)) + y * Math.cos(rad(rot))];
+ const all = Object.fromEntries(Object.entries(m).map(([k, p]) => [k, turn(p)])), xs = Object.values(all).map((p) => p[0]), ys = Object.values(all).map((p) => p[1]);
+ const pad = 36, s = Math.min((W - 2 * pad) / (Math.max(...xs) - Math.min(...xs)), (H - 2 * pad) / (Math.max(...ys) - Math.min(...ys)));
+ const ox = (W - s * (Math.max(...xs) + Math.min(...xs))) / 2, oy = (H + s * (Math.max(...ys) + Math.min(...ys))) / 2;
+ const S = Object.fromEntries(Object.entries(all).map(([k, [x, y]]) => [k, [r1(ox + s * x), r1(oy - s * y)]]));
+ const g = [0, 1].map((i) => V.reduce((sum, k) => sum + S[k][i], 0) / 4);
+ const dash = (a, b, extra = '') => `<path${extra} d="M${a[0]} ${a[1]}L${b[0]} ${b[1]}" stroke="#f3f5ff" stroke-width="2" stroke-dasharray="7 6"/>`;
+ let svg = Object.entries(ext).map(([k, [from]]) => dash(S[from], S[k])).join('');
+ // Spodek wysokości poza bokiem: dorysowujemy przedłużenie boku.
+ heights.forEach(([, a, b], i) => { const [k, t] = feet[i]; if (t < -1e-9) svg += dash(S[a], S[k]); if (t > 1 + 1e-9) svg += dash(S[b], S[k]); });
+ svg += `<polygon data-quad="${V.join('')}" points="${V.map((k) => S[k].join(',')).join(' ')}" fill="#263051" stroke="#f3f5ff" stroke-width="2.5"/>`;
+ svg += cuts.map(([a, b, kind]) => `<line data-cut="${kind}" x1="${S[a][0]}" y1="${S[a][1]}" x2="${S[b][0]}" y2="${S[b][1]}" stroke="#f3f5ff" stroke-width="2.5"/>`).join('');
+ const label = (a, b, text, attr = '') => {
+  // Podpis prostopadle do odcinka, po stronie dalszej od środka czworokąta, odsunięty o pół szerokości napisu.
+  const mid = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], L = Math.hypot(b[0] - a[0], b[1] - a[1]);
+  let n = [-(b[1] - a[1]) / L, (b[0] - a[0]) / L];
+  if (n[0] * (mid[0] - g[0]) + n[1] * (mid[1] - g[1]) < 0 || (Math.abs(n[0] * (mid[0] - g[0]) + n[1] * (mid[1] - g[1])) < 3 && n[0] < 0)) n = [-n[0], -n[1]];
+  const off = 8 + Math.abs(n[0]) * text.length * 4.4 + Math.abs(n[1]) * 9, l = [mid[0] + n[0] * off, mid[1] + n[1] * off];
+  return `<text${attr} data-side="${a};${b}" data-len="${text}" x="${r1(l[0])}" y="${r1(l[1] + 5)}" text-anchor="middle" fill="#f3f5ff" font-family="Arial, sans-serif" font-size="15">${text}</text>`;
+ };
+ // Odcinek podpisany literą w punkcie `t` odcinka, z boku linii (strona `side`: 1 albo −1).
+ svg += segs.map(([a, b, name, t = 0.5, side = 1]) => {
+  const p = [S[a][0] + (S[b][0] - S[a][0]) * t, S[a][1] + (S[b][1] - S[a][1]) * t], L = Math.hypot(S[b][0] - S[a][0], S[b][1] - S[a][1]), n = [-(S[b][1] - S[a][1]) / L * side, (S[b][0] - S[a][0]) / L * side];
+  return `<line data-seg="${name}" x1="${S[a][0]}" y1="${S[a][1]}" x2="${S[b][0]}" y2="${S[b][1]}" stroke="#f6c85c" stroke-width="2.5"/>` + txt(p[0] + n[0] * 13, p[1] + n[1] * 13 + 6, name);
+ }).join('');
+ heights.forEach(([v, a, b, text], i) => {
+  const F = S[feet[i][0]], base = Math.hypot(S[a][0] - F[0], S[a][1] - F[1]) > Math.hypot(S[b][0] - F[0], S[b][1] - F[1]) ? S[a] : S[b];
+  const from = dirOf(F, base), span = ((dirOf(F, S[v]) - from) % 360 + 360) % 360;
+  svg += dash(S[v], F, ` data-h="${S[v]};${F}"`) + arc('prosty', F, r1(span < 180 ? from : dirOf(F, S[v])), 90);
+  if (text) svg += label(S[v], F, text, ' data-height="1"');
+ });
+ for (const [v, a, b, name, text] of arcs) {
+  let from = dirOf(S[v], S[a]), span = ((dirOf(S[v], S[b]) - from) % 360 + 360) % 360;
+  if (span > 180) { from = dirOf(S[v], S[b]); span = 360 - span; }
+  span = Math.abs(span - 90) < 0.3 ? 90 : r1(span);
+  svg += arc(name, S[v], r1(from), span, text ?? (name === 'prosty' ? '' : name), span < 45 ? 40 : 28);
+ }
+ svg += sides.map(([a, b, text]) => label(S[a], S[b], text)).join('');
+ // Podpis wierzchołka na zewnątrz czworokąta; gdy z wierzchołka wychodzi przedłużenie boku — prostopadle do niego, żeby nie leżał na linii.
+ if (names) svg += V.map((k) => {
+  let u = [S[k][0] - g[0], S[k][1] - g[1]];
+  const e = Object.entries(ext).find(([, [from]]) => from === k);
+  if (e) { const d = [S[e[0]][0] - S[k][0], S[e[0]][1] - S[k][1]], n = [-d[1], d[0]]; u = n[0] * u[0] + n[1] * u[1] < 0 ? [-n[0], -n[1]] : n; }
+  const d = Math.hypot(...u); return txt(S[k][0] + u[0] / d * 17, S[k][1] + u[1] / d * 17 + 6, k);
+ }).join('');
+ return fig(svg, desc);
+}
+// Trapez ABCD: podstawa AB długości L, kąty A i B przy niej, wysokość h (CD ∥ AB). Równoległobok ABCD: bok AB = L, AD = s, kąt A.
+const trap = (L, A, B, h) => ({A: [0, 0], B: [L, 0], C: [L - h / Math.tan(rad(B)), h], D: [h / Math.tan(rad(A)), h]});
+const para = (L, A, s) => ({A: [0, 0], B: [L, 0], C: [L + s * Math.cos(rad(A)), s * Math.sin(rad(A))], D: [s * Math.cos(rad(A)), s * Math.sin(rad(A))]});
+const rename = (P, s) => Object.fromEntries(Object.values(P).map((p, i) => [s[i], p]));
+const at4 = (P, a, b, t) => [P[a][0] + (P[b][0] - P[a][0]) * t, P[a][1] + (P[b][1] - P[a][1]) * t];
+// Cztery czworokąty obok siebie, podpisane I–IV (współrzędne ekranowe w kolumnie szerokości 100).
+const ROM = ['I', 'II', 'III', 'IV'];
+const SHAPES = {T1: [[12, 190], [88, 190], [68, 70], [30, 70]], T2: [[12, 175], [88, 140], [70, 60], [32, 77.5]], T3: [[20, 190], [20, 40], [80, 80], [80, 160]], T4: [[15, 190], [85, 190], [85, 60], [15, 110]],
+ N1: [[15, 185], [85, 165], [75, 50], [35, 95]], N2: [[20, 195], [85, 110], [60, 35], [15, 60]], N3: [[10, 160], [90, 195], [80, 45], [35, 80]]};
+const fourShapes = (keys) => fig(keys.map((k, i) => `<polygon data-shape="${ROM[i]}" points="${SHAPES[k].map(([x, y]) => `${x + i * 100},${y - 8}`).join(' ')}" fill="#263051" stroke="#f3f5ff" stroke-width="2.5"/>` + txt(50 + i * 100, 222, ROM[i])).join(''), 'Cztery czworokąty oznaczone I, II, III i IV');
+// Kratka: punkty podajemy jako [kolumna, wiersz] liczone od lewego dolnego rogu.
+const CELL = 26, GC = 13, GR = 7, GX = (W - GC * CELL) / 2, GY = (H - GR * CELL) / 2;
+const gp = ([c, r]) => [GX + c * CELL, GY + (GR - r) * CELL];
+const kratka = Array.from({length: GC + 1}, (_, c) => `<path d="M${GX + c * CELL} ${GY}V${GY + GR * CELL}" stroke="#2c3a66"/>`).join('') + Array.from({length: GR + 1}, (_, r) => `<path d="M${GX} ${GY + r * CELL}H${GX + GC * CELL}" stroke="#2c3a66"/>`).join('');
+function gridPara(pts, desc) {
+ const names = Object.keys(pts), S = names.map((k) => gp(pts[k])), g = [0, 1].map((i) => S.reduce((sum, p) => sum + p[i], 0) / 4);
+ return fig(kratka + `<polygon data-gquad="${names.join('')}" data-g="${names.map((k) => pts[k].join(',')).join(' ')}" points="${S.map((p) => p.join(',')).join(' ')}" fill="#263051" fill-opacity="0.7" stroke="#f3f5ff" stroke-width="2.5"/>`
+  + names.map((k, i) => { const d = Math.hypot(S[i][0] - g[0], S[i][1] - g[1]); return txt(S[i][0] + (S[i][0] - g[0]) / d * 15, S[i][1] + (S[i][1] - g[1]) / d * 15 + 6, k); }).join(''), desc);
+}
+// Trzy wierzchołki równoległoboku (boki AB i BC) i cztery punkty do wyboru, gdzie może leżeć D.
+function gridFourth({A, B, C}, cands) {
+ const dot = (n, p, color, attr) => { const [x, y] = gp(p); return `<circle ${attr}="${n}" data-g="${p}" cx="${x}" cy="${y}" r="4.5" fill="${color}"/>`; };
+ const [a, b, c] = [A, B, C].map(gp);
+ return fig(kratka + `<path d="M${a[0]} ${a[1]}L${b[0]} ${b[1]}L${c[0]} ${c[1]}" fill="none" stroke="#f3f5ff" stroke-width="2.5"/>` + Object.entries({A, B, C}).map(([n, p]) => dot(n, p, '#f6c85c', 'data-gp') + txt(gp(p)[0] - 12, gp(p)[1] - 8, n)).join('')
+  + cands.map((p, i) => dot(i + 1, p, '#63d6e8', 'data-cand') + txt(gp(p)[0], gp(p)[1] - 9, String(i + 1), '#63d6e8')).join(''), 'Kratka z punktami A, B, C połączonymi odcinkami AB i BC oraz punktami 1, 2, 3, 4');
+}
+const quadQ = (id, svg, ask, answers, correct, explain) => q(id, `${svg}${ask}`, answers, correct, explain);
+const KIND4 = ['trapez równoramienny', 'trapez prostokątny', 'trapez, ale ani równoramienny, ani prostokątny', 'to nie jest trapez'];
+const LEG = 'Kąty przy tym samym ramieniu trapezu mają razem <b>180°</b>';
+const PAR = 'W równoległoboku kąty przeciwległe są równe, a kąty przy tym samym boku mają razem <b>180°</b>';
+const ISO = (base) => `Trapez ABCD jest równoramienny (podstawy ${base}).`;
+
+// Trapez z kątami 68° i 74°; trapezy równoramienne; przedłużona górna podstawa; trapez z liniami podziału.
+const t5a = trap(9, 68, 74, 4), t5c = trap(9, 55, 80, 4), t5d = trap(8, 72, 48, 3.5);
+const t11a = trap(12, 34, 38, 2.5), t11c = trap(11, 50, 65, 3.5);
+const T14 = {A: [0, 0], B: [10, 0], C: [7.5, 4], D: [2, 4]};
+const hcut = (n) => Object.fromEntries(Array.from({length: n}, (_, i) => { const t = (i + 1) / (n + 1); return [[`L${i}`, at4(T14, 'A', 'D', t)], [`R${i}`, at4(T14, 'B', 'C', t)]]; }).flat());
+
+export const trapezoidQuestions5 = [
+ // Pojęcia
+ q('tz5-1a','Trapez to czworokąt, który ma:',['co najmniej jedną parę boków równoległych','wszystkie boki równej długości','cztery kąty proste','dokładnie dwa kąty proste'],0,'<b>Trapez</b> to czworokąt, który ma <b>co najmniej jedną parę boków równoległych</b>. Boki równoległe to podstawy trapezu, a dwa pozostałe — ramiona.'),
+ q('tz5-1b','Jak nazywamy <b>boki równoległe</b> trapezu?',['ramiona','podstawy','przekątne','wysokości'],1,'Boki równoległe trapezu to jego <b>podstawy</b> (dłuższa i krótsza). Pozostałe dwa boki to <b>ramiona</b>.'),
+ q('tz5-1c','<b>Wysokość</b> trapezu to odcinek, który:',['łączy przeciwległe wierzchołki','jest dłuższą podstawą','jest prostopadły do podstaw i łączy proste, na których one leżą','łączy środki ramion'],2,'Wysokość trapezu jest <b>prostopadła do podstaw</b> — to odległość między prostymi, na których leżą podstawy. Odcinek łączący przeciwległe wierzchołki to przekątna.'),
+ q('tz5-1d','Trapez, w którym jedno ramię jest <b>prostopadłe do podstaw</b>, to trapez:',['równoramienny','równoboczny','rozwartokątny','prostokątny'],3,'Gdy ramię jest prostopadłe do podstaw, przy tym ramieniu są dwa kąty proste. To <b>trapez prostokątny</b>.'),
+ // Który czworokąt jest trapezem?
+ q('tz5-2a',`${fourShapes(['T1', 'N1', 'N2', 'N3'])}Który czworokąt <b>jest trapezem</b>?`,ROM,0,'Tylko czworokąt <b>I</b> ma parę boków równoległych — górny i dolny bok są poziome. W pozostałych żadne dwa boki nie są równoległe.'),
+ q('tz5-2b',`${fourShapes(['N3', 'T2', 'N1', 'N2'])}Który czworokąt <b>jest trapezem</b>?`,ROM,1,'Czworokąt <b>II</b> ma dwa boki równoległe (dolny i górny biegną ukośnie, ale w tym samym kierunku). Trapez nie musi „stać” na podstawie.'),
+ q('tz5-2c',`${fourShapes(['N2', 'N1', 'T3', 'N3'])}Który czworokąt <b>jest trapezem</b>?`,ROM,2,'W czworokącie <b>III</b> lewy i prawy bok są pionowe, więc są równoległe — to podstawy tego trapezu.'),
+ q('tz5-2d',`${fourShapes(['T4', 'T2', 'T1', 'N1'])}Który czworokąt <b>nie jest</b> trapezem?`,ROM,3,'Czworokąty I, II i III mają po parze boków równoległych. Czworokąt <b>IV</b> nie ma żadnej pary boków równoległych, więc nie jest trapezem.'),
+ // Jaki to czworokąt?
+ quadQ('tz5-3a',quad({P: trap(9, 60, 60, 4 * Math.sin(rad(60))), arcs: [['A', 'B', 'D', '60°', '60°'], ['B', 'A', 'C', '60°', '60°']], sides: [['A', 'D', '4 cm'], ['B', 'C', '4 cm'], ['A', 'B', '9 cm'], ['D', 'C', '5 cm']], desc: 'Trapez o podstawach 9 cm i 5 cm, ramiona po 4 cm, kąty przy dłuższej podstawie po 60°'}),'Jaki to czworokąt?',KIND4,0,'Podstawy AB i CD są równoległe, a ramiona mają po <b>4 cm</b> — to <b>trapez równoramienny</b>. Kąty przy dłuższej podstawie też są równe (po 60°).'),
+ quadQ('tz5-3b',quad({P: trap(7, 90, 55, 4), arcs: [['A', 'B', 'D', 'prosty'], ['D', 'A', 'C', 'prosty']], desc: 'Trapez z dwoma kątami prostymi przy lewym ramieniu'}),'Jaki to czworokąt?',KIND4,1,'Lewe ramię tworzy z podstawami <b>kąty proste</b> — to <b>trapez prostokątny</b>.'),
+ quadQ('tz5-3c',quad({P: trap(9, 50, 75, 4), arcs: [['A', 'B', 'D', '50°', '50°'], ['B', 'A', 'C', '75°', '75°']], desc: 'Trapez o kątach 50° i 75° przy dłuższej podstawie'}),'Jaki to czworokąt?',KIND4,2,'Boki AB i CD są równoległe, więc to trapez. Kąty przy podstawie są różne (50° i 75°), więc nie jest równoramienny, i nie ma kąta prostego, więc nie jest prostokątny.'),
+ quadQ('tz5-3d',quad({P: {A: [0, 0], B: [9, 0], C: [7, 5], D: [1, 2.5]}, desc: 'Czworokąt, w którym żadne dwa boki nie są równoległe'}),'Jaki to czworokąt?',KIND4,3,'Górny bok DC biegnie ukośnie w górę, a dolny AB poziomo — nie są równoległe. Ramiona AD i BC też nie są równoległe. Brak pary boków równoległych, więc <b>to nie jest trapez</b>.'),
+ // Kąty przy ramieniu
+ q('tz5-4a','Ile stopni mają <b>razem</b> dwa kąty trapezu leżące przy <b>tym samym ramieniu</b>?',['180°','90°','360°','zależy od trapezu'],0,`${LEG} — tak jest w każdym trapezie, bo podstawy są równoległe.`),
+ q('tz5-4b','W trapezie ABCD podstawy to AB i CD. Kąt przy wierzchołku A ma <b>70°</b>. Ile stopni ma kąt przy wierzchołku <b>D</b>?',['70°','110°','20°','290°'],1,`Kąty A i D leżą przy ramieniu AD. ${LEG}: 180° − 70° = <b>110°</b>.`),
+ q('tz5-4c','W trapezie ABCD podstawy to AB i CD. Kąt przy wierzchołku B ma <b>125°</b>. Ile stopni ma kąt przy wierzchołku <b>C</b>?',['125°','65°','55°','235°'],2,`Kąty B i C leżą przy ramieniu BC. ${LEG}: 180° − 125° = <b>55°</b>.`),
+ q('tz5-4d','Ile stopni mają <b>razem wszystkie</b> kąty trapezu?',['180°','270°','720°','360°'],3,`Przy każdym z dwóch ramion kąty mają razem 180°, więc wszystkie cztery kąty: 180° + 180° = <b>360°</b> — jak w każdym czworokącie.`),
+ // Trapez prostokątny — jeden kąt
+ q('tz5-5a','Jeden z kątów trapezu prostokątnego ma <b>58°</b>. Jakie miary mają <b>pozostałe</b> kąty?',['90°, 90° i 122°','58°, 122° i 122°','90°, 90° i 58°','32°, 90° i 90°'],0,'Trapez prostokątny ma dwa kąty proste przy jednym ramieniu. Przy drugim ramieniu: 58° i 180° − 58° = 122°. Pozostałe kąty: <b>90°, 90° i 122°</b>.'),
+ q('tz5-5b','Jeden z kątów trapezu prostokątnego ma <b>128°</b>. Jakie miary mają <b>pozostałe</b> kąty?',['90°, 90° i 128°','90°, 90° i 52°','52°, 52° i 128°','90°, 52° i 38°'],1,'Dwa kąty są proste. Przy drugim ramieniu: 128° i 180° − 128° = 52°. Pozostałe kąty: <b>90°, 90° i 52°</b>.'),
+ q('tz5-5c','Jeden z kątów trapezu prostokątnego ma <b>73°</b>. Jakie miary mają <b>pozostałe</b> kąty?',['90°, 90° i 73°','17°, 90° i 90°','90°, 90° i 107°','73°, 107° i 107°'],2,'Dwa kąty są proste, a kąt przy tym samym ramieniu co 73° ma 180° − 73° = 107°. Pozostałe: <b>90°, 90° i 107°</b>.'),
+ q('tz5-5d','Jeden z kątów trapezu prostokątnego ma <b>104°</b>. Jakie miary mają <b>pozostałe</b> kąty?',['76°, 104° i 104°','90°, 90° i 104°','14°, 90° i 90°','90°, 90° i 76°'],3,'Dwa kąty są proste, a kąt przy tym samym ramieniu co 104° ma 180° − 104° = 76°. Pozostałe: <b>90°, 90° i 76°</b>.'),
+ // Kąty trapezu z rysunku
+ quadQ('tz5-6a',quad({P: t5a, arcs: [['A', 'B', 'D', '68°', '68°'], ['C', 'B', 'D', '106°', '106°'], ['D', 'A', 'C', 'α']], desc: 'Trapez ABCD, kąt A ma 68°, kąt C ma 106°, kąt D oznaczony α'}),'Czworokąt ABCD jest trapezem (AB ∥ CD). Ile stopni ma kąt α?',['112°','68°','22°','122°'],0,`Kąt α leży przy ramieniu AD razem z kątem 68°. ${LEG}: α = 180° − 68° = <b>112°</b>.`),
+ quadQ('tz5-6b',quad({P: t5a, arcs: [['A', 'B', 'D', '68°', '68°'], ['C', 'B', 'D', '106°', '106°'], ['B', 'A', 'C', 'β']], desc: 'Trapez ABCD, kąt A ma 68°, kąt C ma 106°, kąt B oznaczony β'}),'Czworokąt ABCD jest trapezem (AB ∥ CD). Ile stopni ma kąt β?',['106°','74°','16°','68°'],1,`Kąt β leży przy ramieniu BC razem z kątem 106°. ${LEG}: β = 180° − 106° = <b>74°</b>.`),
+ quadQ('tz5-6c',quad({P: t5c, arcs: [['D', 'A', 'C', '125°', '125°'], ['B', 'A', 'C', '80°', '80°'], ['A', 'B', 'D', 'α']], desc: 'Trapez ABCD, kąt D ma 125°, kąt B ma 80°, kąt A oznaczony α'}),'Czworokąt ABCD jest trapezem (AB ∥ CD). Ile stopni ma kąt α?',['125°','35°','55°','100°'],2,`Kąt α leży przy ramieniu AD razem z kątem 125°. ${LEG}: α = 180° − 125° = <b>55°</b>.`),
+ quadQ('tz5-6d',quad({P: t5d, arcs: [['A', 'B', 'D', '72°', '72°'], ['B', 'A', 'C', '48°', '48°'], ['C', 'B', 'D', 'γ']], desc: 'Trapez ABCD, kąt A ma 72°, kąt B ma 48°, kąt C oznaczony γ'}),'Czworokąt ABCD jest trapezem (AB ∥ CD). Ile stopni ma kąt γ?',['48°','108°','42°','132°'],3,`Kąt γ leży przy ramieniu BC razem z kątem 48°. ${LEG}: γ = 180° − 48° = <b>132°</b>. Kąt 72° leży przy drugim ramieniu.`),
+ // Trapez równoramienny — jeden kąt
+ q('tz5-7a','Jeden z kątów trapezu równoramiennego ma <b>47°</b>. Jakie miary mają <b>pozostałe</b> kąty?',['47°, 133° i 133°','133°, 133° i 133°','47°, 47° i 133°','43°, 43° i 47°'],0,'W trapezie równoramiennym kąty przy tej samej podstawie są równe. Drugi kąt przy tej podstawie ma 47°, a kąty przy drugiej podstawie: 180° − 47° = 133°. Pozostałe: <b>47°, 133° i 133°</b>.'),
+ q('tz5-7b','Jeden z kątów trapezu równoramiennego ma <b>115°</b>. Jakie miary mają <b>pozostałe</b> kąty?',['115°, 115° i 65°','65°, 65° i 115°','25°, 25° i 115°','65°, 65° i 65°'],1,'Drugi kąt przy tej samej podstawie też ma 115°, a przy drugiej podstawie są kąty po 180° − 115° = 65°. Pozostałe: <b>65°, 65° i 115°</b>.'),
+ q('tz5-7c','Jeden z kątów trapezu równoramiennego ma <b>72°</b>. Jakie miary mają <b>pozostałe</b> kąty?',['72°, 72° i 108°','18°, 72° i 72°','72°, 108° i 108°','108°, 108° i 108°'],2,'Drugi kąt przy tej samej podstawie ma 72°, a kąty przy drugiej podstawie po 180° − 72° = 108°. Pozostałe: <b>72°, 108° i 108°</b>.'),
+ q('tz5-7d','Jeden z kątów trapezu równoramiennego ma <b>125°</b>. Jakie miary mają <b>pozostałe</b> kąty?',['55°, 125° i 125°','35°, 35° i 125°','125°, 125° i 125°','55°, 55° i 125°'],3,'Drugi kąt przy tej samej podstawie ma 125°, a przy drugiej podstawie po 180° − 125° = 55°. Pozostałe: <b>55°, 55° i 125°</b>.'),
+ // Trapez równoramienny z rysunku
+ quadQ('tz5-8a',quad({P: trap(10, 38, 38, 2.5), arcs: [['A', 'B', 'D', '38°', '38°'], ['C', 'B', 'D', 'γ']], desc: 'Trapez równoramienny ABCD, kąt A ma 38°, kąt C oznaczony γ'}),`${ISO('AB i CD')} Ile stopni ma kąt γ?`,['142°','38°','52°','128°'],0,`Kąt przy B jest równy kątowi przy A (38°), bo trapez jest równoramienny. ${LEG}: γ = 180° − 38° = <b>142°</b>.`),
+ quadQ('tz5-8b',quad({P: trap(6, 75, 75, 4.5), rot: 90, arcs: [['C', 'B', 'D', '105°', '105°'], ['A', 'B', 'D', 'α']], desc: 'Trapez równoramienny ABCD obrócony tak, że podstawy są pionowe; kąt C ma 105°, kąt A oznaczony α'}),`${ISO('AB i CD')} Ile stopni ma kąt α?`,['105°','75°','15°','85°'],1,`Kąty C i D przy krótszej podstawie są równe (po 105°). Kąt α leży przy ramieniu AD razem z kątem D: α = 180° − 105° = <b>75°</b>.`),
+ quadQ('tz5-8c',quad({P: trap(9, 50, 50, 3), arcs: [['A', 'B', 'D', '50°', '50°'], ['D', 'A', 'C', 'δ']], desc: 'Trapez równoramienny ABCD, kąt A ma 50°, kąt D oznaczony δ'}),`${ISO('AB i CD')} Ile stopni ma kąt δ?`,['50°','40°','130°','310°'],2,`Kąt δ leży przy ramieniu AD razem z kątem 50°. ${LEG}: δ = 180° − 50° = <b>130°</b>.`),
+ quadQ('tz5-8d',quad({P: trap(10, 65, 65, 3.5), rot: 180, arcs: [['A', 'B', 'D', '65°', '65°'], ['B', 'A', 'C', 'β']], desc: 'Trapez równoramienny ABCD odwrócony dłuższą podstawą do góry; kąt A ma 65°, kąt B oznaczony β'}),`${ISO('AB i CD')} Ile stopni ma kąt β?`,['115°','25°','35°','65°'],3,'Kąty A i B leżą przy tej samej podstawie AB, a w trapezie równoramiennym takie kąty są równe: β = <b>65°</b>. Trapez jest tylko odwrócony do góry nogami.'),
+ // Długości odcinków
+ quadQ('tz5-9a',quad({P: {A: [0, 0], B: [10, 0], C: [8, 3], D: [2, 3]}, heights: [['D', 'A', 'B', '', 'E'], ['C', 'A', 'B', '', 'F']], sides: [['D', 'C', '6 cm'], ['A', 'E', 'b'], ['F', 'B', 'b']], desc: 'Trapez równoramienny z dwiema wysokościami opuszczonymi z wierzchołków D i C'}),'Trapez ABCD jest równoramienny, a jego dłuższa podstawa AB ma <b>10 cm</b>. Ile ma odcinek <i>b</i>?',['2 cm','4 cm','3 cm','8 cm'],0,'Wysokości odcinają z podstawy AB prostokąt — środkowy odcinek ma tyle, co CD, czyli 6 cm. Na dwa jednakowe odcinki <i>b</i> zostaje 10 − 6 = 4 cm, więc <i>b</i> = 4 : 2 = <b>2 cm</b>.'),
+ quadQ('tz5-9b',quad({P: {A: [0, 0], B: [12, 0], C: [9, 3.6], D: [3, 3.6]}, heights: [['D', 'A', 'B', '', 'E'], ['C', 'A', 'B', '', 'F']], sides: [['D', 'C', 'a'], ['A', 'E', '3 cm'], ['F', 'B', '3 cm']], desc: 'Trapez równoramienny z dwiema wysokościami; skrajne odcinki dolnej podstawy po 3 cm'}),'Trapez ABCD jest równoramienny, a jego dłuższa podstawa AB ma <b>12 cm</b>. Ile ma krótsza podstawa <i>a</i>?',['9 cm','6 cm','3 cm','15 cm'],1,'Odcinek między spodkami wysokości ma tyle, co krótsza podstawa. Z 12 cm odejmujemy dwa skrajne odcinki: 12 − 3 − 3 = <b>6 cm</b>.'),
+ quadQ('tz5-9c',quad({P: {A: [0, 0], B: [9, 0], C: [6, 4], D: [0, 4]}, heights: [['C', 'A', 'B', '4 cm', 'E']], arcs: [['A', 'B', 'D', 'prosty'], ['D', 'A', 'C', 'prosty']], sides: [['D', 'C', '6 cm'], ['C', 'B', '5 cm'], ['E', 'B', '3 cm'], ['A', 'E', 'd']], desc: 'Trapez prostokątny z wysokością z wierzchołka C'}),'Czworokąt ABCD jest trapezem prostokątnym. Ile ma odcinek <i>d</i>?',['3 cm','9 cm','6 cm','4 cm'],2,'Wysokość CE odcina prostokąt AECD. W prostokącie przeciwległe boki są równe, więc <i>d</i> = DC = <b>6 cm</b>. Cała podstawa AB ma 6 + 3 = 9 cm.'),
+ quadQ('tz5-9d',quad({P: {A: [0, 0], B: [10, 0], C: [6, 3], D: [0, 3]}, heights: [['C', 'A', 'B', '3 cm', 'E']], arcs: [['A', 'B', 'D', 'prosty'], ['D', 'A', 'C', 'prosty']], sides: [['A', 'B', '10 cm'], ['C', 'B', '5 cm'], ['A', 'D', 'c']], desc: 'Trapez prostokątny z wysokością z wierzchołka C'}),'Czworokąt ABCD jest trapezem prostokątnym. Ile ma ramię <i>c</i>?',['5 cm','4 cm','10 cm','3 cm'],3,'Ramię AD jest prostopadłe do podstaw, więc też jest wysokością trapezu. Obie wysokości mają tę samą długość: <i>c</i> = <b>3 cm</b>.'),
+ // Prawda czy fałsz
+ truth('tz5-10a','Suma kątów przy jednym ramieniu trapezu wynosi 180°.','W trapezie równoramiennym kąty przy tej samej podstawie są równe.','PP','I. <b>Prawda</b> — tak jest w każdym trapezie. II. <b>Prawda</b> — trapez równoramienny ma oś symetrii, która „przenosi” jeden kąt przy podstawie na drugi.'),
+ truth('tz5-10b','Trapez może mieć trzy boki równe, a czwarty dłuższy.','Trapez może mieć dokładnie jeden kąt prosty.','PF','I. <b>Prawda</b> — np. ramiona i krótsza podstawa po 3 cm, a dłuższa podstawa 6 cm. II. <b>Fałsz</b> — kąt przy tym samym ramieniu co kąt prosty ma 180° − 90° = 90°, więc kąty proste są zawsze dwa (albo cztery).'),
+ truth('tz5-10c','Trapez może mieć cztery kąty ostre.','Trapez może mieć dokładnie jeden kąt rozwarty.','FP','I. <b>Fałsz</b> — dwa kąty przy ramieniu mają razem 180°, więc nie mogą być oba ostre. II. <b>Prawda</b> — np. trapez prostokątny o kątach 90°, 90°, 60° i 120°.'),
+ truth('tz5-10d','Przy dłuższej podstawie trapezu mogą leżeć dwa kąty rozwarte.','Ramiona każdego trapezu mają równe długości.','FF','I. <b>Fałsz</b> — gdyby oba kąty przy dłuższej podstawie były rozwarte, ramiona rozchodziłyby się ku górze i górna podstawa byłaby dłuższa. II. <b>Fałsz</b> — równe ramiona ma tylko trapez równoramienny.'),
+ // Kąt między przedłużeniem podstawy a ramieniem
+ quadQ('tz5-11a',quad({P: t11a, ext: {E: ['D', 'C', 2.6], F: ['C', 'D', 2.6]}, arcs: [['A', 'B', 'D', '34°', '34°'], ['D', 'E', 'A', 'α']], desc: 'Trapez ABCD z przedłużoną górną podstawą; kąt A ma 34°, kąt między przedłużeniem a ramieniem AD oznaczony α'}),'Czworokąt ABCD jest trapezem, a górna podstawa jest przedłużona linią przerywaną. Ile stopni ma kąt α?',['34°','146°','56°','124°'],0,`Kąt D trapezu: 180° − 34° = 146°. Kąt α jest do niego przyległy: α = 180° − 146° = <b>34°</b> — tyle samo co kąt A.`),
+ quadQ('tz5-11b',quad({P: t11a, ext: {E: ['D', 'C', 2.6], F: ['C', 'D', 2.6]}, arcs: [['C', 'B', 'D', '142°', '142°'], ['C', 'F', 'B', 'β']], desc: 'Trapez ABCD z przedłużoną górną podstawą; kąt C ma 142°, kąt między przedłużeniem a ramieniem BC oznaczony β'}),'Czworokąt ABCD jest trapezem, a górna podstawa jest przedłużona linią przerywaną. Ile stopni ma kąt β?',['142°','38°','52°','48°'],1,'Kąt β i kąt C (142°) są przyległe — razem mają 180°. β = 180° − 142° = <b>38°</b>.'),
+ quadQ('tz5-11c',quad({P: t11c, ext: {E: ['D', 'C', 2.4], F: ['C', 'D', 2.4]}, arcs: [['D', 'A', 'C', '130°', '130°'], ['D', 'E', 'A', 'α']], desc: 'Trapez ABCD z przedłużoną górną podstawą; kąt D ma 130°, kąt między przedłużeniem a ramieniem AD oznaczony α'}),'Czworokąt ABCD jest trapezem, a górna podstawa jest przedłużona linią przerywaną. Ile stopni ma kąt α?',['130°','40°','50°','230°'],2,'Kąt α i kąt D (130°) są przyległe: α = 180° − 130° = <b>50°</b>.'),
+ quadQ('tz5-11d',quad({P: t11c, ext: {E: ['D', 'C', 2.4], F: ['C', 'D', 2.4]}, arcs: [['B', 'A', 'C', '65°', '65°'], ['C', 'F', 'B', 'β']], desc: 'Trapez ABCD z przedłużoną górną podstawą; kąt B ma 65°, kąt między przedłużeniem a ramieniem BC oznaczony β'}),'Czworokąt ABCD jest trapezem, a górna podstawa jest przedłużona linią przerywaną. Ile stopni ma kąt β?',['115°','25°','35°','65°'],3,`Kąt C trapezu: 180° − 65° = 115° (kąty B i C leżą przy ramieniu BC). Kąt β jest przyległy do kąta C: β = 180° − 115° = <b>65°</b>.`),
+ // Ile trapezów na rysunku?
+ quadQ('tz5-12a',quad({P: {...T14, ...hcut(1)}, cuts: [['L0', 'R0', 'h']], names: false, desc: 'Trapez przecięty jedną linią równoległą do podstaw'}),'Ile <b>trapezów</b> jest na tym rysunku?',['3','2','4','5'],0,'Linia równoległa do podstaw dzieli trapez na 2 mniejsze trapezy. Do tego cały duży trapez: 2 + 1 = <b>3</b>.'),
+ quadQ('tz5-12b',quad({P: {...T14, S0: [4, 4], S1: [3.5, 0], S2: [6, 4], S3: [7, 0]}, cuts: [['S0', 'S1', 's'], ['S2', 'S3', 's']], names: false, desc: 'Trapez podzielony dwoma odcinkami łączącymi podstawy na trzy części'}),'Ile <b>trapezów</b> jest na tym rysunku?',['3','6','5','4'],1,'Każda część ma kawałek górnej i dolnej podstawy, więc jest trapezem. Trzy pojedyncze części, dwie pary sąsiednich i cały trapez: 3 + 2 + 1 = <b>6</b>.'),
+ quadQ('tz5-12c',quad({P: {...T14, ...hcut(3)}, cuts: [0, 1, 2].map((i) => [`L${i}`, `R${i}`, 'h']), names: false, desc: 'Trapez przecięty trzema liniami równoległymi do podstaw'}),'Ile <b>trapezów</b> jest na tym rysunku?',['4','6','10','8'],2,'Trzy linie dzielą trapez na 4 paski. Trapezy z 1 paska: 4, z 2 sąsiednich: 3, z 3: 2, z 4 (cały): 1. Razem 4 + 3 + 2 + 1 = <b>10</b>.'),
+ quadQ('tz5-12d',quad({P: {...T14, ...hcut(1), S0: [4.5, 4], S1: [5.5, 0]}, cuts: [['L0', 'R0', 'h'], ['S0', 'S1', 's']], names: false, desc: 'Trapez przecięty linią równoległą do podstaw i odcinkiem łączącym podstawy'}),'Ile <b>trapezów</b> jest na tym rysunku?',['4','5','6','9'],3,'W poziomie wybieramy górny pasek, dolny albo oba (3 sposoby), a w pionie lewą część, prawą albo obie (3 sposoby). Każdy wybór daje trapez: 3 · 3 = <b>9</b>.'),
+ // Trapezy z trójkątów równobocznych
+ q('tz5-13a','W trójkącie równobocznym połączono środki boków i odcięto <b>jeden</b> z czterech małych trójkątów. Pozostałe trzy tworzą trapez. Jakie kąty ma ten trapez?',['60°, 60°, 120° i 120°','60°, 60°, 60° i 180°','90°, 90°, 60° i 120°','45°, 45°, 135° i 135°'],0,'Małe trójkąty też są równoboczne (kąty po 60°). Przy dłuższej podstawie zostają kąty dużego trójkąta: 60° i 60°. Przy krótszej leżą po dwa kąty małych trójkątów: 60° + 60° = 120°. Kąty: <b>60°, 60°, 120° i 120°</b>.'),
+ q('tz5-13b','Przekątna dzieli trapez prostokątny na dwa trójkąty, z których jeden jest <b>równoboczny</b>. Jakie kąty ma ten trapez?',['90°, 90°, 45° i 135°','90°, 90°, 60° i 120°','60°, 60°, 120° i 120°','90°, 90°, 30° i 150°'],1,'Trapez prostokątny ma dwa kąty proste, a kąty przy drugim ramieniu mają razem 180°. Ramię to bok trójkąta równobocznego, więc kąt ostry trapezu ma <b>60°</b>, a rozwarty 180° − 60° = 120°. Kąty: <b>90°, 90°, 60° i 120°</b>.'),
+ q('tz5-13c','Trapez równoramienny złożono z <b>trzech</b> jednakowych trójkątów równobocznych o boku <b>4 cm</b>. Jaki obwód ma ten trapez?',['12 cm','36 cm','20 cm','16 cm'],2,'Dłuższa podstawa składa się z dwóch boków trójkątów: 8 cm. Krótsza podstawa i ramiona mają po 4 cm. Obwód: 8 + 4 + 4 + 4 = <b>20 cm</b>.'),
+ q('tz5-13d','Z trójkąta równobocznego o boku <b>6 cm</b> odcięto mały trójkąt, łącząc środki dwóch boków. Został trapez. Jaki ma obwód?',['18 cm','12 cm','21 cm','15 cm'],3,'Odcięty mały trójkąt też jest równoboczny, a jego boki mają po połowie z 6 cm, czyli po 3 cm. Trapez ma boki: 6 cm (dłuższa podstawa), 3 cm (krótsza) i dwa ramiona po 3 cm. Obwód: 6 + 3 + 3 + 3 = <b>15 cm</b>.'),
+ // Kąt 45° i wysokość
+ q('tz5-14a','Kąt rozwarty trapezu prostokątnego ma <b>135°</b>, a podstawy mają <b>3 cm i 8 cm</b>. Ile ma wysokość tego trapezu?',['5 cm','11 cm','3 cm','8 cm'],0,'Kąt ostry ma 180° − 135° = 45°. Wysokość odcina trójkąt prostokątny o kątach 45° i 45°, czyli równoramienny: wysokość = 8 − 3 = <b>5 cm</b>.'),
+ q('tz5-14b','Kąt ostry trapezu prostokątnego ma <b>45°</b>, a podstawy mają <b>4 cm i 7 cm</b>. Ile ma wysokość tego trapezu?',['4 cm','3 cm','7 cm','11 cm'],1,'Wysokość odcina trójkąt prostokątny z kątem 45° — trzeci kąt też ma 45°, więc przyprostokątne są równe. Wysokość = 7 − 4 = <b>3 cm</b>.'),
+ q('tz5-14c','Kąty przy dłuższej podstawie trapezu równoramiennego mają po <b>45°</b>. Podstawy mają <b>10 cm i 4 cm</b>. Ile ma wysokość?',['6 cm','4 cm','3 cm','5 cm'],2,'Dwie wysokości odcinają po obu stronach jednakowe trójkąty o kątach 45°, 45° i 90°. Każdy ma przy podstawie (10 − 4) : 2 = 3 cm, a wysokość jest tak samo długa: <b>3 cm</b>.'),
+ q('tz5-14d','Kąt ostry trapezu prostokątnego ma <b>45°</b>, wysokość ma <b>4 cm</b>, a krótsza podstawa <b>3 cm</b>. Ile ma dłuższa podstawa?',['4 cm','1 cm','8 cm','7 cm'],3,'Wysokość odcina trójkąt o kątach 45°, 45° i 90°, więc jego bok na podstawie ma tyle co wysokość: 4 cm. Dłuższa podstawa: 3 + 4 = <b>7 cm</b>.'),
+ // Zadania dla mistrzów
+ q('tz5-15a','Obwód trapezu równoramiennego wynosi <b>30 cm</b>, a podstawy mają <b>12 cm i 8 cm</b>. Ile ma każde ramię?',['5 cm','10 cm','4 cm','6 cm'],0,'Na ramiona zostaje 30 − 12 − 8 = 10 cm. Ramiona są równe: 10 : 2 = <b>5 cm</b>.'),
+ q('tz5-15b','W trapezie równoramiennym ramię ma <b>7 cm</b>, krótsza podstawa jest <b>o 2 cm dłuższa</b> od ramienia, a dłuższa podstawa jest <b>2 razy dłuższa</b> od krótszej. Jaki jest obwód?',['32 cm','41 cm','34 cm','39 cm'],1,'Krótsza podstawa: 7 + 2 = 9 cm, dłuższa: 2 · 9 = 18 cm. Obwód: 7 + 7 + 9 + 18 = <b>41 cm</b>.'),
+ q('tz5-15c','Kąt przy krótszej podstawie trapezu równoramiennego jest <b>4 razy większy</b> od kąta przy dłuższej podstawie. Ile stopni ma kąt <b>ostry</b> tego trapezu?',['45°','30°','36°','144°'],2,'Kąt ostry i rozwarty leżą przy jednym ramieniu, więc mają razem 180°. To 1 + 4 = 5 równych części: 180° : 5 = <b>36°</b> (rozwarty ma 144°).'),
+ q('tz5-15d','W trapezie prostokątnym kąt rozwarty jest <b>o 40° większy</b> od kąta ostrego. Ile stopni ma kąt <b>rozwarty</b>?',['130°','140°','70°','110°'],3,'Kąt ostry i rozwarty leżą przy jednym ramieniu: razem 180°. Bez nadwyżki 40° zostaje 140°, więc kąt ostry ma 70°, a rozwarty 70° + 40° = <b>110°</b>.'),
+];
+
+// Równoległoboki do pytań „który odcinek jest wysokością”: wysokość, przekątna AC, ukośny odcinek między bokami AB i CD oraz bok AD.
+function heightPick(L, A, s, xh, slant, letters) {
+ const P = para(L, A, s), top = P.D[1];
+ const pts = {...P, H1: [xh, top], H2: [xh, 0], S1: [slant[0], top], S2: [slant[1], 0]};
+ const [h, d, sl, side] = letters;
+ return quad({P: pts, segs: [['A', 'C', d, 0.8, 1], ['H1', 'H2', h, 0.25, 1], ['S1', 'S2', sl, 0.75, -1], ['A', 'D', side, 0.5, -1]], desc: 'Równoległobok ABCD i cztery odcinki oznaczone literami a, b, c, d'});
+}
+const HQ = 'Który odcinek jest <b>wysokością</b> równoległoboku ABCD?', HA = ['odcinek a', 'odcinek b', 'odcinek c', 'odcinek d'];
+const HEX = (h, d, sl, side) => `Wysokość jest <b>prostopadła</b> do boków AB i CD i łączy je — to odcinek <b>${h}</b>. Odcinek ${d} to przekątna AC, odcinek ${sl} łączy te boki ukośnie (nie tworzy z nimi kąta prostego), a ${side} to bok AD.`;
+const GQ = (cell) => `Bok kratki ma <b>${cell}</b>. Ile ma wysokość tego równoległoboku poprowadzona do boku AB?`;
+const DQ = 'Punkty A, B i C to trzy wierzchołki równoległoboku ABCD. W którym punkcie leży wierzchołek <b>D</b>?', DA = ['w punkcie 1', 'w punkcie 2', 'w punkcie 3', 'w punkcie 4'];
+const DEX = (sh) => `W równoległoboku bok AD jest równoległy i równy bokowi BC, więc z punktu A idziemy tak samo jak z B do C: ${sh}. Trafiamy w punkt D.`;
+const SHAPE4 = ['równoległobok, który nie jest ani rombem, ani prostokątem', 'romb, który nie jest kwadratem', 'prostokąt, który nie jest kwadratem', 'kwadrat'];
+const DIAG = (s) => `Przekątne czworokąta przecinają się w połowie każdej z nich${s}. Jaki to czworokąt?`;
+
+export const parallelogramQuestions5 = [
+ // Pojęcia
+ q('rw5-1a','Równoległobok to czworokąt, który ma:',['dwie pary boków równoległych','tylko jedną parę boków równoległych','cztery kąty proste','wszystkie boki równej długości'],0,'<b>Równoległobok</b> ma <b>dwie pary boków równoległych</b>. Jego przeciwległe boki są też równej długości.'),
+ q('rw5-1b','Romb to równoległobok, który ma:',['cztery kąty proste','wszystkie boki równej długości','przekątne równej długości','dokładnie jeden kąt ostry'],1,'<b>Romb</b> to równoległobok o <b>wszystkich bokach równej długości</b>. Gdy ma jeszcze kąty proste, jest kwadratem.'),
+ q('rw5-1c','Co wiemy o przekątnych <b>każdego</b> równoległoboku?',['są równej długości','są prostopadłe','dzielą się nawzajem na połowy','nie przecinają się'],2,'Przekątne równoległoboku przecinają się w punkcie, który <b>dzieli każdą z nich na połowy</b>. Równe są tylko w prostokącie, a prostopadłe tylko w rombie.'),
+ q('rw5-1d','Pod jakim kątem przecinają się przekątne <b>rombu</b>?',['45°','60°','180°','prostym'],3,'Przekątne rombu są <b>prostopadłe</b> — przecinają się pod kątem prostym (90°) i dzielą się na połowy.'),
+ // Nazwy boków, przekątnych i kątów
+ quadQ('rw5-2a',quad({P: rename(para(9, 55, 5), 'EFGH'), desc: 'Równoległobok EFGH'}),'Które boki równoległoboku EFGH są <b>równoległe</b>?',['EF ∥ GH i FG ∥ EH','EF ∥ FG i GH ∥ EH','EG ∥ FH i EF ∥ GH','EH ∥ FG i EG ∥ FH'],0,'Równoległe są boki <b>przeciwległe</b>: EF ∥ GH oraz FG ∥ EH. EG i FH to przekątne, a EF i FG mają wspólny wierzchołek.'),
+ quadQ('rw5-2b',quad({P: rename(para(8, 62, 5), 'KLMN'), rot: 12, desc: 'Równoległobok KLMN'}),'Które odcinki są <b>przekątnymi</b> równoległoboku KLMN?',['KL i MN','KM i LN','KN i LM','KL i LM'],1,'Przekątna łączy wierzchołki, które <b>nie są sąsiednie</b>: K z M oraz L z N. Odcinki KL, LM, MN i NK to boki.'),
+ quadQ('rw5-2c',quad({P: rename(para(9, 48, 5), 'PRST'), rot: -8, desc: 'Równoległobok PRST'}),'Który odcinek ma <b>taką samą długość</b> jak bok PR?',['RS','PT','ST','PS'],2,'W równoległoboku <b>przeciwległe boki są równe</b>. Naprzeciwko PR leży bok <b>ST</b>. PS to przekątna.'),
+ quadQ('rw5-2d',quad({P: rename(para(9, 66, 4.5), 'WXYZ'), rot: 180, desc: 'Równoległobok WXYZ'}),'Który kąt ma <b>taką samą miarę</b> jak kąt przy wierzchołku W?',['przy wierzchołku X','przy wierzchołku Z','żaden inny kąt','przy wierzchołku Y'],3,'W równoległoboku <b>kąty przeciwległe są równe</b>. Naprzeciwko W leży wierzchołek <b>Y</b>.'),
+ // Obwody
+ q('rw5-3a','Oblicz obwód <b>rombu</b> o boku <b>7 cm</b>.',['28 cm','14 cm','49 cm','21 cm'],0,'Romb ma 4 równe boki: 4 · 7 = <b>28 cm</b>.'),
+ q('rw5-3b','Oblicz obwód równoległoboku o bokach <b>2,5 cm</b> i <b>4 cm</b>.',['6,5 cm','13 cm','10 cm','16 cm'],1,'Przeciwległe boki są równe, więc obwód to 2,5 + 4 + 2,5 + 4 = 2 · 6,5 = <b>13 cm</b>.'),
+ q('rw5-3c','Oblicz obwód równoległoboku o bokach <b>12 cm</b> i <b>8 cm</b>.',['20 cm','96 cm','40 cm','48 cm'],2,'Dwa boki po 12 cm i dwa po 8 cm: 2 · 12 + 2 · 8 = 24 + 16 = <b>40 cm</b>.'),
+ q('rw5-3d','Oblicz obwód <b>rombu</b> o boku <b>15 cm</b>.',['30 cm','45 cm','225 cm','60 cm'],3,'Wszystkie boki rombu są równe: 4 · 15 = <b>60 cm</b>.'),
+ // Jeden kąt — pozostałe
+ q('rw5-4a','Jeden z kątów równoległoboku ma <b>136°</b>. Jakie miary mają <b>pozostałe</b> kąty?',['44°, 44° i 136°','136°, 136° i 44°','54°, 54° i 136°','44°, 136° i 224°'],0,`${PAR}. Kąt przeciwległy ma 136°, a dwa pozostałe po 180° − 136° = 44°. Pozostałe kąty: <b>44°, 44° i 136°</b>.`),
+ q('rw5-4b','Jeden z kątów równoległoboku ma <b>65°</b>. Jakie miary mają <b>pozostałe</b> kąty?',['65°, 65° i 115°','65°, 115° i 115°','25°, 25° i 65°','115°, 115° i 115°'],1,`${PAR}. Kąt przeciwległy ma 65°, a dwa pozostałe po 180° − 65° = 115°. Pozostałe: <b>65°, 115° i 115°</b>.`),
+ q('rw5-4c','Jeden z kątów <b>rombu</b> ma <b>118°</b>. Jakie miary mają <b>pozostałe</b> kąty?',['118°, 118° i 62°','28°, 28° i 118°','62°, 62° i 118°','62°, 62° i 62°'],2,`Romb jest równoległobokiem. Kąt przeciwległy ma 118°, a dwa pozostałe po 180° − 118° = 62°. Pozostałe: <b>62°, 62° i 118°</b>.`),
+ q('rw5-4d','Jeden z kątów równoległoboku ma <b>81°</b>. Jakie miary mają <b>pozostałe</b> kąty?',['81°, 81° i 99°','9°, 9° i 81°','99°, 99° i 99°','81°, 99° i 99°'],3,`${PAR}. Kąt przeciwległy ma 81°, a dwa pozostałe po 180° − 81° = 99°. Pozostałe: <b>81°, 99° i 99°</b>.`),
+ // Bok z obwodu
+ q('rw5-5a','Obwód <b>rombu</b> wynosi <b>64 cm</b>. Ile ma jego bok?',['16 cm','32 cm','60 cm','8 cm'],0,'Romb ma 4 równe boki: 64 : 4 = <b>16 cm</b>.'),
+ q('rw5-5b','Obwód równoległoboku wynosi <b>54 cm</b>, a jeden z jego boków ma <b>10 cm</b>. Ile ma bok sąsiedni?',['44 cm','17 cm','34 cm','7 cm'],1,'Dwa boki po 10 cm to 20 cm. Na dwa pozostałe boki zostaje 54 − 20 = 34 cm, czyli po 34 : 2 = <b>17 cm</b>.'),
+ q('rw5-5c','Obwód równoległoboku wynosi <b>34 cm</b>, a jego dłuższy bok ma <b>12 cm</b>. Ile ma krótszy bok?',['22 cm','10 cm','5 cm','11 cm'],2,'Połowa obwodu to suma dwóch sąsiednich boków: 34 : 2 = 17 cm. Krótszy bok: 17 − 12 = <b>5 cm</b>.'),
+ q('rw5-5d','Obwód równoległoboku wynosi <b>70 cm</b>, a jeden z jego boków ma <b>21 cm</b>. Ile ma bok sąsiedni?',['49 cm','28 cm','21 cm','14 cm'],3,'Połowa obwodu: 70 : 2 = 35 cm — tyle mają razem dwa sąsiednie boki. Drugi bok: 35 − 21 = <b>14 cm</b>.'),
+ // Kąty z rysunku
+ quadQ('rw5-6a',quad({P: para(9, 57, 5), arcs: [['B', 'A', 'C', '123°', '123°'], ['A', 'B', 'D', 'α']], desc: 'Równoległobok ABCD, kąt B ma 123°, kąt A oznaczony α'}),'Czworokąt ABCD jest równoległobokiem. Ile stopni ma kąt α?',['57°','123°','33°','67°'],0,'Kąty A i B leżą przy tym samym boku AB, więc mają razem 180°: α = 180° − 123° = <b>57°</b>.'),
+ quadQ('rw5-6b',quad({P: para(9, 70, 5), arcs: [['D', 'A', 'C', '110°', '110°'], ['B', 'A', 'C', 'β']], desc: 'Równoległobok ABCD, kąt D ma 110°, kąt B oznaczony β'}),'Czworokąt ABCD jest równoległobokiem. Ile stopni ma kąt β?',['70°','110°','20°','250°'],1,'Kąty B i D są <b>przeciwległe</b>, więc są równe: β = <b>110°</b>.'),
+ quadQ('rw5-6c',quad({P: para(8, 41, 5), arcs: [['A', 'B', 'D', '41°', '41°'], ['D', 'A', 'C', 'δ']], desc: 'Równoległobok ABCD, kąt A ma 41°, kąt D oznaczony δ'}),'Czworokąt ABCD jest równoległobokiem. Ile stopni ma kąt δ?',['41°','49°','139°','129°'],2,'Kąty A i D leżą przy tym samym boku AD: δ = 180° − 41° = <b>139°</b>.'),
+ quadQ('rw5-6d',quad({P: para(8, 64, 5.5), rot: -12, arcs: [['C', 'B', 'D', '64°', '64°'], ['B', 'A', 'C', 'β']], desc: 'Równoległobok ABCD lekko obrócony; kąt C ma 64°, kąt B oznaczony β'}),'Czworokąt ABCD jest równoległobokiem. Ile stopni ma kąt β?',['64°','26°','126°','116°'],3,'Kąty B i C leżą przy tym samym boku BC, więc mają razem 180°: β = 180° − 64° = <b>116°</b>.'),
+ // Osie symetrii
+ q('rw5-7a','Ile osi symetrii ma <b>romb</b>, który nie jest kwadratem?',['2','0','1','4'],0,'Osiami symetrii rombu są jego <b>dwie przekątne</b> — po złożeniu wzdłuż każdej z nich połówki się pokrywają.'),
+ q('rw5-7b','Ile osi symetrii ma równoległobok, który <b>nie jest</b> ani rombem, ani prostokątem?',['1','0','2','4'],1,'Taki równoległobok <b>nie ma żadnej osi symetrii</b> — złożony wzdłuż przekątnej lub przez środki boków nigdy się nie pokrywa. Ma za to środek symetrii.'),
+ q('rw5-7c','Ile osi symetrii ma <b>kwadrat</b>?',['1','2','4','0'],2,'Kwadrat ma <b>4 osie symetrii</b>: dwie przekątne i dwie proste przez środki przeciwległych boków.'),
+ q('rw5-7d','Ile osi symetrii ma <b>prostokąt</b>, który nie jest kwadratem?',['0','1','4','2'],3,'Prostokąt ma <b>2 osie symetrii</b> — proste przez środki przeciwległych boków. Przekątne nie są jego osiami.'),
+ // Wysokość równoległoboku — pojęcia
+ q('rw5-8a','<b>Wysokość</b> równoległoboku to odcinek, który:',['jest prostopadły do dwóch równoległych boków i łączy proste, na których one leżą','łączy przeciwległe wierzchołki','łączy środki dwóch przeciwległych boków','jest dłuższym bokiem'],0,'Wysokość jest <b>prostopadła</b> do pary boków równoległych — to odległość między nimi. Odcinek łączący przeciwległe wierzchołki to przekątna.'),
+ q('rw5-8b','Ile wysokości o <b>różnych długościach</b> może mieć równoległobok, który nie jest rombem?',['1','2','4','żadnej'],1,'Równoległobok ma dwie pary boków równoległych, więc ma <b>2</b> rodzaje wysokości: jedną do pary dłuższych boków, drugą do pary krótszych.'),
+ q('rw5-8c','Bok rombu ma <b>5 cm</b>, a wysokość poprowadzona do jednego boku ma <b>4 cm</b>. Ile ma wysokość poprowadzona do <b>sąsiedniego</b> boku?',['5 cm','3 cm','4 cm','nie da się obliczyć'],2,'Romb wygląda tak samo „z każdej strony” — jego boki są równe, więc obie wysokości też są równe: <b>4 cm</b>.'),
+ q('rw5-8d','Jakie wysokości ma prostokąt o bokach <b>6 cm</b> i <b>4 cm</b>?',['6 cm i 6 cm','4 cm i 4 cm','10 cm i 10 cm','4 cm i 6 cm'],3,'W prostokącie sąsiednie boki są prostopadłe, więc boki są jednocześnie wysokościami: <b>4 cm i 6 cm</b>.'),
+ // Który odcinek jest wysokością?
+ quadQ('rw5-9a',heightPick(9, 60, 5, 4, [6.5, 8.5], ['a', 'b', 'c', 'd']),HQ,HA,0,HEX('a', 'b', 'c', 'd')),
+ quadQ('rw5-9b',heightPick(8, 50, 5, 7.5, [3.8, 5.5], ['b', 'd', 'a', 'c']),HQ,HA,1,HEX('b', 'd', 'a', 'c')),
+ quadQ('rw5-9c',heightPick(9, 65, 4.5, 3, [6, 8], ['c', 'a', 'd', 'b']),HQ,HA,2,HEX('c', 'a', 'd', 'b')),
+ quadQ('rw5-9d',heightPick(10, 55, 4, 8, [3, 5], ['d', 'c', 'b', 'a']),HQ,HA,3,HEX('d', 'c', 'b', 'a')),
+ // Wysokość w kratce
+ quadQ('rw5-10a',gridPara({A: [1, 1], B: [6, 1], C: [8, 4], D: [3, 4]}, 'Równoległobok ABCD w kratce, bok AB poziomy'),GQ('1 cm'),['3 cm','5 cm','4 cm','2 cm'],0,'Wysokość do boku AB jest pionowa — od AB do CD są <b>3 kratki</b>, czyli <b>3 cm</b>. Ukośnego boku AD nie liczymy.'),
+ quadQ('rw5-10b',gridPara({A: [1, 1], B: [5, 1], C: [9, 5], D: [5, 5]}, 'Równoległobok ABCD w kratce, bok AB poziomy'),GQ('1 cm'),['5 cm','4 cm','6 cm','3 cm'],1,'Liczymy kratki w pionie od prostej AB do prostej CD: <b>4 kratki</b>, czyli <b>4 cm</b>.'),
+ quadQ('rw5-10c',gridPara({A: [2, 1], B: [2, 4], C: [7, 6], D: [7, 3]}, 'Równoległobok ABCD w kratce, bok AB pionowy'),GQ('1 cm'),['3 cm','4 cm','5 cm','6 cm'],2,'Bok AB jest pionowy, więc wysokość do niego jest <b>pozioma</b>: od AB do CD jest <b>5 kratek</b>, czyli <b>5 cm</b>.'),
+ quadQ('rw5-10d',gridPara({A: [1, 1], B: [7, 1], C: [10, 5], D: [4, 5]}, 'Równoległobok ABCD w kratce, bok AB poziomy'),GQ('5 mm'),['4 cm','8 cm','3 cm','2 cm'],3,'Od AB do CD są <b>4 kratki</b> po 5 mm: 4 · 5 mm = 20 mm = <b>2 cm</b>.'),
+ // Przekątne
+ q('rw5-11a','Co można powiedzieć o <b>wszystkich bokach</b> rombu?',['równej długości','prostopadłe do siebie','różnej długości','dłuższe od przekątnych'],0,'Wszystkie boki rombu są <b>równej długości</b> — to właśnie odróżnia romb od innych równoległoboków.'),
+ q('rw5-11b','Przekątne rombu mają <b>6 cm</b> i <b>10 cm</b>. Jak daleko od punktu ich przecięcia leży koniec <b>dłuższej</b> przekątnej?',['10 cm','5 cm','3 cm','8 cm'],1,'Przekątne dzielą się na połowy, więc od punktu przecięcia do końca dłuższej przekątnej jest 10 : 2 = <b>5 cm</b>.'),
+ q('rw5-11c','Przekątne równoległoboku mają <b>8 cm</b> i <b>14 cm</b>. Na jakie odcinki punkt przecięcia dzieli <b>dłuższą</b> przekątną?',['8 cm i 6 cm','4 cm i 10 cm','7 cm i 7 cm','4 cm i 4 cm'],2,'Przekątne równoległoboku dzielą się nawzajem <b>na połowy</b>: 14 : 2 = 7, więc na odcinki <b>7 cm i 7 cm</b>.'),
+ q('rw5-11d','Jak nazywa się romb, którego przekątne mają <b>równe długości</b>?',['prostokąt','trapez','romb nie może mieć równych przekątnych','kwadrat'],3,'Romb o równych przekątnych ma kąty proste, więc jest <b>kwadratem</b>.'),
+ // Czwarty wierzchołek w kratce
+ quadQ('rw5-12a',gridFourth({A: [1, 1], B: [6, 1], C: [8, 4]}, [[3, 4], [1, 4], [5, 4], [3, 6]]),DQ,DA,0,DEX('2 kratki w prawo i 3 w górę')),
+ quadQ('rw5-12b',gridFourth({A: [3, 1], B: [8, 2], C: [7, 5]}, [[4, 6], [2, 4], [0, 5], [2, 6]]),DQ,DA,1,DEX('1 kratka w lewo i 3 w górę')),
+ quadQ('rw5-12c',gridFourth({A: [1, 4], B: [4, 1], C: [8, 2]}, [[3, 5], [5, 7], [5, 5], [7, 6]]),DQ,DA,2,DEX('4 kratki w prawo i 1 w górę')),
+ quadQ('rw5-12d',gridFourth({A: [5, 1], B: [8, 3], C: [5, 5]}, [[4, 3], [2, 5], [0, 1], [2, 3]]),DQ,DA,3,DEX('3 kratki w lewo i 2 w górę') + ' Ten równoległobok ma wszystkie boki równe — to romb.'),
+ // Kąt przy przedłużonym boku
+ quadQ('rw5-13a',quad({P: para(9, 50, 5), ext: {E: ['A', 'B', 2.5]}, arcs: [['A', 'E', 'D', '130°', '130°'], ['C', 'B', 'D', 'α']], desc: 'Równoległobok ABCD z bokiem AB przedłużonym za punkt A; kąt między przedłużeniem a bokiem AD ma 130°, kąt C oznaczony α'}),'Czworokąt ABCD jest równoległobokiem. Ile stopni ma kąt α?',['50°','130°','40°','230°'],0,'Kąt A równoległoboku jest przyległy do kąta 130°: 180° − 130° = 50°. Kąt C jest przeciwległy do A, więc α = <b>50°</b>.'),
+ quadQ('rw5-13b',quad({P: para(8, 105, 5), ext: {F: ['A', 'D', 2.5]}, arcs: [['A', 'F', 'B', '75°', '75°'], ['B', 'A', 'C', 'β']], desc: 'Równoległobok ABCD z bokiem DA przedłużonym za punkt A; kąt między przedłużeniem a bokiem AB ma 75°, kąt B oznaczony β'}),'Czworokąt ABCD jest równoległobokiem. Ile stopni ma kąt β?',['105°','75°','15°','85°'],1,'Kąt A równoległoboku: 180° − 75° = 105°. Kąty A i B leżą przy boku AB: β = 180° − 105° = <b>75°</b>.'),
+ quadQ('rw5-13c',quad({P: para(9, 62, 5), ext: {G: ['B', 'A', 2.5]}, arcs: [['B', 'G', 'C', '62°', '62°'], ['C', 'B', 'D', 'γ']], desc: 'Równoległobok ABCD z bokiem AB przedłużonym za punkt B; kąt między przedłużeniem a bokiem BC ma 62°, kąt C oznaczony γ'}),'Czworokąt ABCD jest równoległobokiem. Ile stopni ma kąt γ?',['118°','28°','62°','152°'],2,'Kąt B równoległoboku: 180° − 62° = 118°. Kąty B i C leżą przy boku BC: γ = 180° − 118° = <b>62°</b>.'),
+ quadQ('rw5-13d',quad({P: para(9, 48, 5), ext: {H: ['C', 'D', 2.5]}, arcs: [['C', 'H', 'B', '132°', '132°'], ['D', 'A', 'C', 'δ']], desc: 'Równoległobok ABCD z bokiem DC przedłużonym za punkt C; kąt między przedłużeniem a bokiem CB ma 132°, kąt D oznaczony δ'}),'Czworokąt ABCD jest równoległobokiem. Ile stopni ma kąt δ?',['48°','42°','138°','132°'],3,'Kąt C równoległoboku: 180° − 132° = 48°. Kąty C i D leżą przy boku CD: δ = 180° − 48° = <b>132°</b>.'),
+ // Jaki to czworokąt — po przekątnych
+ q('rw5-14a',DIAG(', ale nie mają równych długości i nie są prostopadłe'),SHAPE4,0,'Przekątne dzielące się na połowy ma każdy równoległobok. Nie są równe — to nie prostokąt; nie są prostopadłe — to nie romb.'),
+ q('rw5-14b',DIAG(' i są prostopadłe, ale mają różne długości'),SHAPE4,1,'Prostopadłe przekątne, które dzielą się na połowy, ma <b>romb</b>. Różne długości przekątnych oznaczają, że to nie kwadrat.'),
+ q('rw5-14c',DIAG(' i mają równe długości, ale nie są prostopadłe'),SHAPE4,2,'Równe przekątne, które dzielą się na połowy, ma <b>prostokąt</b>. Nie są prostopadłe, więc to nie kwadrat.'),
+ q('rw5-14d',DIAG(', mają równe długości i są prostopadłe'),SHAPE4,3,'Równe przekątne to cecha prostokąta, prostopadłe — rombu. Czworokąt, który jest i prostokątem, i rombem, to <b>kwadrat</b>.'),
+ // Obwody — kilka kroków
+ q('rw5-15a','Romb ma taki sam obwód jak prostokąt o bokach <b>7 cm</b> i <b>5 cm</b>. Ile ma bok rombu?',['6 cm','12 cm','24 cm','35 cm'],0,'Obwód prostokąta: 2 · 7 + 2 · 5 = 24 cm. Bok rombu: 24 : 4 = <b>6 cm</b>.'),
+ q('rw5-15b','Dłuższy bok równoległoboku jest <b>3 razy dłuższy</b> od krótszego, a obwód wynosi <b>48 cm</b>. Jakie są boki?',['12 cm i 36 cm','6 cm i 18 cm','8 cm i 24 cm','4 cm i 12 cm'],1,'Dwa sąsiednie boki mają razem 48 : 2 = 24 cm. To 1 + 3 = 4 równe części po 6 cm. Boki: <b>6 cm i 18 cm</b>.'),
+ q('rw5-15c','Jeden bok równoległoboku jest <b>o 5 cm dłuższy</b> od drugiego, a obwód wynosi <b>34 cm</b>. Jakie są boki?',['14,5 cm i 19,5 cm','12 cm i 17 cm','6 cm i 11 cm','5 cm i 10 cm'],2,'Dwa sąsiednie boki: 34 : 2 = 17 cm. Bez nadwyżki 5 cm zostaje 12 cm, czyli krótszy bok ma 6 cm, a dłuższy 11 cm. Boki: <b>6 cm i 11 cm</b>.'),
+ q('rw5-15d','Z drutu o długości <b>1 m</b> wygięto romb i zostało <b>12 cm</b> drutu. Ile ma bok rombu?',['25 cm','28 cm','3 cm','22 cm'],3,'1 m = 100 cm. Na romb zużyto 100 − 12 = 88 cm, więc bok ma 88 : 4 = <b>22 cm</b>.'),
+ // Kąty — zadania dla mistrzów
+ q('rw5-16a','Jeden kąt równoległoboku jest <b>o 30° większy</b> od drugiego. Jakie miary mają kąt ostry i kąt rozwarty tego równoległoboku?',['75° i 105°','30° i 150°','60° i 90°','85° i 95°'],0,'Kąty przy jednym boku mają razem 180°. Bez nadwyżki 30° zostaje 150°, więc kąt ostry ma 150° : 2 = 75°, a rozwarty 75° + 30° = 105°: <b>75° i 105°</b>.'),
+ q('rw5-16b','Kąt rozwarty rombu jest <b>2 razy większy</b> od kąta ostrego. Jakie miary mają te kąty?',['45° i 90°','60° i 120°','30° i 60°','90° i 180°'],1,'Kąt ostry i rozwarty mają razem 180°. To 1 + 2 = 3 równe części: 180° : 3 = 60°. Kąty: <b>60° i 120°</b>.'),
+ q('rw5-16c','Przekątna rombu tworzy z jego bokiem kąt <b>35°</b>. Jakie miary mają kąty tego rombu?',['35° i 145°','35° i 55°','70° i 110°','55° i 125°'],2,'Przekątna rombu jest jego osią symetrii, więc dzieli kąt na dwie równe części. Kąt rombu: 2 · 35° = 70°, a drugi 180° − 70° = 110°: <b>70° i 110°</b>.'),
+ q('rw5-16d','Dwa kąty równoległoboku mają razem <b>100°</b>. Jakie miary mają kąty tego równoległoboku?',['100° i 80°','40° i 140°','20° i 160°','50° i 130°'],3,'Kąty przy jednym boku mają razem 180°, więc te dwa kąty muszą być <b>przeciwległe</b>, czyli równe: 100° : 2 = 50°. Pozostałe: 180° − 50° = 130°. Kąty: <b>50° i 130°</b>.'),
+];
