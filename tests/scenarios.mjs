@@ -4,20 +4,20 @@ assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.title), ['Zegary, kal
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.title), ['Podzielność i wielokrotności', 'Liczby pierwsze i złożone', 'Potęgowanie', 'Cyfry rzymskie', 'Kolejność wykonywania działań', 'Płaszczyzna, proste, półproste, odcinki', 'Kąty', 'Mierzenie kątów', 'Trójkąty', 'Równoległoboki i romby', 'Trapezy']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===5).map(s=>s.section), ['Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Liczby naturalne', 'Figury geometryczne', 'Figury geometryczne', 'Figury geometryczne', 'Figury geometryczne', 'Figury geometryczne', 'Figury geometryczne']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
- 'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Procenty — zadania egzaminacyjne', 'Potęgi', 'Potęgi o tych samych podstawach', 'Notacja wykładnicza', 'Obliczenia w notacji wykładniczej', 'Potęgi — zadania egzaminacyjne', 'Pierwiastek kwadratowy', 'Szacowanie pierwiastków',
+ 'Procenty na rozgrzewkę', 'Procenty w życiu, zestaw 1', 'Procenty w praktyce, zestaw 2', 'Procenty — zadania egzaminacyjne', 'Potęgi', 'Potęgi o tych samych podstawach', 'Notacja wykładnicza', 'Obliczenia w notacji wykładniczej', 'Potęgi — zadania egzaminacyjne', 'Pierwiastek kwadratowy', 'Szacowanie pierwiastków', 'Własności pierwiastkowania',
 ]);
 // Klasy 4, 7 i 8 są podzielone na działy.
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.section), ['Zaczynamy przygodę z matematyką', ...Array(6).fill('Dodawanie i odejmowanie'), ...Array(6).fill('Mnożenie i dzielenie')]);
 // Klasa 8: każdy zestaw ma 3 plusy, a hasła (nazwy zwierząt) się nie powtarzają.
 {const g8=SCENARIOS.filter(s=>s.grade===8);assert(g8.every(s=>s.award&&s.award.pluses===3),'grade 8: 3 pluses');assert.equal(new Set(g8.map(s=>s.award.password)).size,g8.length);}
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.section), ['Statystyka i prawdopodobieństwo', 'Statystyka i prawdopodobieństwo', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu']);
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.section), ['Procenty', 'Procenty', 'Procenty', 'Procenty', 'Potęgi', 'Potęgi', 'Potęgi', 'Potęgi', 'Potęgi', 'Pierwiastki', 'Pierwiastki']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.section), ['Procenty', 'Procenty', 'Procenty', 'Procenty', 'Potęgi', 'Potęgi', 'Potęgi', 'Potęgi', 'Potęgi', 'Pierwiastki', 'Pierwiastki', 'Pierwiastki']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
  'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Wyrażenia algebraiczne', 'Mnożenie sum algebraicznych', 'Równania', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne', 'Wyrażenia algebraiczne — zadania egzaminacyjne', 'Potęgi — zadania egzaminacyjne',
 ]);
-assert.equal(SCENARIOS.length,45);
+assert.equal(SCENARIOS.length,46);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,1890);
+assert.equal(new Set(all.map(q=>q.id)).size,1954);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -1505,4 +1505,48 @@ const T={'sp7-16a':[[r(85),4+r(24),6+r(10)],x=>x>9],'sp7-16b':[[r(60),5+r(10),12
 const name=bs=>{const k=['I','II','III'].filter((_,i)=>bs[i]);return k.length===3?'Wszystkie trzy':'Tylko '+k.join(' i ');};
 for(const [id,[vals,ok]] of Object.entries(T)){const st=Q(id).q.match(/I\. (.*?)<br>II\. (.*?)<br>III\. (.*?)<\/div>/).slice(1).map(ev);st.forEach((v,i)=>assert(Math.abs(v-vals[i])<1e-12,id));only(id,a=>a===name(vals.map(ok)));}
 console.log('PASS: grade 7 root estimation — all 64 answer keys computed independently');
+}
+
+// Klasa 7, dział „Pierwiastki”: własności pierwiastkowania — każdy klucz liczony niezależnie (Math.sqrt), wartości odpowiedzi różne.
+{
+const wp=SCENARIOS.find(s=>s.id==='root-properties-7');
+assert.equal(wp.grade,7);assert.equal(wp.section,'Pierwiastki');assert.equal(wp.ordered,true);
+assert.deepEqual(wp.award,{password:'Przed pierwiastek liczbę wyłączę – z milionem w ręku quiz ten zakończę!',pluses:3});
+assert.equal(wp.questions.length,64);
+assert.deepEqual([...new Set(wp.questions.map(q=>q.sourceGroup))],Array.from({length:16},(_,i)=>`wp7-${i+1}`));
+assert.deepEqual([0,1,2,3].map(i=>wp.questions.filter(q=>q.correct===i).length),[16,16,16,16]);
+assert.deepEqual(SCENARIOS.filter(s=>s.questions===wp.questions).map(s=>s.grade),[7]);
+const r=Math.sqrt, Q=id=>wp.questions.find(q=>q.id===id);
+const ev=html=>{const t=html.replace(/(\d)<span class="sqrt">/g,'$1*<span class="sqrt">').replace(/<span class="sqrt"><span>/g,'Math.sqrt(').replace(/<\/span><\/span>/g,')').replace(/<[^>]+>/g,'').replace(/−/g,'-').replace(/(\d),(\d)/g,'$1.$2').replace(/ /g,'');return Function(`return ${t}`)();};
+const close=(a,b)=>Math.abs(a-b)<1e-9;
+const V={
+ 'wp7-1a':r(3)*r(12),'wp7-1b':r(2)*r(50),'wp7-1c':r(5)*r(45),'wp7-1d':r(6)*r(24),
+ 'wp7-2a':r(200)/r(2),'wp7-2b':r(108)/r(3),'wp7-2c':r(147)/r(3),'wp7-2d':r(0.8)/r(0.2),
+ 'wp7-3a':r(100-36),'wp7-3b':r(169-144),'wp7-3c':r(0.64+0.36),'wp7-3d':r(225-81),
+ 'wp7-4a':r(9*64),'wp7-4b':r(2.5)*r(10),'wp7-4c':r(9/7)*r(7),'wp7-4d':r(0.36/0.25),
+ 'wp7-5a':3*r(5)+4*r(5)-2*r(5),'wp7-5b':r(7)-6*r(7)+2*r(7),'wp7-5c':2*r(11)+r(11),'wp7-5d':8*r(6)-3*r(6)-5*r(6),
+ 'wp7-6a':4*r(3),'wp7-6b':8*r(2),'wp7-6c':2*r(13),'wp7-6d':r(12)/2,
+ 'wp7-7a':r(18),'wp7-7b':r(52),'wp7-7c':r(98),'wp7-7d':r(300),
+ 'wp7-8a':r(162),'wp7-8b':r(252),'wp7-8c':r(363),'wp7-8d':r(320),
+ 'wp7-9a':r(12)+r(27),'wp7-9b':r(50)-r(8),'wp7-9c':r(80)-r(20),'wp7-9d':r(2)+r(18)+r(72),
+ 'wp7-10a':(3*r(2))**2,'wp7-10b':2*r(3)*4*r(3),'wp7-10c':2*r(3)*5*r(6),'wp7-10d':r(5)*(r(20)-r(5)),
+ 'wp7-12a':r(75)/r(3),'wp7-12b':r(75)-r(3),'wp7-12c':r(112)/r(7),'wp7-12d':r(112)-r(7),
+ 'wp7-13a':2*r(3)*5*r(3),'wp7-13b':r(6)*r(24),'wp7-13c':3*r(2)*4*r(2),'wp7-13d':r(5)*2*r(20),
+ 'wp7-15a':r(32)/r(2),'wp7-15b':r(75)/r(3),'wp7-15c':r(180)/r(5)/2,'wp7-15d':3*r(28)/r(7),
+ 'wp7-16a':r(2**2*3**2*7),'wp7-16b':r(5**3*2**2),'wp7-16c':r(3**3*11**2),'wp7-16d':r(2**5*7**2),
+};
+const only=(id,ok)=>{const q=Q(id);assert.deepEqual(q.answers.filter(ok),[q.answers[q.correct]],id);};
+for(const [id,v] of Object.entries(V)){only(id,a=>close(ev(a),v));const vals=Q(id).answers.map(ev);assert(vals.every((x,i)=>vals.every((y,j)=>i===j||!close(x,y))),id+' distinct values');}
+// Najprostsza postać: poprawna odpowiedź z pierwiastkiem ma pod nim liczbę bez czynnika kwadratowego.
+for(const g of [5,7,8,9,16]) for(const l of 'abcd'){const a=ans(`wp7-${g}${l}`),m=a.match(/<span class="sqrt"><span>(\d+)<\/span>/);if(m){const n=+m[1];assert([2,3,4,5,6,7,8,9,10,11].every(d=>n%(d*d)),`wp7-${g}${l}`);}}
+function ans(id){return Q(id).answers[Q(id).correct];}
+for(const l of 'abcd'){const q=Q(`wp7-11${l}`),v=q.answers.map(ev);assert.equal(v.indexOf(Math.max(...v)),q.correct,q.id);}
+const pf=(a,b)=>`I: ${a?'P':'F'}, II: ${b?'P':'F'}`;
+const rect=(a,b,P,O)=>pf(close(a*b,P),close(2*(a+b),O));
+assert.equal(ans('wp7-14a'),rect(2*r(5),4*r(5),40,12*r(5)));
+assert.equal(ans('wp7-14b'),rect(3*r(2),4*r(2),12*r(2),14*r(2)));
+assert.equal(ans('wp7-14c'),rect(r(3),3*r(3),9,4*r(3)));
+assert.equal(ans('wp7-14d'),rect(2*r(7),r(7),2*r(7),3*r(7)));
+assert.equal(Object.keys(V).length+8,64);
+console.log('PASS: grade 7 root properties — all 64 answer keys computed independently');
 }

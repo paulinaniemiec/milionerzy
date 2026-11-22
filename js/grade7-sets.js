@@ -558,3 +558,96 @@ export const rootEstimationQuestions7 = [
  q('sp7-16c',three(R(140),`9 + ${R(8)}`,`20 − ${R(60)}`,'większe od 12'), ['Tylko I','Tylko I i II','Tylko II i III','Tylko III'],3,`I: ${R(140)} &lt; ${R(144)} = 12 — nie. II: ${R(8)} &lt; 3, więc 9 + ${R(8)} &lt; 12 — nie. III: ${R(60)} &lt; 8, więc 20 − ${R(60)} &gt; 12 — tak. Odpowiedź: <b>tylko III</b>.`),
  q('sp7-16d',three(R(33),`2 + ${R(15)}`,`10 − ${R(15)}`,'mniejsze od 6'), ['Tylko I','Tylko I i II','Tylko II','Wszystkie trzy'],1,`I: ${R(33)} &lt; ${R(36)} = 6 — tak. II: ${R(15)} &lt; 4, więc 2 + ${R(15)} &lt; 6 — tak. III: ${R(15)} &lt; 4, więc 10 − ${R(15)} &gt; 6 — nie. Odpowiedź: <b>tylko I i II</b>.`),
 ];
+
+// Klasa 7, dział „Pierwiastki”: własności pierwiastkowania. Zadania od najłatwiejszych do najtrudniejszych (ordered).
+const k = (c, n) => `${c}${R(n)}`;
+const simp = (e) => `Zapisz w najprostszej postaci: <b>${e}</b>`;
+const into = (e) => `Włącz liczbę pod znak pierwiastka: <b>${e}</b>`;
+const out = (n) => `Wyłącz czynnik przed znak pierwiastka: <b>${R(n)}</b>`;
+const area = (a, b) => `Prostokąt ma boki długości <b>${a}</b> i <b>${b}</b>. Ile wynosi jego pole?`;
+const rectPF = (a, b, s1, s2, truth, explain) => (id) => q(id, `Prostokąt ma boki długości <b>${a}</b> i <b>${b}</b>. Czy podane zdania są prawdziwe?<div class="task-statements">I. Pole tego prostokąta jest równe ${s1}.<br>II. Obwód tego prostokąta jest równy ${s2}.</div>Wybierz ocenę zdań (P — prawda, F — fałsz).`, ['I: P, II: P', 'I: P, II: F', 'I: F, II: P', 'I: F, II: F'], ['PP','PF','FP','FF'].indexOf(truth), explain);
+const solveX = (e) => `Dla jakiej wartości <i>x</i> równość <b>${e}</b> jest prawdziwa?`;
+const MULR = `Iloczyn pierwiastków to pierwiastek z iloczynu: ${R('<i>a</i>')} · ${R('<i>b</i>')} = ${R('<i>a</i> · <i>b</i>')}.`;
+
+export const rootPropertyQuestions7 = [
+ // Mnożenie pierwiastków
+ q('wp7-1a',calc(`${R(3)} · ${R(12)}`), ['6',R(15),'36','15'],0,`${R(3)} · ${R(12)} = ${R('3 · 12')} = ${R(36)} = <b>6</b>. ${MULR} ${R(15)} to dodane liczby, a nie pomnożone.`),
+ q('wp7-1b',calc(`${R(2)} · ${R(50)}`), [R(52),'100','10','25'],2,`${R('2 · 50')} = ${R(100)} = <b>10</b>. 100 to liczba pod pierwiastkiem — trzeba jeszcze z niej wyciągnąć pierwiastek.`),
+ q('wp7-1c',calc(`${R(5)} · ${R(45)}`), [R(50),'225','50','15'],3,`${R('5 · 45')} = ${R(225)} = <b>15</b>.`),
+ q('wp7-1d',calc(`${R(6)} · ${R(24)}`), [R(30),'12','144','30'],1,`${R('6 · 24')} = ${R(144)} = <b>12</b>.`),
+ // Dzielenie pierwiastków
+ q('wp7-2a',calc(`${R(200)} : ${R(2)}`), ['100',R(198),'5','10'],3,`Iloraz pierwiastków to pierwiastek z ilorazu: ${R('200 : 2')} = ${R(100)} = <b>10</b>.`),
+ q('wp7-2b',calc(`${R(108)} : ${R(3)}`), ['6','36',R(105),'3'],0,`${R('108 : 3')} = ${R(36)} = <b>6</b>. 36 to wynik dzielenia pod pierwiastkiem, a nie cały wynik.`),
+ q('wp7-2c',calc(f(R(147),R(3))), ['49','7',R(150),'3,5'],1,`${f(R(147),R(3))} = ${R(f(147,3))} = ${R(49)} = <b>7</b>.`),
+ q('wp7-2d',calc(`${R('0,8')} : ${R('0,2')}`), ['0,4','4','2',R('0,6')],2,`${R('0,8 : 0,2')} = ${R(4)} = <b>2</b>. 4 to iloraz pod pierwiastkiem.`),
+ // Pierwiastek z sumy i różnicy
+ q('wp7-3a',calc(R('100 − 36')), ['4','64','2','8'],3,`Najpierw działanie pod pierwiastkiem: 100 − 36 = 64, a ${R(64)} = <b>8</b>. Wynik 4 to ${R(100)} − ${R(36)} = 10 − 6 — tak liczyć nie wolno.`),
+ q('wp7-3b',calc(R('169 − 144')), ['5','1','25','13'],0,`169 − 144 = 25, a ${R(25)} = <b>5</b>. 1 to 13 − 12 — pierwiastek z różnicy to nie różnica pierwiastków.`),
+ q('wp7-3c',calc(R('0,64 + 0,36')), ['1,4','1','0,1','10'],1,`0,64 + 0,36 = 1, a ${R(1)} = <b>1</b>. 1,4 to 0,8 + 0,6 — pierwiastek z sumy to nie suma pierwiastków.`),
+ q('wp7-3d',calc(R('225 − 81')), ['6','144','12','24'],2,`225 − 81 = 144, a ${R(144)} = <b>12</b>. 6 to 15 − 9.`),
+ // Iloczyny i ilorazy z ułamkami
+ q('wp7-4a',calc(R('9 · 64')), [R(73),'576','24','72'],2,`${R('9 · 64')} = ${R(9)} · ${R(64)} = 3 · 8 = <b>24</b>.`),
+ q('wp7-4b',calc(`${R('2,5')} · ${R(10)}`), ['5','25',R('12,5'),'2,5'],0,`${R('2,5 · 10')} = ${R(25)} = <b>5</b>.`),
+ q('wp7-4c',calc(`${R(f(9,7))} · ${R(7)}`), [R(63),'9','21','3'],3,`${R(`${f(9,7)} · 7`)} = ${R(9)} = <b>3</b>. Siódemki się skracają.`),
+ q('wp7-4d',calc(R(f('0,36','0,25'))), ['0,12','1,2','1,44','0,11'],1,`${f(R('0,36'),R('0,25'))} = ${f('0,6','0,5')} = <b>1,2</b>. 1,44 to sam iloraz 0,36 : 0,25 — bez pierwiastka.`),
+ // Dodawanie i odejmowanie pierwiastków podobnych
+ q('wp7-5a',simp(`3${R(5)} + 4${R(5)} − 2${R(5)}`), [k(9,5),k(5,5),R(25),k(5,15)],1,`Dodajemy liczby przed pierwiastkami, jak przy wyrazach podobnych: 3 + 4 − 2 = 5, więc wynik to <b>${k(5,5)}</b>. Liczb pod pierwiastkiem nie dodajemy.`),
+ q('wp7-5b',simp(`${R(7)} − 6${R(7)} + 2${R(7)}`), [k(3,7),k('−5',7),k('−4',7),k('−3',7)],3,`${R(7)} to 1 · ${R(7)}. 1 − 6 + 2 = −3, więc <b>${k('−3',7)}</b>.`),
+ q('wp7-5c',simp(`2${R(11)} + ${R(11)}`), [k(3,11),k(2,22),k(3,22),k(2,11)],0,`2${R(11)} + 1${R(11)} = <b>${k(3,11)}</b>. ${k(2,22)} to błąd: dodane liczby pod pierwiastkiem.`),
+ q('wp7-5d',simp(`8${R(6)} − 3${R(6)} − 5${R(6)}`), [k(16,6),k(10,6),'0',R(6)],2,`8 − 3 − 5 = 0, więc wynik to 0 · ${R(6)} = <b>0</b>.`),
+ // Włączanie liczby pod pierwiastek
+ q('wp7-6a',into(k(4,3)), [R(48),R(12),R(7),R(19)],0,`4 = ${R(16)}, więc 4${R(3)} = ${R(16)} · ${R(3)} = ${R('16 · 3')} = <b>${R(48)}</b>. Pod pierwiastek liczba wchodzi jako swój kwadrat — ${R(12)} to 4 · 3.`),
+ q('wp7-6b',into(k(8,2)), [R(16),R(66),R(128),R(10)],2,`8 = ${R(64)}, więc 8${R(2)} = ${R('64 · 2')} = <b>${R(128)}</b>.`),
+ q('wp7-6c',into(k(2,13)), [R(26),R(52),R(15),R(169)],1,`2 = ${R(4)}, więc 2${R(13)} = ${R('4 · 13')} = <b>${R(52)}</b>.`),
+ q('wp7-6d',into(`${f(1,2)}${R(12)}`), [R(6),R(24),R(48),R(3)],3,`${f(1,2)} = ${R(f(1,4))}, więc ${f(1,2)}${R(12)} = ${R(`${f(1,4)} · 12`)} = <b>${R(3)}</b>. ${R(6)} to błąd: ${f(1,2)} trzeba podnieść do kwadratu.`),
+ // Wyłączanie czynnika przed pierwiastek
+ q('wp7-7a',out(18), [k(9,2),k(3,2),k(2,3),k(3,6)],1,`18 = 9 · 2, a 9 to kwadrat: ${R(18)} = ${R(9)} · ${R(2)} = <b>${k(3,2)}</b>. Przed pierwiastek wychodzi ${R(9)} = 3, a nie 9.`),
+ q('wp7-7b',out(52), [k(4,13),k(13,2),k(26,2),k(2,13)],3,`52 = 4 · 13: ${R(52)} = ${R(4)} · ${R(13)} = <b>${k(2,13)}</b>.`),
+ q('wp7-7c',out(98), [k(7,2),k(2,7),k(49,2),k(14,7)],0,`98 = 49 · 2: ${R(98)} = ${R(49)} · ${R(2)} = <b>${k(7,2)}</b>.`),
+ q('wp7-7d',out(300), [k(3,10),k(100,3),k(10,3),k(30,10)],2,`300 = 100 · 3: ${R(300)} = ${R(100)} · ${R(3)} = <b>${k(10,3)}</b>.`),
+ // Wyłączanie — szukamy największego kwadratu
+ q('wp7-8a',out(162), [k(81,2),k(6,3),k(9,2),k(4,10)],2,`162 = 81 · 2: ${R(162)} = ${R(81)} · ${R(2)} = <b>${k(9,2)}</b>.`),
+ q('wp7-8b',out(252), [k(6,7),k(7,6),k(36,7),k(3,14)],0,`252 = 36 · 7: ${R(252)} = ${R(36)} · ${R(7)} = <b>${k(6,7)}</b>. Gdy rozłożymy 252 = 4 · 63, trzeba dalej wyłączać, bo 63 = 9 · 7.`),
+ q('wp7-8c',out(363), [k(3,11),k(121,3),k(9,11),k(11,3)],3,`363 = 121 · 3: ${R(363)} = ${R(121)} · ${R(3)} = <b>${k(11,3)}</b>.`),
+ q('wp7-8d',out(320), [k(5,8),k(8,5),k(16,5),k(4,10)],1,`320 = 64 · 5: ${R(320)} = ${R(64)} · ${R(5)} = <b>${k(8,5)}</b>. ${k(4,10)} to ${R(160)}, a nie ${R(320)}.`),
+ // Najpierw wyłączamy, potem dodajemy
+ q('wp7-9a',simp(`${R(12)} + ${R(27)}`), [R(39),k(6,3),k(5,3),k(5,6)],2,`${R(12)} = ${k(2,3)} i ${R(27)} = ${k(3,3)}, więc ${k(2,3)} + ${k(3,3)} = <b>${k(5,3)}</b>. ${R(39)} to błąd: ${R(12)} + ${R(27)} ≠ ${R('12 + 27')}.`),
+ q('wp7-9b',simp(`${R(50)} − ${R(8)}`), [k(3,2),R(42),k(7,2),k(3,6)],0,`${R(50)} = ${k(5,2)} i ${R(8)} = ${k(2,2)}, więc ${k(5,2)} − ${k(2,2)} = <b>${k(3,2)}</b>.`),
+ q('wp7-9c',simp(`${R(80)} − ${R(20)}`), [R(60),k(6,5),k(4,5),k(2,5)],3,`${R(80)} = ${k(4,5)} i ${R(20)} = ${k(2,5)}, więc ${k(4,5)} − ${k(2,5)} = <b>${k(2,5)}</b>.`),
+ q('wp7-9d',simp(`${R(2)} + ${R(18)} + ${R(72)}`), [R(92),k(10,2),k(9,2),k(10,6)],1,`${R(18)} = ${k(3,2)} i ${R(72)} = ${k(6,2)}, więc ${R(2)} + ${k(3,2)} + ${k(6,2)} = (1 + 3 + 6)${R(2)} = <b>${k(10,2)}</b>.`),
+ // Mnożenie z liczbami przed pierwiastkiem
+ q('wp7-10a',calc(p(`(3${R(2)})`,2)), ['6','18','36','12'],1,`(3${R(2)})² = 3² · (${R(2)})² = 9 · 2 = <b>18</b>. Do kwadratu podnosimy oba czynniki — 6 to 3 · 2.`),
+ q('wp7-10b',calc(`2${R(3)} · 4${R(3)}`), [k(8,3),'8',k(6,3),'24'],3,`Mnożymy liczby z liczbami i pierwiastki z pierwiastkami: 2 · 4 · ${R(3)} · ${R(3)} = 8 · 3 = <b>24</b>.`),
+ q('wp7-10c',calc(`2${R(3)} · 5${R(6)}`), [k(30,2),'30',k(7,18),k(10,6)],0,`2 · 5 · ${R('3 · 6')} = 10${R(18)} = 10 · 3${R(2)} = <b>${k(30,2)}</b>.`),
+ q('wp7-10d',calc(`${R(5)} · (${R(20)} − ${R(5)})`), [R(15),'15','5','10'],2,`Mnożymy każdy wyraz w nawiasie: ${R(5)} · ${R(20)} − ${R(5)} · ${R(5)} = ${R(100)} − 5 = 10 − 5 = <b>5</b>.`),
+ // Porównywanie: włączamy liczbę pod pierwiastek
+ q('wp7-11a',BIGGEST, [k(3,5),k(2,11),k(4,3),R(46)],2,`Włączamy liczby pod pierwiastek: 3${R(5)} = ${R(45)}, 2${R(11)} = ${R(44)}, 4${R(3)} = ${R(48)}. Największa jest <b>${k(4,3)}</b>.`),
+ q('wp7-11b',BIGGEST, [k(5,2),'7',k(2,13),k(3,6)],3,`5${R(2)} = ${R(50)}, 7 = ${R(49)}, 2${R(13)} = ${R(52)}, 3${R(6)} = ${R(54)}. Największa jest <b>${k(3,6)}</b>.`),
+ q('wp7-11c',BIGGEST, [R(29),k(2,7),k(3,3),'5,3'],0,`2${R(7)} = ${R(28)}, 3${R(3)} = ${R(27)}, 5,3 = ${R('28,09')}. Największa jest <b>${R(29)}</b>.`),
+ q('wp7-11d',BIGGEST, [k(6,2),k(4,5),k(5,3),'8,9'],1,`6${R(2)} = ${R(72)}, 4${R(5)} = ${R(80)}, 5${R(3)} = ${R(75)}, 8,9 = ${R('79,21')}. Największa jest <b>${k(4,5)}</b>.`),
+ // Ile razy? O ile?
+ q('wp7-12a',`<b>Ile razy</b> liczba ${R(75)} jest większa od liczby ${R(3)}?`, ['25','5',k(4,3),R(72)],1,`„Ile razy” to iloraz: ${R(75)} : ${R(3)} = ${R(25)} = <b>5</b>. 25 to iloraz pod pierwiastkiem.`),
+ q('wp7-12b',`<b>O ile</b> liczba ${R(75)} jest większa od liczby ${R(3)}?`, ['5',R(72),k(4,3),'4'],2,`„O ile” to różnica: ${R(75)} = ${k(5,3)}, więc ${k(5,3)} − ${R(3)} = <b>${k(4,3)}</b>. ${R(72)} to błąd: ${R(75)} − ${R(3)} ≠ ${R('75 − 3')}.`),
+ q('wp7-12c',`<b>Ile razy</b> liczba ${R(112)} jest większa od liczby ${R(7)}?`, [k(3,7),'16',R(105),'4'],3,`${R(112)} : ${R(7)} = ${R(16)} = <b>4</b>.`),
+ q('wp7-12d',`<b>O ile</b> liczba ${R(112)} jest większa od liczby ${R(7)}?`, [k(3,7),'4',R(105),k(4,7)],0,`${R(112)} = ${R('16 · 7')} = ${k(4,7)}, więc ${k(4,7)} − ${R(7)} = <b>${k(3,7)}</b>.`),
+ // Pole prostokąta
+ q('wp7-13a',area(k(2,3),k(5,3)), [k(10,3),'30',k(7,3),'15'],1,`2${R(3)} · 5${R(3)} = 2 · 5 · ${R(3)} · ${R(3)} = 10 · 3 = <b>30</b>. ${k(10,3)} to błąd: ${R(3)} · ${R(3)} = 3.`),
+ q('wp7-13b',area(R(6),R(24)), [R(30),'144','6','12'],3,`${R(6)} · ${R(24)} = ${R(144)} = <b>12</b>.`),
+ q('wp7-13c',area(k(3,2),k(4,2)), ['24',k(12,2),k(7,2),'12'],0,`3 · 4 · ${R(2)} · ${R(2)} = 12 · 2 = <b>24</b>.`),
+ q('wp7-13d',area(R(5),k(2,20)), ['10','40','20','100'],2,`${R(5)} · 2${R(20)} = 2${R(100)} = 2 · 10 = <b>20</b>.`),
+ // Pole i obwód — prawda czy fałsz
+ rectPF(k(2,5),k(4,5),'40',k(12,5),'PP',`Pole: 2${R(5)} · 4${R(5)} = 8 · 5 = 40 — <b>prawda</b>. Obwód: 2 · (2${R(5)} + 4${R(5)}) = 2 · 6${R(5)} = 12${R(5)} — <b>prawda</b>.`)('wp7-14a'),
+ rectPF(k(3,2),k(4,2),k(12,2),k(14,2),'FP',`Pole: 3${R(2)} · 4${R(2)} = 12 · 2 = 24, a nie 12${R(2)} — <b>fałsz</b>. Obwód: 2 · 7${R(2)} = 14${R(2)} — <b>prawda</b>.`)('wp7-14b'),
+ rectPF(R(3),k(3,3),'9',k(4,3),'PF',`Pole: ${R(3)} · 3${R(3)} = 3 · 3 = 9 — <b>prawda</b>. Obwód: 2 · (${R(3)} + 3${R(3)}) = 2 · 4${R(3)} = 8${R(3)}, a nie 4${R(3)} — <b>fałsz</b> (to połowa obwodu).`)('wp7-14c'),
+ rectPF(k(2,7),R(7),k(2,7),k(3,7),'FF',`Pole: 2${R(7)} · ${R(7)} = 2 · 7 = 14 — <b>fałsz</b>. Obwód: 2 · 3${R(7)} = 6${R(7)} — <b>fałsz</b>.`)('wp7-14d'),
+ // Brakująca liczba przed pierwiastkiem
+ q('wp7-15a',solveX(`<i>x</i>${R(2)} = ${R(32)}`), ['16','4','2','8'],1,`${R(32)} = ${R('16 · 2')} = 4${R(2)}, więc <i>x</i> = <b>4</b>. 16 to 32 : 2 — tak byłoby pod pierwiastkiem.`),
+ q('wp7-15b',solveX(`<i>x</i>${R(3)} = ${R(75)}`), ['25','72','5','15'],2,`${R(75)} = ${R('25 · 3')} = 5${R(3)}, więc <i>x</i> = <b>5</b>.`),
+ q('wp7-15c',solveX(`2<i>x</i>${R(5)} = ${R(180)}`), ['6','18','90','3'],3,`${R(180)} = ${R('36 · 5')} = 6${R(5)}, więc 2<i>x</i> = 6 i <i>x</i> = <b>3</b>. 6 to wartość 2<i>x</i>, a nie <i>x</i>.`),
+ q('wp7-15d',solveX(`<i>x</i>${R(7)} = 3${R(28)}`), ['6','3','12','4'],0,`${R(28)} = 2${R(7)}, więc 3${R(28)} = 3 · 2${R(7)} = 6${R(7)}. Zatem <i>x</i> = <b>6</b>.`),
+ // Potęgi pod pierwiastkiem
+ q('wp7-16a',simp(R(`${p(2,2)} · ${p(3,2)} · 7`)), [k(36,7),k(5,7),k(6,7),k(12,7)],2,`Kwadraty wychodzą przed pierwiastek bez potęgi: ${R(p(2,2))} = 2 i ${R(p(3,2))} = 3. Wynik: 2 · 3${R(7)} = <b>${k(6,7)}</b>.`),
+ q('wp7-16b',simp(R(`${p(5,3)} · ${p(2,2)}`)), [k(10,5),k(50,5),k(25,2),k(5,10)],0,`5³ = 5² · 5, więc ${R(`${p(5,2)} · 5 · ${p(2,2)}`)} = 5 · 2 · ${R(5)} = <b>${k(10,5)}</b>.`),
+ q('wp7-16c',simp(R(`${p(3,3)} · ${p(11,2)}`)), [k(3,33),k(99,3),k(11,3),k(33,3)],3,`3³ = 3² · 3, więc ${R(`${p(3,2)} · ${p(11,2)} · 3`)} = 3 · 11 · ${R(3)} = <b>${k(33,3)}</b>.`),
+ q('wp7-16d',simp(R(`${p(2,5)} · ${p(7,2)}`)), [k(14,2),k(28,2),k(56,2),k(7,10)],1,`2⁵ = 2⁴ · 2 = (2²)² · 2, więc przed pierwiastek wychodzi 2² = 4. Do tego ${R(p(7,2))} = 7: 4 · 7 · ${R(2)} = <b>${k(28,2)}</b>.`),
+];
