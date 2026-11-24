@@ -10,14 +10,14 @@ assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.section), ['Zaczynamy przygodę z matematyką', ...Array(6).fill('Dodawanie i odejmowanie'), ...Array(6).fill('Mnożenie i dzielenie')]);
 // Klasa 8: każdy zestaw ma 3 plusy, a hasła (nazwy zwierząt) się nie powtarzają.
 {const g8=SCENARIOS.filter(s=>s.grade===8);assert(g8.every(s=>s.award&&s.award.pluses===3),'grade 8: 3 pluses');assert.equal(new Set(g8.map(s=>s.award.password)).size,g8.length);}
-assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.section), ['Statystyka i prawdopodobieństwo', 'Statystyka i prawdopodobieństwo', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu']);
+assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.section), ['Statystyka i prawdopodobieństwo', 'Statystyka i prawdopodobieństwo', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Figury na płaszczyźnie', 'Figury na płaszczyźnie', 'Figury na płaszczyźnie', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.section), ['Procenty', 'Procenty', 'Procenty', 'Procenty', 'Potęgi', 'Potęgi', 'Potęgi', 'Potęgi', 'Potęgi', 'Pierwiastki', 'Pierwiastki', 'Pierwiastki']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
- 'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Wyrażenia algebraiczne', 'Mnożenie sum algebraicznych', 'Równania', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne', 'Wyrażenia algebraiczne — zadania egzaminacyjne', 'Potęgi — zadania egzaminacyjne',
+ 'Diagramy i wykresy', 'Prawdopodobieństwo', 'Liczby na osi liczbowej', 'Wyrażenia algebraiczne', 'Mnożenie sum algebraicznych', 'Równania', 'Własności kątów', 'Kąty — zadania', 'Nierówność trójkąta', 'Przygotowanie do egzaminu', 'Procenty — zadania egzaminacyjne', 'Wyrażenia algebraiczne — zadania egzaminacyjne', 'Potęgi — zadania egzaminacyjne',
 ]);
-assert.equal(SCENARIOS.length,46);
+assert.equal(SCENARIOS.length,49);
 const all=SCENARIOS.flatMap(s=>s.questions);
-assert.equal(new Set(all.map(q=>q.id)).size,1954);
+assert.equal(new Set(all.map(q=>q.id)).size,2126);
 for(const s of SCENARIOS) {
  for(const q of s.questions) {
   assert.equal(q.answers.length,4,q.id);
@@ -1549,4 +1549,84 @@ assert.equal(ans('wp7-14c'),rect(r(3),3*r(3),9,4*r(3)));
 assert.equal(ans('wp7-14d'),rect(2*r(7),r(7),2*r(7),3*r(7)));
 assert.equal(Object.keys(V).length+8,64);
 console.log('PASS: grade 7 root properties — all 64 answer keys computed independently');
+}
+
+// Klasa 8, dział „Figury na płaszczyźnie”: kąty mierzone na rysunkach, klucze z treści liczone niezależnie.
+{
+const S8=id=>SCENARIOS.find(s=>s.id===id);
+const meta=[['angles-8','KOLIBER',14,'wk8'],['angle-tasks-8','OCELOT',13,'kz8'],['triangle-inequality-8','WYDRA',16,'nt8']];
+for(const [id,pw,groups,pre] of meta){const s=S8(id);assert.equal(s.grade,8);assert.equal(s.section,'Figury na płaszczyźnie');assert.equal(s.ordered,true);assert.deepEqual(s.award,{password:pw,pluses:3});
+ assert.deepEqual([...new Set(s.questions.map(q=>q.sourceGroup))],Array.from({length:groups},(_,i)=>`${pre}-${i+1}`));assert.equal(s.questions.length,groups*4);
+ assert.deepEqual([0,1,2,3].map(i=>s.questions.filter(q=>q.correct===i).length),[groups,groups,groups,groups]);}
+const Q8=Object.fromEntries(meta.flatMap(([id])=>S8(id).questions.map(q=>[q.id,q])));
+const key=id=>Q8[id].answers[Q8[id].correct];
+const xy=s=>s.split(',').map(Number), dirDeg=(v,p)=>Math.atan2(-(p[1]-v[1]),p[0]-v[0])*180/Math.PI;
+const ccw=(v,a,b)=>((dirDeg(v,b)-dirDeg(v,a))%360+360)%360;
+const arcs=id=>Object.fromEntries([...Q8[id].q.matchAll(/data-arc="([^"]+)" data-v="([^"]+)" data-a="([^"]+)" data-b="([^"]+)"/g)].map(m=>[m[1],ccw(xy(m[2]),xy(m[3]),xy(m[4]))]));
+const P8=id=>Object.fromEntries([...Q8[id].q.matchAll(/data-pt="(\w)" cx="([\d.-]+)" cy="([\d.-]+)"/g)].map(m=>[m[1],[+m[2],+m[3]]]));
+const near=(a,b,t=0.6)=>Math.abs(a-b)<t;
+const deg=a=>parseFloat(a);
+const onlyN=(id,v)=>{const q=Q8[id];assert.deepEqual(q.answers.filter(a=>near(deg(a),v,0.01)),[key(id)],id);};
+let drawn=0;
+for(const [id,q] of Object.entries(Q8)){
+ if(!q.q.includes('<svg'))continue;drawn++;
+ const A=arcs(id);
+ for(const [n,v] of Object.entries(A)){const m=n.match(/^(\d+)°$/);if(m)assert(near(v,+m[1]),`${id} ${n} measured ${v}`);if(n==='prosty')assert(near(v,90),id);}
+ if('ask' in A){assert(near(deg(key(id)),A.ask),`${id}: key ${key(id)} vs drawing ${A.ask}`);assert.equal(q.answers.filter(a=>near(deg(a),A.ask)).length,1,id);}
+ // Proste oznaczone jako równoległe są równoległe.
+ const par=[...q.q.matchAll(/data-par="1" d="M([\d.-]+) ([\d.-]+)L([\d.-]+) ([\d.-]+)"/g)].map(m=>Math.atan2(m[4]-m[2],m[3]-m[1]));
+ for(const d of par)assert(Math.abs(Math.sin(d-par[0]))<0.004,`${id} parallel`);
+}
+assert.equal(drawn,4*(10+6),'number of drawn questions');
+// Nazwy par kątów: α = β (odpowiadające, naprzemianległe, wierzchołkowe), α + β = 180° (przyległe).
+for(const l of 'abc'){const A=arcs(`wk8-3${l}`);assert(near(A['α'],A['β']));}
+{const A=arcs('wk8-3d');assert(near(A['α']+A['β'],180));}
+// Kąty przy prostej wyrażone przez α: łuki proporcjonalne do mnożników, odpowiedź = kąt AOB z rysunku.
+for(const [l,ks] of [['a',[1,4,3,2]],['b',[2,3,1,3]],['c',[3,1,4,2]],['d',[5,2,1,4]]]){const id=`kz8-7${l}`,A=arcs(id),al=180/ks.reduce((s,k)=>s+k,0);ks.forEach((k,i)=>assert(near(A[`k${i}`],k*al),id));const P=P8(id),c=ccw(P.O,P.B,P.A),aob=Math.min(c,360-c);onlyN(id,Math.round(aob));assert(near(aob,deg(key(id))),id);}
+// Trapez z przekątną-dwusieczną: dwa kąty α równe, kąt B = 2α.
+for(const l of 'abcd'){const A=arcs(`kz8-11${l}`);assert(near(A['α1'],A['α2'])&&near(A['2α'],2*A['α1']),l);}
+// Długości z rysunków: AD = AC (wk8-10), AC = BC (kz8-9), trapez równoramienny (kz8-10), trójkąt równoboczny (kz8-13).
+const len=(P,a,b)=>Math.hypot(P[a][0]-P[b][0],P[a][1]-P[b][1]);
+for(const l of 'abcd'){let P=P8(`wk8-10${l}`);assert(near(len(P,'A','D'),len(P,'A','C'),1)&&near(len(P,'C','A'),len(P,'C','B'),1));
+ P=P8(`kz8-9${l}`);assert(near(len(P,'A','C'),len(P,'B','C'),1));
+ P=P8(`kz8-10${l}`);assert(near(len(P,'A','D'),len(P,'B','C'),1)&&near(P.C[1],P.D[1],0.2));
+ P=P8(`kz8-13${l}`);assert(near(len(P,'A','B'),len(P,'B','C'),1)&&near(len(P,'A','C'),len(P,'A','B'),1));
+ P=P8(`kz8-8${l}`);assert(near(len(P,'A','C'),len(P,'B','C'),1));}
+// Klucze z treści.
+const V={'wk8-6a':180-48-67,'wk8-6b':128-53,'wk8-6c':180-2*38,'wk8-6d':(180-46)/2,'wk8-12a':180-126,'wk8-12b':(180-118)/2,'wk8-12c':180-2*34,'wk8-12d':2*27,
+ 'kz8-4a':(180-60)*2/3,'kz8-4b':(180-45)*2/3,'kz8-4c':(180-33)*2/3,'kz8-4d':(180-54)*2/3,
+ 'kz8-6a':4*180/9,'kz8-6b':3*180/6,'kz8-6c':3*180/12,'kz8-6d':5*180/15,'kz8-12a':180-60,'kz8-12b':180-140,'kz8-12c':180-104,'kz8-12d':180-128};
+for(const [id,v] of Object.entries(V))onlyN(id,v);
+for(const [l,x] of [['a',14],['b',22],['c',8],['d',18]])assert.equal(key(`wk8-13${l}`),`${60-x}°, 60°, ${60+x}°`);
+for(const [l,m,d] of [['a',4,30],['b',3,40],['c',5,26],['d',2,48]]){const q=Q8[`kz8-3${l}`];assert.deepEqual(q.answers.filter(a=>{const x=deg(a);return near(x+m*x+x+d,180,0.01)&&x<=m*x&&x<=x+d;}),[key(q.id)]);}
+for(const [l,sgn,d] of [['a',-1,12],['b',1,30],['c',-1,21],['d',1,6]]){const g=(180-sgn*d)/3;onlyN(`kz8-5${l}`,g+sgn*d);}
+for(const [l,k,c] of [['a',3,40],['b',4,55],['c',2,72],['d',5,36]]){const q=Q8[`kz8-1${l}`];assert.deepEqual(q.answers.filter(a=>{const [x,y]=a.match(/\d+/g).map(Number);return y===k*x&&x+y+c===180;}),[key(q.id)]);}
+for(const [l,d] of [['a',70],['b',20],['c',36],['d',54]]){const q=Q8[`kz8-2${l}`];assert.deepEqual(q.answers.filter(a=>{const [x,y]=a.match(/\d+/g).map(Number);return x+y===180&&y-x===d;}),[key(q.id)]);}
+const tf=(a,b)=>`I: ${a?'P':'F'}, II: ${b?'P':'F'}`;
+assert.equal(key('wk8-14b'),tf(72+118===180,72+108===180));
+// Nierówność trójkąta.
+const tri=(a,b,c)=>{const [x,y,z]=[a,b,c].sort((p,r)=>p-r);return x+y>z+1e-9;};
+const U={mm:0.1,cm:1,dm:10,m:100,km:100000};
+const sides=a=>[...a.matchAll(/([\d,]+) (km|dm|cm|m)\b/g)].map(m=>parseFloat(m[1].replace(',','.'))*U[m[2]]);
+for(const l of 'abcd'){let q=Q8[`nt8-1${l}`];assert.deepEqual(q.answers.filter(a=>tri(...sides(a))),[key(q.id)]);q=Q8[`nt8-2${l}`];assert.deepEqual(q.answers.filter(a=>!tri(...sides(a))),[key(q.id)]);}
+const rng=a=>{const m=a.match(/większą niż ([\d,]+) (\w+) i mniejszą niż ([\d,]+) (\w+)/);return m&&[parseFloat(m[1].replace(',','.'))*U[m[2]],parseFloat(m[3].replace(',','.'))*U[m[4]]];};
+const okR=(a,lo,hi)=>{const r=rng(a);return !!r&&near(r[0],lo,1e-6)&&near(r[1],hi,1e-6);};
+for(const [id,x,y] of [['nt8-3a',7,11],['nt8-3b',25,47],['nt8-3c',34,19],['nt8-3d',9,9],['nt8-14a',200000,300],['nt8-14b',100000,4000],['nt8-14c',500,20],['nt8-14d',100,1]])assert.deepEqual(Q8[id].answers.filter(a=>okR(a,Math.abs(x-y),x+y)),[key(id)],id);
+for(const [l,x,y] of [['a',5,12],['b',8,3],['c',2.5,6],['d',15,15]]){const id=`nt8-4${l}`;assert.deepEqual(Q8[id].answers.filter(a=>tri(x,y,sides(a)[0])),[key(id)]);}
+for(const [l,x,y] of [['a',48,22],['b',30,13],['c',9,25],['d',40,18]]){const per=[[x,x,y],[y,y,x]].filter(t=>tri(...t)).map(t=>t[0]+t[1]+t[2]);assert.equal(per.length,1);assert.equal(key(`nt8-5${l}`),`${per[0]} cm`);}
+for(const [l,P,s1] of [['a',25,5],['b',34,6],['c',40,18],['d',26,4]]){const opts=[[s1,(P-s1)/2],[P-2*s1,s1]].filter(([b,r])=>b>0&&tri(b,r,r));const want=opts.map(([b,r])=>`podstawa ${String(b).replace('.',',')} cm, ramiona ${String(r).replace('.',',')} cm`).sort();const got=key(`nt8-6${l}`).split(' albo ').sort();assert.deepEqual(got,want,l);}
+for(const [l,r] of [['a',17],['b',9.5],['c',26],['d',13]])assert.equal(key(`nt8-7${l}`),`dowolną mniejszą niż ${String(2*r).replace('.',',')} cm`);
+for(const [l,b] of [['a',23],['b',30],['c',17],['d',42]])assert.equal(key(`nt8-8${l}`),`dowolną większą niż ${String(b/2).replace('.',',')} cm`);
+for(const [l,x,y] of [['a',18,5],['b',12,20],['c',15,4],['d',7,16]])assert.equal(key(`nt8-9${l}`),`${Math.abs(x-y)} cm lub ${x+y} cm`);
+assert.equal(key('nt8-10a'),tf(tri(5,8,12),tri(3,6,10)));assert.equal(key('nt8-10b'),tf(tri(5,7,13),tri(9,11,17)));
+assert.equal(key('nt8-10c'),tf(tri(4,7,10),tri(7,10,13)));assert.equal(key('nt8-10d'),tf(tri(3,6,10),tri(2,5,9)));
+const trip=s=>{let n=0;for(let i=0;i<4;i++)for(let j=i+1;j<4;j++)for(let k=j+1;k<4;k++)n+=tri(s[i],s[j],s[k]);return n;};
+for(const [l,s4] of [['a',[9,6,4,3]],['b',[10,7,4,2]],['c',[6,5,4,3]],['d',[11,3,2,1]]])assert.equal(+key(`nt8-11${l}`),trip(s4));
+assert.equal(key('nt8-12a'),tf(tri(15,15,10),tri(15,15,31)));assert.equal(key('nt8-12b'),tf(tri(6,6,12),tri(12,12,6)));
+assert.equal(key('nt8-12c'),tf(tri(20,20,39),tri(7,8,14)));assert.equal(key('nt8-12d'),tf(tri(4.5,4.5,9),tri(1,2,3)));
+assert(okR(key('nt8-13a'),6,12)&&key('nt8-13b')==='mniejszą niż 12 cm'&&okR(key('nt8-13c'),7.5,15)&&key('nt8-13d')==='mniejszą niż 9 cm');
+for(const [l,x,y] of [['a',4,9],['b',5,8],['c',6,6],['d',10,3]]){let n=0;for(let c=1;c<40;c++)n+=tri(x,y,c);assert.equal(+key(`nt8-15${l}`),n);}
+const perim=(x,y,best)=>{const c=[];for(let z=1;z<60;z++)if(tri(x,y,z))c.push(x+y+z);return best(...c);};
+assert.equal(key('nt8-16a'),`${perim(7,11,Math.max)} cm`);assert.equal(key('nt8-16b'),`${perim(5,9,Math.max)} cm`);assert.equal(key('nt8-16c'),`${perim(8,8,Math.max)} cm`);assert.equal(key('nt8-16d'),`${perim(12,4,Math.min)} cm`);
+console.log('PASS: grade 8 angles, angle tasks, triangle inequality — every angle measured on drawings, all keys computed');
 }
