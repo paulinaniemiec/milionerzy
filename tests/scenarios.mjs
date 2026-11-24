@@ -8,8 +8,8 @@ assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.title), [
 ]);
 // Klasy 4, 7 i 8 są podzielone na działy.
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===4).map(s=>s.section), ['Zaczynamy przygodę z matematyką', ...Array(6).fill('Dodawanie i odejmowanie'), ...Array(6).fill('Mnożenie i dzielenie')]);
-// Klasa 8: każdy zestaw ma 3 plusy, a hasła (nazwy zwierząt) się nie powtarzają.
-{const g8=SCENARIOS.filter(s=>s.grade===8);assert(g8.every(s=>s.award&&s.award.pluses===3),'grade 8: 3 pluses');assert.equal(new Set(g8.map(s=>s.award.password)).size,g8.length);}
+// Klasa 8: za milion bez hasła i plusów — plusy przyznaje nauczycielka.
+{const g8=SCENARIOS.filter(s=>s.grade===8);assert(g8.every(s=>JSON.stringify(s.award)==='{"onlyMillion":true}'),'grade 8: only the million');}
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.section), ['Statystyka i prawdopodobieństwo', 'Statystyka i prawdopodobieństwo', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Wyrażenia algebraiczne i równania', 'Figury na płaszczyźnie', 'Figury na płaszczyźnie', 'Figury na płaszczyźnie', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu', 'Przygotowanie do egzaminu']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===7).map(s=>s.section), ['Procenty', 'Procenty', 'Procenty', 'Procenty', 'Potęgi', 'Potęgi', 'Potęgi', 'Potęgi', 'Potęgi', 'Pierwiastki', 'Pierwiastki', 'Pierwiastki']);
 assert.deepEqual(SCENARIOS.filter(s=>s.grade===8).map(s=>s.title), [
@@ -530,7 +530,7 @@ console.log('PASS: grade 7 scientific calculations — all 68 answer keys comput
 {
 const e7=SCENARIOS.find(s=>s.id==='power-exam-7'), e8=SCENARIOS.find(s=>s.id==='power-exam-8');
 assert.equal(e7.questions,e8.questions);assert.equal(e7.section,'Potęgi');assert.equal(e8.section,'Przygotowanie do egzaminu');
-for(const e of [e7,e8]){assert.equal(e.ordered,true);assert.deepEqual(e.award,{password:'Potęgi opanowane, miliony wygrane!',pluses:3});}
+for(const e of [e7,e8])assert.equal(e.ordered,true);assert.deepEqual(e7.award,{password:'Potęgi opanowane, miliony wygrane!',pluses:3});assert.deepEqual(e8.award,{onlyMillion:true});
 assert.deepEqual(SCENARIOS.filter(s=>s.questions===e7.questions).map(s=>s.grade).sort(),[7,8]);
 assert.equal(e7.questions.length,28);assert.equal(new Set(e7.questions.map(q=>q.sourceGroup)).size,28);
 assert(e7.questions.every(q=>q.answers.length===4&&!/−\d+<\/sup>/.test(q.q.replace(/10<sup>−\d+<\/sup>/g,''))),'no negative exponents except 10');
@@ -1228,7 +1228,7 @@ console.log('PASS: grade 5 measuring angles — all 56 answer keys measured on d
 {
 const ae=SCENARIOS.find(s=>s.id==='algebra-exam-8');
 assert.equal(ae.grade,8);assert.equal(ae.section,'Przygotowanie do egzaminu');assert.equal(ae.ordered,true);
-assert.deepEqual(ae.award,{password:'Wyrażenia algebraiczne – rozkminy logiczne!',pluses:3});
+assert.deepEqual(ae.award,{onlyMillion:true});
 assert.equal(ae.questions.length,22);assert.equal(new Set(ae.questions.map(q=>q.sourceGroup)).size,22);
 const text=html=>html.replace(/<span class="frac"><span>(.*?)<\/span><span>(.*?)<\/span><\/span>/g,'(($1)/($2))').replace(/<sup>(\d)<\/sup>/g,'^$1').replace(/<[^>]+>/g,'');
 // Wyrażenie → funkcja zmiennych (mnożenie domyślne między liczbą/literą/nawiasem).
@@ -1554,8 +1554,8 @@ console.log('PASS: grade 7 root properties — all 64 answer keys computed indep
 // Klasa 8, dział „Figury na płaszczyźnie”: kąty mierzone na rysunkach, klucze z treści liczone niezależnie.
 {
 const S8=id=>SCENARIOS.find(s=>s.id===id);
-const meta=[['angles-8','KOLIBER',14,'wk8'],['angle-tasks-8','OCELOT',13,'kz8'],['triangle-inequality-8','WYDRA',16,'nt8']];
-for(const [id,pw,groups,pre] of meta){const s=S8(id);assert.equal(s.grade,8);assert.equal(s.section,'Figury na płaszczyźnie');assert.equal(s.ordered,true);assert.deepEqual(s.award,{password:pw,pluses:3});
+const meta=[['angles-8',14,'wk8'],['angle-tasks-8',13,'kz8'],['triangle-inequality-8',16,'nt8']];
+for(const [id,groups,pre] of meta){const s=S8(id);assert.equal(s.grade,8);assert.equal(s.section,'Figury na płaszczyźnie');assert.equal(s.ordered,true);assert.deepEqual(s.award,{onlyMillion:true});
  assert.deepEqual([...new Set(s.questions.map(q=>q.sourceGroup))],Array.from({length:groups},(_,i)=>`${pre}-${i+1}`));assert.equal(s.questions.length,groups*4);
  assert.deepEqual([0,1,2,3].map(i=>s.questions.filter(q=>q.correct===i).length),[groups,groups,groups,groups]);}
 const Q8=Object.fromEntries(meta.flatMap(([id])=>S8(id).questions.map(q=>[q.id,q])));

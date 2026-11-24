@@ -418,12 +418,16 @@ function finish() {
   if (S.outcome !== 'won') sound.ambient();
   $('#teacher-award').hidden = S.outcome !== 'won';
   // Zestaw może mieć własną nagrodę: hasło do powiedzenia nauczycielce za plusy.
-  const award = activeScenario.award;
-  $('#award-caption').innerHTML = award
+  // `onlyMillion`: sam milion, bez hasła i plusów (klasa 8 — plusy przyznaje nauczycielka).
+  const award = activeScenario.award, onlyMillion = !!award?.onlyMillion;
+  $('#award-caption').innerHTML = onlyMillion
+    ? 'Brawo! Hubert Urbański wręcza Ci milion!'
+    : award
     ? `Brawo! Hubert Urbański wręcza Ci milion! Twoje hasło:<br><span class="award-password">${award.password}</span><strong>Przyjdź do mnie i powiedz hasło, a dostaniesz za nie ${award.pluses} ${plusWord(award.pluses)}!</strong>`
     : DEFAULT_AWARD.caption;
-  $('#award-pluses').textContent = award ? Array(award.pluses).fill('+').join(' ') : DEFAULT_AWARD.pluses;
-  $('#award-pluses').setAttribute('aria-label', award ? `Plusy: ${award.pluses}` : DEFAULT_AWARD.label);
+  $('#award-pluses').hidden = onlyMillion;
+  $('#award-pluses').textContent = onlyMillion ? '' : award ? Array(award.pluses).fill('+').join(' ') : DEFAULT_AWARD.pluses;
+  $('#award-pluses').setAttribute('aria-label', onlyMillion ? '' : award ? `Plusy: ${award.pluses}` : DEFAULT_AWARD.label);
   $('#screen-end .end-emblem').toggleAttribute('hidden', S.outcome === 'won');
   $('#end-kicker').innerHTML = kicker;
   $('#end-amount').textContent = money(S.prize);

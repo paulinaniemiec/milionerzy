@@ -4,6 +4,6 @@ Przed dodaniem każdego nowego zestawu pytań zapytaj właścicielkę projektu, 
 
 W klasach 4, 5, 7 i 8 zestawy są podzielone na działy (pole `section` w `js/scenarios.js`, np. `Procenty`, `Potęgi`, `Statystyka i prawdopodobieństwo`, `Figury geometryczne`). Przy nowym zestawie zapytaj właścicielkę, do którego działu go wrzucić (istniejącego albo nowego), chyba że sama go podała. Nie zgaduj na podstawie tematu. Zestaw dopisz w `SCENARIOS` obok innych zestawów z tego działu.
 
-W klasie 8 każdy zestaw ma za zdobycie miliona `award` z 3 plusami, a hasłem jest nazwa zwierzęcia. Wymyśl ją sam, inną niż w pozostałych zestawach klasy 8; nie trzeba o nią pytać.
+W klasie 8 za zdobycie miliona nie ma hasła ani plusów: każdy zestaw ma `award:{onlyMillion:true}` i uczeń widzi tylko zdjęcie z milionem. Plusy przyznaje właścicielka sama.
 
 Po zakończeniu każdej zmiany samodzielnie zrób commit i push na `main`, bez pytania o zgodę. W tym projekcie nikt nie robi review kodu, więc nie zostawiaj zmian niezacommitowanych i nie czekaj na akceptację. Do commita dodawaj tylko pliki, które mają sens (bez kopii zapasowych, plików tymczasowych itp.), a po pushu napisz, co zostało wysłane.
